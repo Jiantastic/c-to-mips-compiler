@@ -1,0 +1,62 @@
+
+PolyGen: building instructions
+------------------------------
+
+
+Index
+-----
+
+1.0 Requirements
+
+    1.0.1 Portability
+
+2.0 Building
+
+	2.1 w/ GNU make
+	2.2 w/o GNU make
+
+
+
+
+1.0 Requirements
+----------------
+
+PolyGen is written in Objective Caml, a highly efficient dialect of the functional language ML - a serious language with a serious paradigm for serious programmers.
+Thus, in order to compile it by yourself, you need the following:
+
+ - OCaml bytecode (ocamlc) or native code (ocamlopt) compiler
+ - OCaml lexer (ocamllex) and parser (ocamlyacc) generators
+ - (optional) GNU make or compatible
+
+You can get an OCaml distribution at http://caml.inria.fr website.
+
+The GNU make is recommended in order to let the makefile do all the building jobs instead of compiling every source file and linking by hand, but not required. You can get it at http://www.gnu.org/software/make.
+
+
+
+1.0.1 Portability
+-----------------
+
+OCaml is a platform-independent language, since its standard library abstracts from the underlying operating system.
+PolyGen uses just few I/O functions, all the rest being pure owner code: it is therefore 100% portable to any platform supported by an (even poor) OCaml implementation.
+
+
+
+2.0 Building
+------------
+
+2.1 w/ GNU make
+---------------
+
+Simply 'cd' to the src directory and run 'make' with no arguments.
+An executable file will be created in the parent directory together with a soft link to it from the current directory.
+
+
+2.2 w/o GNU make
+----------------
+
+For those users who do have a working OCaml compiler but have no GNU make, in case your system supports shell scripts, you may write a makefile-like batch; otherwise you can always perform all the required compilation steps by hand and get an executable file at last.
+
+
+
+

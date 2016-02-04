@@ -1,0 +1,10 @@
+(*
+ * Polygen
+ * ver.ml: version
+ *
+ * Alvise Spano' (2003)
+ *)
+
+
+let ver = "%VERSION%"
+let date = "%DATE%"

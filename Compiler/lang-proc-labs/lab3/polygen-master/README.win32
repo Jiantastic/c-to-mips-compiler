@@ -1,0 +1,8 @@
+
+PolyGen: README file for MS Windows users
+-----------------------------------------
+
+The Windows version of PolyGen is nearly completely equivalent to the Linux one.
+The program is compiled under Cygwin (the Unix-like environment for Windows) and needs at least its basic dll (if not a full installation), which can be download from http://polygen.org/web/Download.394.0.html. Just unzip it and put to either the same folder where Polygen executable lays or to C:\Windows/System32.
+
+Consider that possible divergencies in the behaviour of the program are most probably dued to OCaml (that is the programming language which PolyGen has been written in) compiler or library lacks in portability, since the whole code is supposed to be platform independent.
