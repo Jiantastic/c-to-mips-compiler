@@ -1,0 +1,6 @@
+PREPROCESSOR_INCLUDE
+ID<using> ID<namespace> ID<std>;(COMMENT)
+ID<int> ID<main>(){   ID<for>(ID<int> ID<i> = INT_NUM<0>; ID<i><INT_NUM<10>; ID<i>++){       SELECT_KWD<if>((ID<i>%INT_NUM<2>)==INT_NUM<0>){            ID<cout> << "ID<hello>" << ID<endl>; (COMMENT)
+       }       SELECT_KWD<else>{           ID<cout> << "ID<goodbye>" << ID<endl>; (COMMENT)
+       }   }   ID<return> INT_NUM<0>;   (COMMENT)
+}
