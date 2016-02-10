@@ -376,24 +376,24 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[171] =
     {   0,
-        0,    0,    9,    6,    7,    3,    3,    3,    3,    6,
-        3,    3,    3,    3,    3,    3,    4,    4,    3,    3,
-        3,    2,    2,    3,    3,    2,    2,    2,    2,    2,
-        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
-        3,    3,    0,    0,    4,    4,    4,    4,    4,    4,
-        4,    4,    0,    4,    4,    4,    4,    3,    3,    2,
-        0,    0,    0,    2,    2,    2,    2,    2,    2,    1,
-        2,    2,    2,    2,    2,    2,    1,    2,    2,    2,
-        2,    2,    2,    2,    2,    2,    2,    2,    4,    4,
-        4,    4,    0,    2,    2,    2,    2,    2,    2,    2,
+        0,    0,    9,    6,    7,    4,    4,    4,    4,    6,
+        4,    4,    4,    4,    4,    4,    5,    5,    4,    4,
+        4,    3,    3,    4,    4,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        4,    4,    0,    0,    5,    5,    5,    5,    5,    5,
+        5,    5,    0,    5,    5,    5,    5,    4,    4,    3,
+        0,    0,    0,    3,    3,    3,    3,    3,    3,    2,
+        3,    3,    3,    3,    3,    3,    2,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    5,    5,
+        5,    5,    0,    3,    3,    3,    3,    3,    3,    3,
 
-        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
-        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
-        0,    2,    2,    2,    2,    2,    2,    2,    2,    2,
-        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
-        2,    0,    2,    2,    2,    2,    2,    2,    2,    2,
-        2,    2,    2,    2,    2,    2,    0,    2,    2,    2,
-        1,    2,    2,    2,    5,    2,    2,    2,    2,    0
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        0,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    0,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    0,    3,    3,    3,
+        2,    3,    3,    3,    1,    3,    3,    3,    3,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -595,6 +595,7 @@ using namespace std;
 int line_number = 1,source_line = 1;
 bool filename_init = false;
 string SourceFile = "";
+string temp = "";
 stringstream ss;
 
 /* 
@@ -620,9 +621,14 @@ TODO:
     enumeration constant - An identifier declared as an enumeration constant has type int.
     TODO: L,escape sequences character constant - any char except those listed in the C89 spec 
 */
-/* StringLiteral TODO: escape sequences, L etc.... refer to C89 spec */
+/* StringLiteral TODO: escape sequences, L etc.... refer to C89 spec, ' ' and " " is still invalid */
 /* preprocessing-token: */
-/*HEADER-NAME
+/*
+
+TODO AFTER the rest is done
+
+HEADER-NAME   (?:("[^\n\\\"]*")|(<[^\n>]*>))
+
 
 PRE-IDENTIFIER
 
@@ -634,8 +640,12 @@ PRE-STRINGLITERAL
 
 PRE-OPERATOR
 
-PRE-PUNCTUATOR*/
-#line 639 "c-to-mips.cpp"
+PRE-PUNCTUATOR
+
+{HEADER-NAME}           cout << yytext << " HEADER-NAME " << "toekn type " << line_number << " " << SourceFile << " " << source_line << endl;
+
+*/
+#line 649 "c-to-mips.cpp"
 
 #define INITIAL 0
 
@@ -844,11 +854,11 @@ YY_DECL
 		}
 
 	{
-#line 72 "c-to-mips.l"
+#line 83 "c-to-mips.l"
 
 
 
-#line 852 "c-to-mips.cpp"
+#line 862 "c-to-mips.cpp"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -906,48 +916,48 @@ do_action:	/* This label is used only to access EOF actions. */
 			goto yy_find_action;
 
 case 1:
+/* rule 1 can match eol */
 YY_RULE_SETUP
-#line 75 "c-to-mips.l"
-cout << yytext << " Keyword " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 86 "c-to-mips.l"
+cout << yytext << " StringLiteral " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 77 "c-to-mips.l"
-cout << yytext << " Identifier " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 88 "c-to-mips.l"
+cout << yytext << " Keyword " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 79 "c-to-mips.l"
-cout << yytext << " Operator " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 90 "c-to-mips.l"
+cout << yytext << " Identifier " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 81 "c-to-mips.l"
-cout << yytext << " Constant " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 92 "c-to-mips.l"
+cout << yytext << " Operator " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 5:
-/* rule 5 can match eol */
 YY_RULE_SETUP
-#line 83 "c-to-mips.l"
-cout << yytext << " StringLiteral " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 94 "c-to-mips.l"
+cout << yytext << " Constant " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 85 "c-to-mips.l"
+#line 96 "c-to-mips.l"
 cout << yytext << " Invalid " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 87 "c-to-mips.l"
+#line 98 "c-to-mips.l"
 line_number++;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 89 "c-to-mips.l"
+#line 100 "c-to-mips.l"
 ECHO;
 	YY_BREAK
-#line 951 "c-to-mips.cpp"
+#line 961 "c-to-mips.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1942,13 +1952,14 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 89 "c-to-mips.l"
+#line 100 "c-to-mips.l"
 
 
 
 int main()
 {
     getline(cin,SourceFile);
+    ss.str() = "";
     for(int i=0;i<SourceFile.length();++i){
         if(SourceFile[i] == '\"'){
             filename_init = !filename_init;
@@ -1961,6 +1972,7 @@ int main()
     cout << "initialize test" << endl;
     cout << SourceFile << endl;
 
+    
     yylex();
     
     /* function yylex processes the standard input and every time a token is recognized it executes the corresponding code */

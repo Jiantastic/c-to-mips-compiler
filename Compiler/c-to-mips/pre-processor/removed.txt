@@ -1,93 +1,45 @@
-# 1 "tmp.c"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 1 "tmp.c"
-
-
-
-
-# 1 "/usr/include/stdio.h" 1 3 4
-# 29 "/usr/include/stdio.h" 3 4
-# 1 "/usr/include/_ansi.h" 1 3 4
-# 15 "/usr/include/_ansi.h" 3 4
-# 1 "/usr/include/newlib.h" 1 3 4
-# 16 "/usr/include/_ansi.h" 2 3 4
-# 1 "/usr/include/sys/config.h" 1 3 4
-
-
-
-# 1 "/usr/include/machine/ieeefp.h" 1 3 4
-# 5 "/usr/include/sys/config.h" 2 3 4
-# 1 "/usr/include/sys/features.h" 1 3 4
-# 6 "/usr/include/sys/config.h" 2 3 4
-# 234 "/usr/include/sys/config.h" 3 4
-# 1 "/usr/include/cygwin/config.h" 1 3 4
-# 235 "/usr/include/sys/config.h" 2 3 4
-# 17 "/usr/include/_ansi.h" 2 3 4
-# 30 "/usr/include/stdio.h" 2 3 4
 
 
 
 
 
-# 1 "/usr/include/sys/cdefs.h" 1 3 4
-# 43 "/usr/include/sys/cdefs.h" 3 4
-# 1 "/usr/include/machine/_default_types.h" 1 3 4
-# 27 "/usr/include/machine/_default_types.h" 3 4
+
+
+
 typedef signed char __int8_t;
 
 typedef unsigned char __uint8_t;
-# 41 "/usr/include/machine/_default_types.h" 3 4
 typedef short int __int16_t;
 
 typedef short unsigned int __uint16_t;
-# 63 "/usr/include/machine/_default_types.h" 3 4
 typedef int __int32_t;
 
 typedef unsigned int __uint32_t;
-# 89 "/usr/include/machine/_default_types.h" 3 4
 typedef long int __int64_t;
 
 typedef long unsigned int __uint64_t;
-# 120 "/usr/include/machine/_default_types.h" 3 4
 typedef signed char __int_least8_t;
 
 typedef unsigned char __uint_least8_t;
-# 146 "/usr/include/machine/_default_types.h" 3 4
 typedef short int __int_least16_t;
 
 typedef short unsigned int __uint_least16_t;
-# 168 "/usr/include/machine/_default_types.h" 3 4
 typedef int __int_least32_t;
 
 typedef unsigned int __uint_least32_t;
-# 186 "/usr/include/machine/_default_types.h" 3 4
 typedef long int __int_least64_t;
 
 typedef long unsigned int __uint_least64_t;
-# 200 "/usr/include/machine/_default_types.h" 3 4
 typedef long int __intptr_t;
 
 typedef long unsigned int __uintptr_t;
-# 44 "/usr/include/sys/cdefs.h" 2 3 4
 
-# 1 "/usr/lib/gcc/x86_64-pc-cygwin/4.9.3/include/stddef.h" 1 3 4
-# 212 "/usr/lib/gcc/x86_64-pc-cygwin/4.9.3/include/stddef.h" 3 4
 typedef long unsigned int size_t;
-# 46 "/usr/include/sys/cdefs.h" 2 3 4
-# 36 "/usr/include/stdio.h" 2 3 4
-# 1 "/usr/lib/gcc/x86_64-pc-cygwin/4.9.3/include/stddef.h" 1 3 4
-# 147 "/usr/lib/gcc/x86_64-pc-cygwin/4.9.3/include/stddef.h" 3 4
 typedef long int ptrdiff_t;
-# 324 "/usr/lib/gcc/x86_64-pc-cygwin/4.9.3/include/stddef.h" 3 4
 typedef short unsigned int wchar_t;
-# 37 "/usr/include/stdio.h" 2 3 4
 
 
-# 1 "/usr/lib/gcc/x86_64-pc-cygwin/4.9.3/include/stdarg.h" 1 3 4
-# 40 "/usr/lib/gcc/x86_64-pc-cygwin/4.9.3/include/stdarg.h" 3 4
 typedef __builtin_va_list __gnuc_va_list;
-# 40 "/usr/include/stdio.h" 2 3 4
 
 
 
@@ -95,27 +47,13 @@ typedef __builtin_va_list __gnuc_va_list;
 
 
 
-# 1 "/usr/include/sys/reent.h" 1 3 4
-# 13 "/usr/include/sys/reent.h" 3 4
-# 1 "/usr/include/_ansi.h" 1 3 4
-# 14 "/usr/include/sys/reent.h" 2 3 4
-# 1 "/usr/lib/gcc/x86_64-pc-cygwin/4.9.3/include/stddef.h" 1 3 4
-# 15 "/usr/include/sys/reent.h" 2 3 4
-# 1 "/usr/include/sys/_types.h" 1 3 4
-# 12 "/usr/include/sys/_types.h" 3 4
-# 1 "/usr/include/machine/_types.h" 1 3 4
-# 13 "/usr/include/sys/_types.h" 2 3 4
-# 1 "/usr/include/sys/lock.h" 1 3 4
-# 14 "/usr/include/sys/lock.h" 3 4
 typedef void *_LOCK_T;
-# 44 "/usr/include/sys/lock.h" 3 4
 void __cygwin_lock_init(_LOCK_T *);
 void __cygwin_lock_init_recursive(_LOCK_T *);
 void __cygwin_lock_fini(_LOCK_T *);
 void __cygwin_lock_lock(_LOCK_T *);
 int __cygwin_lock_trylock(_LOCK_T *);
 void __cygwin_lock_unlock(_LOCK_T *);
-# 14 "/usr/include/sys/_types.h" 2 3 4
 
 
 typedef long _off_t;
@@ -148,13 +86,8 @@ typedef long _fpos_t;
 
 
 typedef _off64_t _fpos64_t;
-# 55 "/usr/include/sys/_types.h" 3 4
 typedef long signed int _ssize_t;
-# 67 "/usr/include/sys/_types.h" 3 4
-# 1 "/usr/lib/gcc/x86_64-pc-cygwin/4.9.3/include/stddef.h" 1 3 4
-# 353 "/usr/lib/gcc/x86_64-pc-cygwin/4.9.3/include/stddef.h" 3 4
 typedef unsigned int wint_t;
-# 68 "/usr/include/sys/_types.h" 2 3 4
 
 
 
@@ -176,10 +109,7 @@ typedef _LOCK_T _flock_t;
 
 
 typedef void *_iconv_t;
-# 16 "/usr/include/sys/reent.h" 2 3 4
-# 25 "/usr/include/sys/reent.h" 3 4
 typedef unsigned int __ULong;
-# 38 "/usr/include/sys/reent.h" 3 4
 struct _reent;
 
 
@@ -223,7 +153,6 @@ struct _on_exit_args {
 
  __ULong _is_cxa;
 };
-# 91 "/usr/include/sys/reent.h" 3 4
 struct _atexit {
  struct _atexit *_next;
  int _ind;
@@ -231,12 +160,10 @@ struct _atexit {
  void (*_fns[32])(void);
         struct _on_exit_args _on_exit_args;
 };
-# 115 "/usr/include/sys/reent.h" 3 4
 struct __sbuf {
  unsigned char *_base;
  int _size;
 };
-# 179 "/usr/include/sys/reent.h" 3 4
 struct __sFILE {
   unsigned char *_p;
   int _r;
@@ -287,7 +214,6 @@ struct __sFILE {
   _mbstate_t _mbstate;
   int _flags2;
 };
-# 237 "/usr/include/sys/reent.h" 3 4
 struct __sFILE64 {
   unsigned char *_p;
   int _r;
@@ -346,7 +272,6 @@ struct _glue
   int _niobs;
   __FILE *_iobs;
 };
-# 317 "/usr/include/sys/reent.h" 3 4
 struct _rand48 {
   unsigned short _seed[3];
   unsigned short _mult[3];
@@ -356,7 +281,6 @@ struct _rand48 {
 
 
 };
-# 568 "/usr/include/sys/reent.h" 3 4
 struct _reent
 {
   int _errno;
@@ -436,7 +360,6 @@ struct _reent
   struct _glue __sglue;
   __FILE __sf[3];
 };
-# 765 "/usr/include/sys/reent.h" 3 4
 extern struct _reent *_impure_ptr ;
 extern struct _reent *const _global_impure_ptr ;
 
@@ -447,11 +370,6 @@ void _reclaim_reent (struct _reent *);
 
 
   struct _reent * __attribute__((__cdecl__)) __getreent (void);
-# 48 "/usr/include/stdio.h" 2 3 4
-# 1 "/usr/include/sys/types.h" 1 3 4
-# 63 "/usr/include/sys/types.h" 3 4
-# 1 "/usr/include/sys/_stdint.h" 1 3 4
-# 19 "/usr/include/sys/_stdint.h" 3 4
 typedef __int8_t int8_t ;
 typedef __uint8_t uint8_t ;
 
@@ -477,7 +395,6 @@ typedef __uint64_t uint64_t ;
 
 typedef __intptr_t intptr_t;
 typedef __uintptr_t uintptr_t;
-# 64 "/usr/include/sys/types.h" 2 3 4
 
 
 
@@ -485,10 +402,6 @@ typedef __uintptr_t uintptr_t;
 
 
 
-# 1 "/usr/lib/gcc/x86_64-pc-cygwin/4.9.3/include/stddef.h" 1 3 4
-# 72 "/usr/include/sys/types.h" 2 3 4
-# 1 "/usr/include/machine/types.h" 1 3 4
-# 19 "/usr/include/machine/types.h" 3 4
 typedef long int __off_t;
 typedef int __pid_t;
 
@@ -499,8 +412,6 @@ __extension__ typedef long long int __loff_t;
 
 
 typedef long __suseconds_t;
-# 73 "/usr/include/sys/types.h" 2 3 4
-# 95 "/usr/include/sys/types.h" 3 4
 typedef unsigned char u_char;
 
 
@@ -540,11 +451,8 @@ typedef long daddr_t;
 
 
 typedef char * caddr_t;
-# 180 "/usr/include/sys/types.h" 3 4
 typedef int pid_t;
-# 190 "/usr/include/sys/types.h" 3 4
 typedef _ssize_t ssize_t;
-# 209 "/usr/include/sys/types.h" 3 4
 typedef unsigned short nlink_t;
 
 
@@ -569,16 +477,6 @@ typedef __suseconds_t suseconds_t;
 
 
 typedef __int64_t sbintime_t;
-# 428 "/usr/include/sys/types.h" 3 4
-# 1 "/usr/include/cygwin/types.h" 1 3 4
-# 21 "/usr/include/cygwin/types.h" 3 4
-# 1 "/usr/include/endian.h" 1 3 4
-# 15 "/usr/include/endian.h" 3 4
-# 1 "/usr/include/bits/endian.h" 1 3 4
-# 16 "/usr/include/endian.h" 2 3 4
-# 32 "/usr/include/endian.h" 3 4
-# 1 "/usr/include/byteswap.h" 1 3 4
-# 18 "/usr/include/byteswap.h" 3 4
 static __inline unsigned short
 bswap_16 (unsigned short __x)
 {
@@ -596,17 +494,10 @@ bswap_64 (unsigned long long __x)
 {
   return (((unsigned long long) bswap_32 (__x & 0xffffffffull)) << 32) | (bswap_32 (__x >> 32));
 }
-# 33 "/usr/include/endian.h" 2 3 4
-# 22 "/usr/include/cygwin/types.h" 2 3 4
-# 1 "/usr/include/bits/wordsize.h" 1 3 4
-# 23 "/usr/include/cygwin/types.h" 2 3 4
-# 1 "/usr/include/sys/_timespec.h" 1 3 4
-# 44 "/usr/include/sys/_timespec.h" 3 4
 struct timespec {
  time_t tv_sec;
  long tv_nsec;
 };
-# 24 "/usr/include/cygwin/types.h" 2 3 4
 
 
 
@@ -683,7 +574,6 @@ typedef __uint64_t ino_t;
 
 
 typedef __uint32_t id_t;
-# 113 "/usr/include/cygwin/types.h" 3 4
 struct flock {
  short l_type;
  short l_whence;
@@ -769,11 +659,6 @@ pthread_once_t;
 typedef struct __pthread_spinlock_t {char __dummy;} *pthread_spinlock_t;
 typedef struct __pthread_rwlock_t {char __dummy;} *pthread_rwlock_t;
 typedef struct __pthread_rwlockattr_t {char __dummy;} *pthread_rwlockattr_t;
-# 220 "/usr/include/cygwin/types.h" 3 4
-# 1 "/usr/include/sys/sysmacros.h" 1 3 4
-# 14 "/usr/include/sys/sysmacros.h" 3 4
-# 1 "/usr/include/sys/types.h" 1 3 4
-# 15 "/usr/include/sys/sysmacros.h" 2 3 4
 
 extern __inline__ __attribute__ ((__always_inline__)) int gnu_dev_major(dev_t);
 extern __inline__ __attribute__ ((__always_inline__)) int gnu_dev_minor(dev_t);
@@ -796,9 +681,6 @@ gnu_dev_makedev(int maj, int min)
 {
  return (((maj) << 16) | ((min) & 0xffff));
 }
-# 221 "/usr/include/cygwin/types.h" 2 3 4
-# 429 "/usr/include/sys/types.h" 2 3 4
-# 49 "/usr/include/stdio.h" 2 3 4
 
 
 
@@ -816,16 +698,12 @@ typedef _fpos64_t fpos_t;
 
 
 
-# 1 "/usr/include/sys/stdio.h" 1 3 4
-# 35 "/usr/include/sys/stdio.h" 3 4
 
 
 ssize_t __attribute__((__cdecl__)) getline (char **, size_t *, FILE *);
 ssize_t __attribute__((__cdecl__)) getdelim (char **, size_t *, int, FILE *);
 
 
-# 67 "/usr/include/stdio.h" 2 3 4
-# 167 "/usr/include/stdio.h" 3 4
 FILE * __attribute__((__cdecl__)) tmpfile (void);
 char * __attribute__((__cdecl__)) tmpnam (char *);
 
@@ -888,7 +766,6 @@ int __attribute__((__cdecl__)) sprintf (char *, const char *, ...) __attribute__
                                                             ;
 int __attribute__((__cdecl__)) remove (const char *);
 int __attribute__((__cdecl__)) rename (const char *, const char *);
-# 238 "/usr/include/stdio.h" 3 4
 int __attribute__((__cdecl__)) fseeko (FILE *, off_t, int);
 off_t __attribute__((__cdecl__)) ftello ( FILE *);
 
@@ -958,7 +835,6 @@ int __attribute__((__cdecl__)) vsnprintf (char *, size_t, const char *, __gnuc_v
                                                             ;
 int __attribute__((__cdecl__)) vsscanf (const char *, const char *, __gnuc_va_list) __attribute__ ((__format__ (__scanf__, 2, 0)))
                                                            ;
-# 316 "/usr/include/stdio.h" 3 4
 FILE * __attribute__((__cdecl__)) fdopen (int, const char *);
 
 int __attribute__((__cdecl__)) fileno (FILE *);
@@ -975,7 +851,6 @@ int __attribute__((__cdecl__)) ftrylockfile (FILE *);
 void __attribute__((__cdecl__)) funlockfile (FILE *);
 int __attribute__((__cdecl__)) putc_unlocked (int, FILE *);
 int __attribute__((__cdecl__)) putchar_unlocked (int);
-# 341 "/usr/include/stdio.h" 3 4
 int __attribute__((__cdecl__)) dprintf (int, const char *, ...) __attribute__ ((__format__ (__printf__, 2, 3)))
                                                             ;
 
@@ -1143,7 +1018,6 @@ int __attribute__((__cdecl__)) fgetc_unlocked (FILE *);
 int __attribute__((__cdecl__)) fputc_unlocked (int, FILE *);
 size_t __attribute__((__cdecl__)) fread_unlocked (void * , size_t _size, size_t _n, FILE *);
 size_t __attribute__((__cdecl__)) fwrite_unlocked (const void * , size_t _size, size_t _n, FILE *);
-# 541 "/usr/include/stdio.h" 3 4
 int __attribute__((__cdecl__)) __srget_r (struct _reent *, FILE *);
 int __attribute__((__cdecl__)) __swbuf_r (struct _reent *, int, FILE *);
 
@@ -1167,7 +1041,6 @@ FILE *__attribute__((__cdecl__)) _funopen_r (struct _reent *, const void * __coo
 
 
                               ;
-# 586 "/usr/include/stdio.h" 3 4
 typedef ssize_t cookie_read_function_t(void *__cookie, char *__buf, size_t __n);
 typedef ssize_t cookie_write_function_t(void *__cookie, const char *__buf,
      size_t __n);
@@ -1191,7 +1064,6 @@ FILE *__attribute__((__cdecl__)) fopencookie (void *__cookie, const char *__mode
                                                          ;
 FILE *__attribute__((__cdecl__)) _fopencookie_r (struct _reent *, void *__cookie, const char *__mode, cookie_io_functions_t __functions)
                                                          ;
-# 629 "/usr/include/stdio.h" 3 4
 extern __inline__ __attribute__ ((__always_inline__)) int __sgetc_r(struct _reent *__ptr, FILE *__p);
 
 extern __inline__ __attribute__ ((__always_inline__)) int __sgetc_r(struct _reent *__ptr, FILE *__p)
@@ -1207,9 +1079,7 @@ extern __inline__ __attribute__ ((__always_inline__)) int __sgetc_r(struct _reen
       }
     return __c;
   }
-# 728 "/usr/include/stdio.h" 3 4
 
-# 6 "tmp.c" 2
 int main(){
   printf("Wibble");
 }
