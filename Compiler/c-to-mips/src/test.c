@@ -1,7 +1,10 @@
-
 #include <stdio.h>
 
 int main(){
-	int xmen = 3ul;
+	1poo ;
+	int x = a;
+	printf("Hello World!");
+	"asdas dasd as";
+	"wow";
 	return 0;
 }

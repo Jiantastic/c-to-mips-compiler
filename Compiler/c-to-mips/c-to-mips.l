@@ -50,7 +50,9 @@ CONSTANT        [0-9]+\.?[0-9]*[e|E]?[\+|\-]?[0-9]*[f|l|F|L]?|(?:0[xX][A-Fa-f0-9
 
 /* StringLiteral TODO: escape sequences, L etc.... refer to C89 spec, ' ' and " " is still invalid */
 
-STRINGLITERAL   [L]?"[^\n\\\"]*"
+STRINGLITERAL   \"([^\\\"]|\\.)*\"
+
+/*  [L]?"[^\n\\\"]*" */
 
 
 /* preprocessing-token: */

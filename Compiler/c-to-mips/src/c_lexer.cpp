@@ -1,5 +1,6 @@
+#line 2 "c_lexer.cpp"
 
-#line 3 "lex.yy.c"
+#line 4 "c_lexer.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -364,8 +365,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 8
-#define YY_END_OF_BUFFER 9
+#define YY_NUM_RULES 9
+#define YY_END_OF_BUFFER 10
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -373,27 +374,26 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[172] =
+static yyconst flex_int16_t yy_accept[170] =
     {   0,
-        0,    0,    9,    8,    6,    7,    3,    3,    3,    3,
-        8,    3,    3,    3,    3,    3,    3,    4,    4,    3,
-        3,    3,    2,    2,    3,    3,    2,    2,    2,    2,
-        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
-        2,    3,    3,    0,    0,    4,    4,    4,    4,    4,
-        4,    4,    4,    0,    4,    4,    4,    4,    3,    3,
-        2,    0,    0,    0,    2,    2,    2,    2,    2,    2,
-        1,    2,    2,    2,    2,    2,    2,    1,    2,    2,
-        2,    2,    2,    2,    2,    2,    2,    2,    2,    4,
-        4,    4,    4,    0,    2,    2,    2,    2,    2,    2,
+        0,    0,   10,    7,    6,    8,    4,    7,    4,    4,
+        4,    7,    4,    4,    4,    4,    4,    4,    5,    5,
+        4,    4,    4,    3,    3,    4,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    4,    6,    4,    0,    1,    0,    0,    0,    5,
+        5,    5,    5,    5,    5,    5,    5,    0,    5,    5,
+        5,    5,    4,    4,    3,    0,    0,    3,    3,    3,
+        3,    3,    3,    2,    3,    3,    3,    3,    3,    3,
+        2,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    5,    5,    5,    5,    3,    3,    3,    3,
 
-        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
-        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
-        2,    0,    2,    2,    2,    2,    2,    2,    2,    2,
-        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
-        2,    2,    0,    2,    2,    2,    2,    2,    2,    2,
-        2,    2,    2,    2,    2,    2,    2,    0,    2,    2,
-        2,    1,    2,    2,    2,    5,    2,    2,    2,    2,
-        0
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        2,    3,    3,    3,    3,    3,    3,    3,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -438,136 +438,138 @@ static yyconst flex_int32_t yy_meta[58] =
         4,    4,    4,    4,    4,    4,    1
     } ;
 
-static yyconst flex_int16_t yy_base[175] =
+static yyconst flex_int16_t yy_base[174] =
     {   0,
-        0,    0,  301,  302,  302,  302,  280,  293,  278,   50,
-        0,  302,  277,   47,   48,  282,  275,   59,   46,   46,
-      274,   58,    0,   51,  261,  272,  240,  242,   48,   47,
-       47,   52,  243,   61,  242,  250,   64,  231,  240,  238,
-      243,   69,  302,  273,  267,  103,  149,   79,  114,  195,
-      302,   64,   82,    0,   84,   96,    0,    0,  260,  259,
-        0,    0,  246,  274,  226,  238,  225,  240,  227,  233,
-      219,  220,  217,  217,  220,  217,  214,    0,  213,  217,
-       73,  215,   95,   70,  219,  212,   95,   97,  213,  131,
-        0,  302,  127,  221,  204,  216,  211,  199,   93,  213,
+        0,    0,  308,  309,  305,  309,  286,   53,  299,  284,
+       51,    0,  309,  283,   48,   49,  288,  281,   72,   47,
+       47,  280,   52,    0,   69,  279,  247,  249,   47,   45,
+       49,   33,  250,   59,  249,  257,   66,  238,  247,  245,
+      250,   57,  287,  309,   97,  309,  285,  278,  272,  104,
+      150,   77,  118,  196,  309,   86,   82,    0,   90,  107,
+        0,    0,  265,  264,    0,  113,    0,  233,  245,  232,
+      247,  234,  240,  226,  227,  224,  224,  227,  224,  221,
+        0,  220,  224,   99,  222,  100,  107,  226,  219,  103,
+      105,  224,  153,    0,  309,  132,  218,  226,  215,  203,
 
-      211,  207,  199,  205,  208,  194,  200,  196,  185,  187,
-      189,  195,  181,  179,  179,  191,  181,  185,  189,  191,
-      180,  217,  178,  168,  176,  165,  172,  166,  160,  160,
-      157,  154,  166,  156,  160,  165,  164,  162,  152,  157,
-      145,  157,  162,  146,  147,  152,  140,  134,  138,  146,
-      143,  145,  129,  137,  139,  126,  127,  153,  112,  109,
-      121,    0,  118,  115,  107,  302,  108,   89,   88,   72,
-      302,  252,  254,   66
+       62,  217,  215,  211,  203,  209,  212,  198,  204,  201,
+      190,  192,  193,  200,  186,  184,  183,  195,  185,  189,
+      193,  195,  184,  184,  175,  183,  172,  178,  171,  168,
+      168,  168,  165,  174,  160,  164,  169,  168,  166,  156,
+      161,  149,  161,  152,  152,  157,  147,  140,  144,  150,
+      147,  149,  132,  141,  143,  133,  131,  114,  114,  123,
+        0,  119,  117,  110,  114,   97,   88,   44,  309,  253,
+      257,  259,   58
     } ;
 
-static yyconst flex_int16_t yy_def[175] =
+static yyconst flex_int16_t yy_def[174] =
     {   0,
-      171,    1,  171,  171,  171,  171,  171,  171,  171,  171,
-      172,  171,  171,  171,  171,  171,  171,  171,   18,  171,
-      171,  171,  173,  173,  171,  171,  173,  173,  173,  173,
-      173,  173,  173,  173,  173,  173,  173,  173,  173,  173,
-      173,  171,  171,  171,  171,  171,  171,   18,   47,  171,
-      171,  171,  171,  174,  171,  171,   50,   19,  171,  171,
-      173,  172,  171,  171,  173,  173,  173,  173,  173,  173,
-      173,  173,  173,  173,  173,  173,  173,  173,  173,  173,
-      173,  173,  173,  173,  173,  173,  173,  173,  173,  171,
-       47,  171,  174,  171,  173,  173,  173,  173,  173,  173,
+      169,    1,  169,  169,  169,  169,  169,  170,  169,  169,
+      169,  171,  169,  169,  169,  169,  169,  169,  169,   19,
+      169,  169,  169,  172,  172,  169,  172,  172,  172,  172,
+      172,  172,  172,  172,  172,  172,  172,  172,  172,  172,
+      172,  169,  169,  169,  170,  169,  170,  169,  169,  169,
+      169,   19,   51,  169,  169,  169,  169,  173,  169,  169,
+       54,   20,  169,  169,  172,  170,  171,  172,  172,  172,
+      172,  172,  172,  172,  172,  172,  172,  172,  172,  172,
+      172,  172,  172,  172,  172,  172,  172,  172,  172,  172,
+      172,  172,  169,   51,  169,  173,  172,  172,  172,  172,
 
-      173,  173,  173,  173,  173,  173,  173,  173,  173,  173,
-      173,  173,  173,  173,  173,  173,  173,  173,  173,  173,
-      173,  171,  173,  173,  173,  173,  173,  173,  173,  173,
-      173,  173,  173,  173,  173,  173,  173,  173,  173,  173,
-      173,  173,  171,  173,  173,  173,  173,  173,  173,  173,
-      173,  173,  173,  173,  173,  173,  173,  171,  173,  173,
-      173,  173,  173,  173,  173,  171,  173,  173,  173,  173,
-        0,  171,  171,  171
+      172,  172,  172,  172,  172,  172,  172,  172,  172,  172,
+      172,  172,  172,  172,  172,  172,  172,  172,  172,  172,
+      172,  172,  172,  172,  172,  172,  172,  172,  172,  172,
+      172,  172,  172,  172,  172,  172,  172,  172,  172,  172,
+      172,  172,  172,  172,  172,  172,  172,  172,  172,  172,
+      172,  172,  172,  172,  172,  172,  172,  172,  172,  172,
+      172,  172,  172,  172,  172,  172,  172,  172,    0,  169,
+      169,  169,  169
     } ;
 
-static yyconst flex_int16_t yy_nxt[360] =
+static yyconst flex_int16_t yy_nxt[367] =
     {   0,
-        4,    5,    6,    7,    4,    8,    9,   10,   11,   12,
-       13,   14,   15,   16,   17,   18,   19,   19,   20,   21,
-       22,   23,   23,   23,   23,   24,   23,   23,   25,   12,
-       12,   26,   27,   28,   29,   30,   31,   32,   33,   23,
-       34,   23,   35,   23,   23,   23,   23,   36,   37,   38,
-       39,   40,   41,   23,   23,   23,   42,   43,   43,   62,
-       43,   58,   58,   58,   59,   43,   43,   43,   93,   43,
-       46,   46,   47,  171,   48,   48,   49,   43,   60,   63,
-       67,   50,   51,   70,   52,   53,   54,   68,   43,   72,
-       92,   73,   71,   69,   75,   50,   51,   76,   78,  171,
+        4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
+       14,   15,   16,   17,   18,   19,   20,   20,   21,   22,
+       23,   24,   24,   24,   24,   25,   24,   24,   13,   13,
+       13,   26,   27,   28,   29,   30,   31,   32,   33,   24,
+       34,   24,   35,   24,   24,   24,   24,   36,   37,   38,
+       39,   40,   41,   24,   24,   24,   42,   46,   44,   44,
+       96,   44,   62,   62,   62,   63,   44,   44,   44,   44,
+       44,   44,   64,   66,  169,   78,   44,   67,   79,   70,
+       81,   73,   47,   50,   50,   51,   71,   52,   52,   53,
+       74,   75,   72,   76,   54,   55,   81,   56,   57,   58,
 
-       74,   55,  113,   82,   83,   79,  171,   92,   78,   56,
-       92,  108,   54,   84,   92,   57,   85,  114,   90,   90,
-       90,   92,  109,   78,   92,   43,   51,   47,   51,   49,
-       49,   49,  171,  111,   92,  117,   78,  119,   92,  120,
-       51,  124,  125,  118,   78,   51,   90,   90,   90,  170,
-      112,  169,   52,   53,   51,   78,   51,  168,   78,   51,
-       46,   46,  167,  166,   91,   91,   91,  165,   51,   55,
-      164,   50,   51,   51,   51,  163,   78,   56,   78,   78,
-      162,   78,   78,  161,   78,   50,   51,   51,   78,  160,
-      159,   51,  158,   78,  157,  156,   78,  155,  154,  153,
+      169,   46,   77,   82,  169,   85,   86,   95,   54,   55,
+      125,  126,   95,   44,   59,   87,   95,   46,   88,   93,
+       93,   93,   60,   81,   95,   58,   47,   55,   61,   55,
+      169,   51,   95,   53,   53,   53,   95,  110,  113,  115,
+       95,   55,   47,  119,   81,  121,   55,  122,  111,   95,
+       81,  120,  168,  167,  116,  114,   81,   56,   57,  166,
+       55,   50,   50,   81,  165,   94,   94,   94,   93,   93,
+       93,  164,   54,   55,   59,   55,   55,  163,   55,  162,
+       81,   81,   60,   81,  161,   81,   54,   55,   81,  160,
+       55,   81,   55,   81,  159,   55,  158,   81,  157,  156,
 
-      152,  151,  150,   78,  149,   57,   46,   46,  148,   78,
-       90,   90,   90,  147,  146,  145,  144,   78,   51,   78,
-       51,  143,  142,  141,   78,  140,  139,  138,  137,  136,
-      135,  134,   51,  133,  132,  131,  130,   51,   78,   78,
-      129,  128,   78,   78,  127,  126,   78,   78,  123,   78,
-      122,   46,   44,  121,   44,   44,   61,   61,  116,  115,
-      110,  107,   78,  106,   78,  105,  104,  103,  102,  101,
-      100,   99,   98,   97,   96,   95,   94,   64,   43,   43,
-       43,   51,   89,   88,   87,   86,   81,   80,   77,   66,
-       65,   43,   64,   43,   43,   45,   43,   43,   43,   43,
+       81,  155,  154,  153,  152,  151,   61,   50,   50,   55,
+      150,   93,   93,   93,   81,  149,  148,   81,  147,   55,
+      146,   55,  145,  144,   81,   81,  143,  142,   81,  141,
+      140,  139,  138,   55,  137,  136,  135,  134,   55,  133,
+      132,  131,   81,   81,  130,  129,   81,   81,  128,  127,
+       81,   81,   50,   45,   45,   45,   45,   48,  124,   48,
+       48,   65,   65,   81,  123,  118,  117,  112,  109,   81,
+      108,   81,  107,  106,  105,  104,  103,  102,  101,  100,
+       99,   98,   97,   44,   44,   44,   55,  169,   43,   92,
+       91,   90,   89,   84,   83,   80,   69,   68,   44,   44,
 
-      171,    3,  171,  171,  171,  171,  171,  171,  171,  171,
-      171,  171,  171,  171,  171,  171,  171,  171,  171,  171,
-      171,  171,  171,  171,  171,  171,  171,  171,  171,  171,
-      171,  171,  171,  171,  171,  171,  171,  171,  171,  171,
-      171,  171,  171,  171,  171,  171,  171,  171,  171,  171,
-      171,  171,  171,  171,  171,  171,  171,  171,  171
+       44,   49,   44,   44,   44,   44,   43,  169,    3,  169,
+      169,  169,  169,  169,  169,  169,  169,  169,  169,  169,
+      169,  169,  169,  169,  169,  169,  169,  169,  169,  169,
+      169,  169,  169,  169,  169,  169,  169,  169,  169,  169,
+      169,  169,  169,  169,  169,  169,  169,  169,  169,  169,
+      169,  169,  169,  169,  169,  169,  169,  169,  169,  169,
+      169,  169,  169,  169,  169,  169
     } ;
 
-static yyconst flex_int16_t yy_chk[360] =
+static yyconst flex_int16_t yy_chk[367] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,   10,   14,   24,
-       15,   19,   19,   19,   20,   20,   14,   15,  174,   10,
-       18,   18,   18,   19,   18,   18,   18,   22,   22,   24,
-       29,   18,   18,   30,   18,   18,   18,   29,   42,   31,
-       52,   31,   30,   29,   32,   18,   18,   32,   34,   19,
+        1,    1,    1,    1,    1,    1,    1,    8,   11,   15,
+      173,   16,   20,   20,   20,   21,   21,   15,   16,   16,
+       11,   23,   23,   25,   20,   32,   42,   25,   32,   29,
+      168,   30,    8,   19,   19,   19,   29,   19,   19,   19,
+       30,   31,   29,   31,   19,   19,   34,   19,   19,   19,
 
-       31,   18,   84,   37,   37,   34,   48,   53,  170,   18,
-       55,   81,   18,   37,   52,   18,   37,   84,   46,   46,
-       46,   56,   81,  169,   53,   42,   46,   49,   46,   49,
-       49,   49,   48,   83,   55,   87,  168,   88,   56,   88,
-       46,   99,   99,   87,  167,   46,   90,   90,   90,  165,
-       83,  164,   93,   93,   90,  163,   90,  161,  160,   46,
-       47,   47,  159,  158,   47,   47,   47,  157,   90,   93,
-      156,   47,   47,   90,   47,  155,  154,   93,  153,  152,
-      151,  150,  149,  148,  147,   47,   47,   90,  146,  145,
-      144,   47,  143,  142,  141,  140,  139,  138,  137,  136,
+       20,   45,   31,   34,   52,   37,   37,   57,   19,   19,
+      101,  101,   56,   42,   19,   37,   59,   66,   37,   50,
+       50,   50,   19,  167,   57,   19,   45,   50,   19,   50,
+       52,   53,   60,   53,   53,   53,   56,   84,   86,   87,
+       59,   50,   66,   90,  166,   91,   50,   91,   84,   60,
+      165,   90,  164,  163,   87,   86,  162,   96,   96,  160,
+       50,   51,   51,  159,  158,   51,   51,   51,   93,   93,
+       93,  157,   51,   51,   96,   51,   93,  156,   93,  155,
+      154,  153,   96,  152,  151,  150,   51,   51,  149,  148,
+       93,  147,   51,  146,  145,   93,  144,  143,  142,  141,
 
-      135,  134,  133,  132,  131,   47,   50,   50,  130,  129,
-       50,   50,   50,  128,  127,  126,  125,  124,   50,  123,
-       50,  122,  121,  120,  119,  118,  117,  116,  115,  114,
-      113,  112,   50,  111,  110,  109,  108,   50,  107,  106,
-      105,  104,  103,  102,  101,  100,   98,   97,   96,   95,
-       94,   50,  172,   89,  172,  172,  173,  173,   86,   85,
-       82,   80,   79,   77,   76,   75,   74,   73,   72,   71,
-       70,   69,   68,   67,   66,   65,   64,   63,   60,   59,
-       45,   44,   41,   40,   39,   38,   36,   35,   33,   28,
-       27,   26,   25,   21,   17,   16,   13,    9,    8,    7,
+      140,  139,  138,  137,  136,  135,   51,   54,   54,   93,
+      134,   54,   54,   54,  133,  132,  131,  130,  129,   54,
+      128,   54,  127,  126,  125,  124,  123,  122,  121,  120,
+      119,  118,  117,   54,  116,  115,  114,  113,   54,  112,
+      111,  110,  109,  108,  107,  106,  105,  104,  103,  102,
+      100,   99,   54,  170,  170,  170,  170,  171,   98,  171,
+      171,  172,  172,   97,   92,   89,   88,   85,   83,   82,
+       80,   79,   78,   77,   76,   75,   74,   73,   72,   71,
+       70,   69,   68,   64,   63,   49,   48,   47,   43,   41,
+       40,   39,   38,   36,   35,   33,   28,   27,   26,   22,
 
-        3,  171,  171,  171,  171,  171,  171,  171,  171,  171,
-      171,  171,  171,  171,  171,  171,  171,  171,  171,  171,
-      171,  171,  171,  171,  171,  171,  171,  171,  171,  171,
-      171,  171,  171,  171,  171,  171,  171,  171,  171,  171,
-      171,  171,  171,  171,  171,  171,  171,  171,  171,  171,
-      171,  171,  171,  171,  171,  171,  171,  171,  171
+       18,   17,   14,   10,    9,    7,    5,    3,  169,  169,
+      169,  169,  169,  169,  169,  169,  169,  169,  169,  169,
+      169,  169,  169,  169,  169,  169,  169,  169,  169,  169,
+      169,  169,  169,  169,  169,  169,  169,  169,  169,  169,
+      169,  169,  169,  169,  169,  169,  169,  169,  169,  169,
+      169,  169,  169,  169,  169,  169,  169,  169,  169,  169,
+      169,  169,  169,  169,  169,  169
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -584,17 +586,19 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "c-to-mips.l"
-#line 3 "c-to-mips.l"
+#line 1 "c_lexer.l"
+#line 3 "c_lexer.l"
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <typeinfo>
 
 using namespace std;
 
 int line_number = 1,source_line = 1;
 bool filename_init = false;
 string SourceFile = "";
+string temp = "";
 stringstream ss;
 
 /* 
@@ -620,9 +624,17 @@ TODO:
     enumeration constant - An identifier declared as an enumeration constant has type int.
     TODO: L,escape sequences character constant - any char except those listed in the C89 spec 
 */
-/* StringLiteral TODO: escape sequences, L etc.... refer to C89 spec */
+/* StringLiteral TODO: quotation marks or no quotation marks? escape sequences, L etc.... refer to C89 spec, ' ' and " " is still invalid */
+/* 1. remove "" - https://en.wikipedia.org/wiki/String_literal */
+/* 2. FINAL : SourceLine reading, ignore # maybe? */
+/* [L]?["][^\n\\\"]*["] */
 /* preprocessing-token: */
-/*HEADER-NAME
+/*
+
+TODO AFTER the rest is done
+
+HEADER-NAME   (?:("[^\n\\\"]*")|(<[^\n>]*>))
+
 
 PRE-IDENTIFIER
 
@@ -634,8 +646,12 @@ PRE-STRINGLITERAL
 
 PRE-OPERATOR
 
-PRE-PUNCTUATOR*/
-#line 639 "lex.yy.c"
+PRE-PUNCTUATOR
+
+{HEADER-NAME}           cout << yytext << " HEADER-NAME " << "toekn type " << line_number << " " << SourceFile << " " << source_line << endl;
+
+*/
+#line 655 "c_lexer.cpp"
 
 #define INITIAL 0
 
@@ -844,11 +860,11 @@ YY_DECL
 		}
 
 	{
-#line 75 "c-to-mips.l"
+#line 90 "c_lexer.l"
 
 
 
-#line 852 "lex.yy.c"
+#line 868 "c_lexer.cpp"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -875,13 +891,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 172 )
+				if ( yy_current_state >= 170 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 302 );
+		while ( yy_base[yy_current_state] != 309 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -906,48 +922,295 @@ do_action:	/* This label is used only to access EOF actions. */
 			goto yy_find_action;
 
 case 1:
+/* rule 1 can match eol */
 YY_RULE_SETUP
-#line 78 "c-to-mips.l"
-cout << yytext << " Keyword " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 93 "c_lexer.l"
+cout << yytext << " StringLiteral " << "TString" << " " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 80 "c-to-mips.l"
-cout << yytext << " Identifier " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 95 "c_lexer.l"
+{
+                            /* string class has an in-built constructor that converts char* (yytext) -> string */
+                            string someString(yytext);
+                            if(someString == "auto"){
+                                cout << yytext << " Keyword " << "TAuto" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "double"){
+                                cout << yytext << " Keyword " << "TDouble" << " " << line_number << " " << SourceFile << " " << source_line << endl;                                
+                            }
+                            else if(someString == "int"){
+                                cout << yytext << " Keyword " << "TInt" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "struct"){
+                                cout << yytext << " Keyword " << "TStruct" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "break"){
+                                cout << yytext << " Keyword " << "TBreak" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "else"){
+                                cout << yytext << " Keyword " << "TElse" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "long"){
+                                cout << yytext << " Keyword " << "TLong" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "switch"){
+                                cout << yytext << " Keyword " << "TSwitch" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "case"){
+                                cout << yytext << " Keyword " << "TCase" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "enum"){
+                                cout << yytext << " Keyword " << "TEnum" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "register"){
+                                cout << yytext << " Keyword " << "TRegister" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "typedef"){
+                                cout << yytext << " Keyword " << "TTypedef" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "char"){
+                                cout << yytext << " Keyword " << "TChar" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "extern"){
+                                cout << yytext << " Keyword " << "TExtern" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "return"){
+                                cout << yytext << " Keyword " << "TReturn" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "union"){
+                                cout << yytext << " Keyword " << "TUnion" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "const"){
+                                cout << yytext << " Keyword " << "TConst" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "float"){
+                                cout << yytext << " Keyword " << "TFloat" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "short"){
+                                cout << yytext << " Keyword " << "TShort" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "unsigned"){
+                                cout << yytext << " Keyword " << "TUnsigned" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "continue"){
+                                cout << yytext << " Keyword " << "TContinue" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "for"){
+                                cout << yytext << " Keyword " << "TFor" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "signed"){
+                                cout << yytext << " Keyword " << "TSigned" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "void"){
+                                cout << yytext << " Keyword " << "TVoid" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "default"){
+                                cout << yytext << " Keyword " << "TDefault" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "goto"){
+                                cout << yytext << " Keyword " << "TGoto" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "sizeof"){
+                                cout << yytext << " Keyword " << "TSizeof" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "volatile"){
+                                cout << yytext << " Keyword " << "TVolatile" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "do"){
+                                cout << yytext << " Keyword " << "TDo" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "if"){
+                                cout << yytext << " Keyword " << "TIf" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "static"){
+                                cout << yytext << " Keyword " << "TStatic" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(someString == "while"){
+                                cout << yytext << " Keyword " << "TWhile" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else{
+                                cout << yytext << " Keyword " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }   
+                        }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 82 "c-to-mips.l"
-cout << yytext << " Operator " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 198 "c_lexer.l"
+cout << yytext << " Identifier " << "TIdentifier " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 84 "c-to-mips.l"
-cout << yytext << " Constant " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 200 "c_lexer.l"
+{
+                            string opString(yytext);
+                            if(opString == "("){
+                                cout << yytext << " Operator " << "T(" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == ")"){
+                               cout << yytext << " Operator " << "T)" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "["){
+                                cout << yytext << " Operator " << "T[" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "]"){
+                                cout << yytext << " Operator " << "T]" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "."){
+                                cout << yytext << " Operator " << "TDot" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "->"){
+                                cout << yytext << " Operator " << "T->" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "++"){
+                                cout << yytext << " Operator " << "T++" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "--"){
+                                cout << yytext << " Operator " << "T--" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "&"){
+                                cout << yytext << " Operator " << "T&" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "*"){
+                                cout << yytext << " Operator " << "T*" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "+"){
+                                cout << yytext << " Operator " << "T+" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "-"){
+                                cout << yytext << " Operator " << "T-" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "~"){
+                                cout << yytext << " Operator " << "T~" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "!"){
+                                cout << yytext << " Operator " << "T!" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "sizeof"){
+                                cout << yytext << " Operator " << "TOpsizeof" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "/"){
+                                cout << yytext << " Operator " << "T/" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "%"){
+                                cout << yytext << " Operator " << "T%" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "<<"){
+                                cout << yytext << " Operator " << "T<<" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == ">>"){
+                                cout << yytext << " Operator " << "T>>" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "<"){
+                                cout << yytext << " Operator " << "T<" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == ">"){
+                                cout << yytext << " Operator " << "T>" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "<="){
+                                cout << yytext << " Operator " << "T<=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == ">="){
+                                cout << yytext << " Operator " << "T>=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "=="){
+                                cout << yytext << " Operator " << "T==" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "!="){
+                                cout << yytext << " Operator " << "T!=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "^"){
+                                cout << yytext << " Operator " << "T^" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "|"){
+                                cout << yytext << " Operator " << "T|" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "&&"){
+                                cout << yytext << " Operator " << "T&&" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "||"){
+                                cout << yytext << " Operator " << "T||" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "?"){
+                                cout << yytext << " Operator " << "T?" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == ":"){
+                                cout << yytext << " Operator " << "T:" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "="){
+                                cout << yytext << " Operator " << "T=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "*="){
+                                cout << yytext << " Operator " << "T*=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "/="){
+                                cout << yytext << " Operator " << "T/=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "%="){
+                                cout << yytext << " Operator " << "T%=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "+="){
+                                cout << yytext << " Operator " << "T+=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "-="){
+                                cout << yytext << " Operator " << "T-=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "<<="){
+                                cout << yytext << " Operator " << "T<<=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == ">>="){
+                                cout << yytext << " Operator " << "T>>=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "&="){
+                                cout << yytext << " Operator " << "T&=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "^="){
+                                cout << yytext << " Operator " << "T^=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "|="){
+                                cout << yytext << " Operator " << "T|=" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == ","){
+                                cout << yytext << " Operator " << "T," << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "#"){
+                                cout << yytext << " Operator " << "T#" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }  
+                            else if(opString == "##"){
+                                cout << yytext << " Operator " << "T##" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                            else{
+                                cout << yytext << " Operator " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;                               
+                            }
+                        }
 	YY_BREAK
 case 5:
-/* rule 5 can match eol */
 YY_RULE_SETUP
-#line 86 "c-to-mips.l"
-cout << yytext << " StringLiteral " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 342 "c_lexer.l"
+cout << yytext << " Constant " << "TConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 88 "c-to-mips.l"
-cout << yytext << " Invalid " << "token type " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 345 "c_lexer.l"
+
 	YY_BREAK
 case 7:
-/* rule 7 can match eol */
 YY_RULE_SETUP
-#line 90 "c-to-mips.l"
-line_number++;
+#line 347 "c_lexer.l"
+cout << yytext << " Invalid " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 8:
+/* rule 8 can match eol */
 YY_RULE_SETUP
-#line 92 "c-to-mips.l"
+#line 349 "c_lexer.l"
+line_number++;
+	YY_BREAK
+case 9:
+YY_RULE_SETUP
+#line 351 "c_lexer.l"
 ECHO;
 	YY_BREAK
-#line 951 "lex.yy.c"
+#line 1215 "c_lexer.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1240,7 +1503,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 172 )
+			if ( yy_current_state >= 170 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1268,11 +1531,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 172 )
+		if ( yy_current_state >= 170 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 171);
+	yy_is_jam = (yy_current_state == 169);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1942,25 +2205,15 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 92 "c-to-mips.l"
+#line 351 "c_lexer.l"
 
 
 
 int main()
 {
-    getline(cin,SourceFile);
-    for(int i=0;i<SourceFile.length();++i){
-        if(SourceFile[i] == '\"'){
-            filename_init = !filename_init;
-        }
-        else if(filename_init){
-            ss << SourceFile[i];
-        }
-    }
-    SourceFile = ss.str();
-    cout << "initialize test" << endl;
-    cout << SourceFile << endl;
 
+
+    
     yylex();
     
     /* function yylex processes the standard input and every time a token is recognized it executes the corresponding code */
