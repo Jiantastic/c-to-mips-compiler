@@ -2245,8 +2245,8 @@ int main()
         string word;
         int count = 1;
         while(iss >> word){
-            if(input[0] == '#' && input[1] == ' '){
-
+            if(word[0] == '#'){
+                cout << "am i in here?" << endl;
                 /* "# = first char, might be preprocessed or otherwise */
                 hashtag = true;
                 if(!filename_init){
@@ -2254,6 +2254,7 @@ int main()
                 }
                 if(count == 2){
                     source_line = word;
+                    cout << "DASDASDJSADKJASDAJSDJASBDASJKBDKASBDKASBDJAS" << endl;
                 }
                 count++;
             }
