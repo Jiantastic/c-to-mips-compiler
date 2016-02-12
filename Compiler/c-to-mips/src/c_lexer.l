@@ -3,8 +3,6 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <stdint.h>
-#include <limits>
 
 using namespace std;
 
@@ -62,36 +60,18 @@ STRINGLITERAL   [L]?\"(\\.|[^\\"])*\"
 
 WHITESPACE      [ \t\r]+
 
-
-/* preprocessing-token: */
-
-/*
-
-TODO AFTER the rest is done
-
-HEADER-NAME   (?:("[^\n\\\"]*")|(<[^\n>]*>))
-
-
-PRE-IDENTIFIER
-
-PP-NUMBER
-
-PRE-CONSTANT
-
-PRE-STRINGLITERAL
-
-PRE-OPERATOR
-
-PRE-PUNCTUATOR
-
-{HEADER-NAME}           cout << yytext << " HEADER-NAME " << "toekn type " << line_number << " " << SourceFile << " " << source_line << endl;
-
-*/
-
 %%
 
 
-{STRINGLITERAL}         cout << yytext << " StringLiteral " << "TString" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+{STRINGLITERAL}         {
+                            string strString(yytext);
+                            string ans;
+                            /* StringLiteral without " " */
+                            for(int i=1;i<strString.length()-1;++i){
+                                ans += strString[i]; 
+                            }
+                            cout << ans << " StringLiteral " << "TString" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                        }
 
 {KEYWORD}               {
                             /* string class has an in-built constructor that converts char* (yytext) -> string */
@@ -351,15 +331,6 @@ PRE-PUNCTUATOR
 
 %%
 
-bool check_if_preprocessed(){
-    string init;
-    cin >> init;
-    if((init == "#") && (init.length() == 1)){
-        return true;
-    }
-    return false;
-}
-
 void getSourceFile(string &str1,bool &var1){
     bool tmp1 = false;
     ss.str() = "";
@@ -379,16 +350,13 @@ void getSourceFile(string &str1,bool &var1){
 
 int main()
 {
-
     while(getline(cin,input)){
-        
         bool hashtag = false;
         istringstream iss(input);
         string word;
         int count = 1;
         while(iss >> word){
             if(input[0] == '#' && input[1] == ' '){
-
                 /* "# = first char, might be preprocessed or otherwise */
                 hashtag = true;
                 if(!filename_init){
@@ -406,26 +374,10 @@ int main()
             yylex();
         }
         line_number++;
+        int x = stoi(source_line);
+        x++;
+        source_line = to_string(x);
     }
 
     return 0;
 }
-
-
-
-
-
-
-    /*
-    cout << "testyo" << endl;
-    if(check_if_preprocessed()){
-        cout << "weeeeeeeeeeeeeeeeeeeeeeeeeeee" << endl;
-        getSourceFile();
-    }
-    cin.clear();
-    cin.seekg(0, ios::beg);
-    yylex();
-    */
-
-    /* function yylex processes the standard input and every time a token is recognized it executes the corresponding code */
-    

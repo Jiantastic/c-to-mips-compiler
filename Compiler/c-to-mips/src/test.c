@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+@
 int main(){
 	1poo ;
 	int x = a;

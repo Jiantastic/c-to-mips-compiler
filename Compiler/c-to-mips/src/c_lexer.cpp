@@ -591,8 +591,6 @@ char *yytext;
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <stdint.h>
-#include <limits>
 
 using namespace std;
 
@@ -628,30 +626,7 @@ TODO:
 */
 /* StringLiteral TODO: quotation marks or no quotation marks? escape sequences, L etc.... refer to C89 spec, ' ' and " " is still invalid */
 /* [L]?["][^\n\\\"]*["] */
-/* preprocessing-token: */
-/*
-
-TODO AFTER the rest is done
-
-HEADER-NAME   (?:("[^\n\\\"]*")|(<[^\n>]*>))
-
-
-PRE-IDENTIFIER
-
-PP-NUMBER
-
-PRE-CONSTANT
-
-PRE-STRINGLITERAL
-
-PRE-OPERATOR
-
-PRE-PUNCTUATOR
-
-{HEADER-NAME}           cout << yytext << " HEADER-NAME " << "toekn type " << line_number << " " << SourceFile << " " << source_line << endl;
-
-*/
-#line 655 "c_lexer.cpp"
+#line 630 "c_lexer.cpp"
 
 #define INITIAL 0
 
@@ -860,11 +835,11 @@ YY_DECL
 		}
 
 	{
-#line 91 "c_lexer.l"
+#line 63 "c_lexer.l"
 
 
 
-#line 868 "c_lexer.cpp"
+#line 843 "c_lexer.cpp"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -924,12 +899,20 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 94 "c_lexer.l"
-cout << yytext << " StringLiteral " << "TString" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+#line 66 "c_lexer.l"
+{
+                            string strString(yytext);
+                            string ans;
+                            /* StringLiteral without " " */
+                            for(int i=1;i<strString.length()-1;++i){
+                                ans += strString[i]; 
+                            }
+                            cout << ans << " StringLiteral " << "TString" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                        }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 96 "c_lexer.l"
+#line 76 "c_lexer.l"
 {
                             /* string class has an in-built constructor that converts char* (yytext) -> string */
                             string someString(yytext);
@@ -1036,12 +1019,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 199 "c_lexer.l"
+#line 179 "c_lexer.l"
 cout << yytext << " Identifier " << "TIdentifier " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 201 "c_lexer.l"
+#line 181 "c_lexer.l"
 {
                             string opString(yytext);
                             if(opString == "("){
@@ -1186,31 +1169,31 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 343 "c_lexer.l"
+#line 323 "c_lexer.l"
 cout << yytext << " Constant " << "TConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 346 "c_lexer.l"
+#line 326 "c_lexer.l"
 
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 348 "c_lexer.l"
+#line 328 "c_lexer.l"
 cout << yytext << " Invalid " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 350 "c_lexer.l"
+#line 330 "c_lexer.l"
 line_number++;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 352 "c_lexer.l"
+#line 332 "c_lexer.l"
 ECHO;
 	YY_BREAK
-#line 1215 "c_lexer.cpp"
+#line 1198 "c_lexer.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2205,18 +2188,9 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 352 "c_lexer.l"
+#line 332 "c_lexer.l"
 
 
-
-bool check_if_preprocessed(){
-    string init;
-    cin >> init;
-    if((init == "#") && (init.length() == 1)){
-        return true;
-    }
-    return false;
-}
 
 void getSourceFile(string &str1,bool &var1){
     bool tmp1 = false;
@@ -2237,16 +2211,14 @@ void getSourceFile(string &str1,bool &var1){
 
 int main()
 {
-
+    #include <string>
     while(getline(cin,input)){
-        
         bool hashtag = false;
         istringstream iss(input);
         string word;
         int count = 1;
         while(iss >> word){
             if(input[0] == '#' && input[1] == ' '){
-
                 /* "# = first char, might be preprocessed or otherwise */
                 hashtag = true;
                 if(!filename_init){
@@ -2264,26 +2236,11 @@ int main()
             yylex();
         }
         line_number++;
+        int x = stoi(source_line);
+        x++;
+        source_line = to_string(x);
     }
 
     return 0;
 }
 
-
-
-
-
-
-    /*
-    cout << "testyo" << endl;
-    if(check_if_preprocessed()){
-        cout << "weeeeeeeeeeeeeeeeeeeeeeeeeeee" << endl;
-        getSourceFile();
-    }
-    cin.clear();
-    cin.seekg(0, ios::beg);
-    yylex();
-    */
-
-    /* function yylex processes the standard input and every time a token is recognized it executes the corresponding code */
-    
