@@ -28,7 +28,7 @@ TODO:
 
 
 
-KEYWORD     (auto|double|int|struct|break|else|long|switch|case|enum|register|typedef|char|extern|return|union|const|float|short|unsigned|continue|for|signed|void|default|goto|sizeof|volatile|do|if|static|while)
+KEYWORD     (auto|double|int|struct|break|else|long|switch|case|enum|register|typedef|char|extern|return|union|const|float|short|unsigned|continue|for|signed|void|default|goto|volatile|do|if|static|while)
 
 IDENTIFIER  [A-Za-z_][A-Za-z0-9_]*  
 
@@ -49,14 +49,16 @@ OPERATOR    \.\.\.|\[|\]|##|\|=|\^=|&=|->|>>=|<<=|\-=|\+=|%=|\/=|\*=|\|\||&&|\^|
     TODO: L,escape sequences character constant - any char except those listed in the C89 spec 
 */
 
-CONSTANT        [0-9]+\.?[0-9]*[e|E]?[\+|\-]?[0-9]*[f|l|F|L]?|(?:0[xX][A-Fa-f0-9]+|[1-9][0-9]*|0[0-7]*)(?:ul|uL|Ul|UL|lu|lU|Lu|LU|u|U|l|L)?|[L]?'[^\n\\']'
+FLOATING_CONSTANT   [0-9]+\.?[0-9]*[e|E]?[\+|\-]?[0-9]*[f|l|F|L]?
+
+INTEGER_CONSTANT    (?:0[xX][A-Fa-f0-9]+|[1-9][0-9]*|0[0-7]*)(?:ul|uL|Ul|UL|lu|lU|Lu|LU|u|U|l|L)?
+
+CHARACTER_CONSTANT  [L]?\'(?:\\([abfnrtv\'\"\?\\]|[0-7]{1,3}|x[0-9A-Fa-f]+)|[^\\'])+\'
+
 
 /* StringLiteral TODO: quotation marks or no quotation marks? escape sequences, L etc.... refer to C89 spec, ' ' and " " is still invalid */
 
-STRINGLITERAL   [L]?\"(\\.|[^\\"])*\"
-
-/* [L]?["][^\n\\\"]*["] */
-
+STRINGLITERAL   [L]?\"(?:\\([abfnrtv\'\"\?\\]|[0-7]{1,3}|x[0-9A-Fa-f]+)|[^\\"])*\"
 
 WHITESPACE      [ \t\r]+
 
@@ -320,8 +322,17 @@ WHITESPACE      [ \t\r]+
                             }
                         }
 
-{CONSTANT}              cout << yytext << " Constant " << "TConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+{FLOATING_CONSTANT}     {
+                            cout << yytext << " Constant " << "TFloatingConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                        }
 
+{INTEGER_CONSTANT}      {
+                            cout << yytext << " Constant " << "TIntegerConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;                          
+                        }
+
+{CHARACTER_CONSTANT}    {
+                            cout << yytext << " Constant " << "TCharacterConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;                           
+                        }
 
 {WHITESPACE}            
 
@@ -336,6 +347,7 @@ void getSourceFile(string &str1,bool &var1){
     ss.str() = "";
     for(int i=0;i<str1.length();++i){
         if(str1[i] == '\"'){
+            /*"*/
             tmp1 = !tmp1;
         }
         else if(tmp1){
@@ -343,21 +355,24 @@ void getSourceFile(string &str1,bool &var1){
         }
     }
     SourceFile = ss.str();
-    cout << "initialize test" << endl;
-    cout << SourceFile << endl;
     var1 = true;
 }
 
 int main()
 {
+
+    int x=0;
+    bool sourceline_init = false;
+    bool hashtag;
+    /* read input line by line */
     while(getline(cin,input)){
-        bool hashtag = false;
+        hashtag = false;
         istringstream iss(input);
         string word;
         int count = 1;
         while(iss >> word){
             if(input[0] == '#' && input[1] == ' '){
-                /* "# = first char, might be preprocessed or otherwise */
+
                 hashtag = true;
                 if(!filename_init){
                     getSourceFile(input,filename_init);
@@ -374,9 +389,17 @@ int main()
             yylex();
         }
         line_number++;
-        int x = stoi(source_line);
-        x++;
-        source_line = to_string(x);
+        /* TODO: Increment source_line number */
+        if(source_line != ""){
+            if(!sourceline_init){
+                sourceline_init = true;
+            }
+            else{
+                x = stoi(source_line);
+                x++;
+                source_line = to_string(x);                
+            }
+        }
     }
 
     return 0;
