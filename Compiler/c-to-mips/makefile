@@ -1,4 +1,4 @@
-CC=g++ -std=c++11
+CC=g++
 
 main:	 
 	cd src/ && \

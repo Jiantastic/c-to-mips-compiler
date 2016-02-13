@@ -2,7 +2,6 @@
 %{
 #include <iostream>
 #include <string>
-#include <cstdlib>
 #include <sstream>
 
 using namespace std;
@@ -14,65 +13,34 @@ string input = "";
 string source_line = "";
 stringstream ss;
 
-/* 
-TODO:
-    1. Lexical Analysis for pre-processor - starting with #, otherwise ignore
-    2. determine if whitespace  is Invalid
-    3. where do ',"",{ , }, ; belong?
-    4. # and ## only valid in pre-processor
-    5. _ansi.h, stdio.h ----> how to classify?
-*/
-
 %}
 
-/* token:*/
+/* tokens: TODO - refactor to modular regex*/
 
 KEYWORD     (auto|double|int|struct|break|else|long|switch|case|enum|register|typedef|char|extern|return|union|const|float|short|unsigned|continue|for|signed|void|default|goto|volatile|do|if|static|while)
 
 IDENTIFIER  [A-Za-z_][A-Za-z0-9_]*  
 
-/* 
-    TODO: is this correct? -> [expression*],(expression*),{expression*}
-    The punctuators [ ] , ( ) , and { } shall occur in pairs, possibly separated by expressions, declarations, or statements. The punctuator # shall occur in preprocessing directives only.
-    The operators # and ## shall occur in macro-defining preprocessing directives only. cout << "Invalid" ; if not in preprocessor
-    this implementation ignores the difference between OPERATOR and PUNCTATOR
-*/
-
 OPERATOR    \.\.\.|\[|\]|##|\|=|\^=|&=|->|>>=|<<=|\-=|\+=|%=|\/=|\*=|\|\||&&|\^|!=|==|>=|<=|>>|<<|\+\+|\-\-|[\.&+\-\*~!%\\(\)\/<>\|=,;#?:{}]|sizeof
 
-/* 
-    4 regex expressions separated by | - In order:
-    floating constant - [0-9]+\.?[0-9]*[e|E]?[\+|\-]?[0-9]*[f|l|F|L]?
-    integer constant - (?:0[xX][A-Fa-f0-9]+|[1-9][0-9]*|0[0-7]*)(?:ul|uL|Ul|UL|lu|lU|Lu|LU|u|U|l|L)? implemented as (?:0[xX][A-Fa-f0-9]+|[1-9][0-9]*|0[0-7]*)[uUlL]?(?:(?<=u|U)[lL]|(?<=l|L)[uU])? is not supported
-    enumeration constant - An identifier declared as an enumeration constant has type int.
-    TODO: L,escape sequences character constant - any char except those listed in the C89 spec 
-*/
+EXPONENT    [e|E][\+|\-]?[0-9]+
 
-FLOATING_CONSTANT   [0-9]+\.?[0-9]*[e|E]?[\+|\-]?[0-9]*[f|l|F|L]?
+FRACTIONAL_CONSTANT ([0-9]*\.[0-9]+)|([0-9]+\.)
 
-INTEGER_CONSTANT    (?:0[xX][A-Fa-f0-9]+|[1-9][0-9]*|0[0-7]*)(?:ul|uL|Ul|UL|lu|lU|Lu|LU|u|U|l|L)?
+FLOATING_SUFFIX [f|l|F|L]
+
+FLOATING_CONSTANT   [\+\-]?{FRACTIONAL_CONSTANT}{EXPONENT}?{FLOATING_SUFFIX}?|[\+\-]?[0-9]+{EXPONENT}{FLOATING_SUFFIX}?
+
+INTEGER_CONSTANT    (?:[\+|\-]?0[xX][A-Fa-f0-9]+|[\+|\-]?[1-9][0-9]*|[\+|\-]?0[0-7]*)(?:ul|uL|Ul|UL|lu|lU|Lu|LU|u|U|l|L)?
 
 CHARACTER_CONSTANT  [L]?\'(?:\\([abfnrtv\'\"\?\\]|[0-7]{1,3}|x[0-9A-Fa-f]+)|[^\\'])+\'
-
-
-/* StringLiteral TODO: quotation marks or no quotation marks? escape sequences, L etc.... refer to C89 spec, ' ' and " " is still invalid */
 
 STRINGLITERAL   [L]?\"(?:\\([abfnrtv\'\"\?\\]|[0-7]{1,3}|x[0-9A-Fa-f]+)|[^\\"])*\"
 
 WHITESPACE      [ \t\r]+
 
+
 %%
-
-
-{STRINGLITERAL}         {
-                            string strString(yytext);
-                            string ans;
-                            /* StringLiteral without " " */
-                            for(int i=1;i<strString.length()-1;++i){
-                                ans += strString[i]; 
-                            }
-                            cout << ans << " StringLiteral " << "TString" << " " << line_number << " " << SourceFile << " " << source_line << endl;
-                        }
 
 {KEYWORD}               {
                             /* string class has an in-built constructor that converts char* (yytext) -> string */
@@ -178,6 +146,20 @@ WHITESPACE      [ \t\r]+
                             }   
                         }
 {IDENTIFIER}            cout << yytext << " Identifier " << "TIdentifier " << line_number << " " << SourceFile << " " << source_line << endl;
+
+
+{FLOATING_CONSTANT}     {
+                            cout << yytext << " Constant " << "TFloatingConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                        }
+
+{INTEGER_CONSTANT}      {
+                            cout << yytext << " Constant " << "TIntegerConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;                          
+                        }
+
+{CHARACTER_CONSTANT}    {
+                            cout << yytext << " Constant " << "TCharacterConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;                           
+                        }
+
 
 {OPERATOR}              {
                             string opString(yytext);
@@ -321,17 +303,16 @@ WHITESPACE      [ \t\r]+
                             }
                         }
 
-{FLOATING_CONSTANT}     {
-                            cout << yytext << " Constant " << "TFloatingConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+{STRINGLITERAL}         {
+                            string strString(yytext);
+                            string ans;
+                            /* StringLiteral without " " */
+                            for(int i=1;i<strString.length()-1;++i){
+                                ans += strString[i]; 
+                            }
+                            cout << ans << " StringLiteral " << "TString" << " " << line_number << " " << SourceFile << " " << source_line << endl;
                         }
 
-{INTEGER_CONSTANT}      {
-                            cout << yytext << " Constant " << "TIntegerConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;                          
-                        }
-
-{CHARACTER_CONSTANT}    {
-                            cout << yytext << " Constant " << "TCharacterConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;                           
-                        }
 
 {WHITESPACE}            
 
@@ -341,25 +322,10 @@ WHITESPACE      [ \t\r]+
 
 %%
 
-void getSourceFile(string &str1,bool &var1){
-    bool tmp1 = false;
-    ss.str() = "";
-    for(int i=0;i<str1.length();++i){
-        if(str1[i] == '\"'){
-            /*"*/
-            tmp1 = !tmp1;
-        }
-        else if(tmp1){
-            ss << str1[i];
-        }
-    }
-    SourceFile = ss.str();
-    var1 = true;
-}
-
 int main()
 {
 
+    int x=0;
     bool sourceline_init = false;
     bool hashtag;
     /* read input line by line */
@@ -370,13 +336,19 @@ int main()
         int count = 1;
         while(iss >> word){
             if(input[0] == '#' && input[1] == ' '){
-
                 hashtag = true;
-                if(!filename_init){
-                    getSourceFile(input,filename_init);
+                /* SourceFile is the third argument */
+    		    if(count == 3){
+    	            SourceFile = word;
                 }
+                /* SourceLine is the second argument */
                 if(count == 2){
                     source_line = word;
+                    x = atoi(source_line.c_str());
+                    x--;
+                    stringstream ss3;
+                    ss3 << x;
+                    source_line = ss3.str();
                 }
                 count++;
             }
@@ -387,20 +359,17 @@ int main()
             yylex();
         }
         line_number++;
-        /* TODO: Increment source_line number */
+        /* Increment source_line number */
         if(source_line != ""){
             if(!sourceline_init){
                 sourceline_init = true;
             }
             else{
-                stringstream ss2;
-                int x = 0;
-                ss2 << source_line;
-                ss2 >> x;
-                x++;
-                ss2.clear();
-                ss2 << x;
-                source_line = ss2.str();                
+    	       x = atoi(source_line.c_str());
+               x++;
+    	       stringstream ss2;
+    	       ss2 << x;
+               source_line = ss2.str();              
             }
         }
     }

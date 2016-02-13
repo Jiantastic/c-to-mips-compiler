@@ -861,7 +861,7 @@ YY_DECL
 		}
 
 	{
-#line 66 "c_lexer.l"
+#line 64 "c_lexer.l"
 
 
 
@@ -925,7 +925,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 69 "c_lexer.l"
+#line 67 "c_lexer.l"
 {
                             string strString(yytext);
                             string ans;
@@ -938,7 +938,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 79 "c_lexer.l"
+#line 77 "c_lexer.l"
 {
                             /* string class has an in-built constructor that converts char* (yytext) -> string */
                             string someString(yytext);
@@ -1045,12 +1045,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 182 "c_lexer.l"
+#line 180 "c_lexer.l"
 cout << yytext << " Identifier " << "TIdentifier " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 184 "c_lexer.l"
+#line 182 "c_lexer.l"
 {
                             string opString(yytext);
                             if(opString == "("){
@@ -1195,14 +1195,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 326 "c_lexer.l"
+#line 324 "c_lexer.l"
 {
                             cout << yytext << " Constant " << "TFloatingConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;
                         }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 330 "c_lexer.l"
+#line 328 "c_lexer.l"
 {
                             cout << yytext << " Constant " << "TIntegerConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;                          
                         }
@@ -1210,30 +1210,30 @@ YY_RULE_SETUP
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 334 "c_lexer.l"
+#line 332 "c_lexer.l"
 {
                             cout << yytext << " Constant " << "TCharacterConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;                           
                         }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 338 "c_lexer.l"
+#line 336 "c_lexer.l"
 
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 340 "c_lexer.l"
+#line 338 "c_lexer.l"
 cout << yytext << " Invalid " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 342 "c_lexer.l"
+#line 340 "c_lexer.l"
 line_number++;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 344 "c_lexer.l"
+#line 342 "c_lexer.l"
 ECHO;
 	YY_BREAK
 #line 1241 "c_lexer.cpp"
@@ -2231,7 +2231,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 344 "c_lexer.l"
+#line 342 "c_lexer.l"
 
 
 
@@ -2254,7 +2254,6 @@ void getSourceFile(string &str1,bool &var1){
 int main()
 {
 
-    int x=0;
     bool sourceline_init = false;
     bool hashtag;
     /* read input line by line */
@@ -2288,9 +2287,14 @@ int main()
                 sourceline_init = true;
             }
             else{
-                x = stoi(source_line);
+                stringstream ss2;
+                int x = 0;
+                ss2 << source_line;
+                ss2 >> x;
                 x++;
-                source_line = to_string(x);                
+                ss2.clear();
+                ss2 << x;
+                source_line = ss2.str();                
             }
         }
     }
