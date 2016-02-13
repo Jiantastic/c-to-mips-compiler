@@ -61,8 +61,8 @@ STRINGLITERAL   [L]?\"(?:\\([abfnrtv\'\"\?\\]|[0-7]{1,3}|x[0-9A-Fa-f]+)|[^\\"])*
 
 WHITESPACE      [ \t\r]+
 
-%%
 
+%%
 
 {STRINGLITERAL}         {
                             string strString(yytext);
@@ -340,13 +340,12 @@ WHITESPACE      [ \t\r]+
 \n                      line_number++;
 
 %%
-
+/*
 void getSourceFile(string &str1,bool &var1){
     bool tmp1 = false;
     ss.str() = "";
     for(int i=0;i<str1.length();++i){
         if(str1[i] == '\"'){
-            /*"*/
             tmp1 = !tmp1;
         }
         else if(tmp1){
@@ -354,8 +353,10 @@ void getSourceFile(string &str1,bool &var1){
         }
     }
     SourceFile = ss.str();
+    ss.clear();
     var1 = true;
 }
+*/
 
 int main()
 {
@@ -370,11 +371,10 @@ int main()
         int count = 1;
         while(iss >> word){
             if(input[0] == '#' && input[1] == ' '){
-
                 hashtag = true;
-                if(!filename_init){
-                    getSourceFile(input,filename_init);
-                }
+		if(count == 3){
+	            SourceFile = word;
+		}
                 if(count == 2){
                     source_line = word;
                 }
@@ -393,6 +393,7 @@ int main()
                 sourceline_init = true;
             }
             else{
+<<<<<<< HEAD
                 stringstream ss2;
                 int x = 0;
                 ss2 << source_line;
@@ -401,6 +402,13 @@ int main()
                 ss2.clear();
                 ss2 << x;
                 source_line = ss2.str();                
+=======
+		x = atoi(source_line.c_str());
+                x++;
+		stringstream ss2;
+		ss2 << x;
+                source_line = ss2.str();              
+>>>>>>> dedc8c40b80af088194e65ac3b8de9031bd170ec
             }
         }
     }
