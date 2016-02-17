@@ -1,0 +1,239 @@
+PolyGen - What's new?
+---------------------
+
+* 28/6/2004
+  - official release 1.0.6 (formers were 1.0 pre-releases)
+  - just few bugfixes
+
+* 17/9/2003
+  - bufix update v1.0pre r5
+  - some checkings (i.e. cyclic unfoldings detection) didn't work anymore in
+    conjuction with the new label checker; new second phase checker written
+
+* 9/9/2003
+  - bugfix update v1.0pre r4
+  - lock/unlock block didn't work; atomic rename of temporary file used instead
+
+* 8/9/2003
+  - first official pre-release v1.0 r3 (formers are internal only)
+  - new language feature: keyword ":=" introduces strong bindings that
+    generates only once the binding itself is performed
+  - new language feature: subproductions (of any form) introduces now local
+    nestable scopes; any series of weak as well as strong mutual
+    recursive bindings may appear prior to subproduction body; scoping rules
+    are static lexical
+  - new language feature: EBNF-like iteration is supported suffixing a "+"
+    to a subproduction (standard form only)
+  - new language feature: keyword "," acts as infix delimeter for positional
+    atoms within production; generation occurs selecting all i-th elements
+  - lexical rules changed: ',' character is no more a terminal simbol; use
+    quotings instead
+  - the new grammar checker is now able to infer label groups for each
+    production, follow selections and report top-level environment-free
+    label groups
+  - grammar checker improved: all destructive selections are now detected
+    and exhaustively reported, leading label usage towards higher robustness
+  - grammar checker changed: termination is checkable from start symbol only
+  - grammar checker improved: useless unfoldings are detected
+  - warning suppressed: simple recursions are no more detected (was nonsense)
+  - preprocessor bufixed: permutated sequences used to be automatically
+    unfolded within a prodution, leading to incosistent probability
+    distribution; now a subproduction is created
+  - many translations (either syntactical sugars or preprocessings) now are
+    implemented by using local bindings and scopes
+  - compiled grammar files are no more called status files; compiled grammar
+    object files is more suitable
+  - command line option "-nasty" is suppressed: autocompilation of source
+    grammars is now performed automatically
+  - command line option "-T" is suppressed
+  - command line option "-t" now performs termination check and report of
+    inferred label groups
+  - new command line option -l allows top-level initialization of label
+    environment; useful for global symbols requiring some label
+  - command line option "-seed" prevents now shuffling but still compiles
+    grammar source and produces a grammar object file
+  - command line option "-g" renamed to "-pre"
+  - compiled grammar object file loading and storing operations are now
+    enclosed within a lock/unlock pair, allowing concurrent access
+  - new error location system supports file name now
+  - more robust and exhaustive I/O exception system
+  - HOWTO-grm manual is from now on referred as the reference manual
+  - documentation roughly updated in italian only: there might
+    be some minor incosistencies
+  - all known grammars have been modified and corrected according to new
+    features
+  - grammars are no more distributed within the program package
+
+* 6/2/2003
+  - unofficial release v0.8.1 on the website
+  - more readable error position part within message
+  - minor lexing improvement and more self-explainatory lexer and parser error
+    messages
+  - now warnings are grouped into levels (the lower, the higher gravity): new
+    options -W and -pedantic activates respectively a certain level and all
+    of them
+  - grammar checker improved: any cyclic subgraph is now detected and
+    circuit is printed within the error message; potential recursions are
+    detected too as level-2 warnings
+  - grammar checker reengineered in some parts due to complexity increase; it
+    still is single-pass, though
+  - minor I/O exception system improvement
+  - HOWTO manuals updated
+  - oroscopo.grm, photoshop.grm, rappaz.grm and piani.grm added to official
+    grammar package
+
+* 9/1/2003
+  - unofficial release v0.8 on the website
+  - language feature changed: unfolding is no more specified in curly brackets:
+    now the > operator unfolds any unfoldable atom, i.e. non-terminals and
+    any kind of subproduction
+  - new language feature: specifying subproductions in curly brackets on
+    a given sequence allows permutation between themselves
+  - new language feature: subproductions in reverse-doubleangle brackets are
+    unfolded in depth
+  - new language feature: operator < locks the following atom as non-unfoldable
+  - error/warning system improved: all messages now specify the position in the
+    source file where the error/warning occured
+  - grammar checker speed improved: results of subgraph checking are now cached
+  - program now takes more than one source file and processes all of them
+  - now option -g, -t, -T and -nasty does not conflict any more
+  - HOWTO manuals updated
+  - lotto.grm, annunci.grm, monte.grm added to official grammar package
+
+* 9/12/2002
+  - unofficial release v0.7.1 on the website
+  - new language feature: backslash keyword capitalizes following terminal
+  - Unix.umask was not implemented under Windows and an exception used to be
+    rosen; now umask is no more invoked and, as a side effect, permission
+    triplets for status files now are rw-r--r-- on Linux systems with ---w-w-
+    default umask
+  - now status file is closed after laoding, cause storing open_out used to
+    fail under some Windows
+  - HOWTO manuals updated
+  - filippi.grm, prov.grm, ponti.grm added to offical grammar package
+
+* 5/12/2002
+  - unofficial release v0.7 on the website
+  - new and much more powerful preprocessor unfolding system
+  - new language feature: productions in curly brackets are unfolded as if they
+    were specified flat at the very level of the sequence containing them
+  - language feature improvement: unfolding operator for non-terminal symbols
+    may now appear as any atom within a sequence
+  - all official grammars updated and exploit new features, resulting in
+    less ad-hoc grouping tricks and dramatic raising of output quality in
+    conjunction with nasty mode
+  - more robust status file format: now contains version field for detecting
+    compatibility and original grammar timestamp field for more reliable
+    comparison
+  - verbose mode even more verbose and informatory
+  - HOWTO manuals updated
+  - new delonghi.grm added to offical grammar package
+
+* 27/11/2002
+  - unofficial release v0.6.1 on the website
+  - a lexical conflict previor used to cause troubles wherever a subproduction
+    in round brackets followed the standalone dot operator: now it is
+    no more mistaken for the multiselection syntactical sugar
+  - lexical rules changed: now the underscore char cannot belong anymore to
+    terminals, non-terminals and labels
+  - all official grammars updated according to the new rules
+  - ms.grm improved
+  - status file is now created with rw-rw-rw- permission triplets
+  - nasty mode now fails on error accessing status file instead of falling back
+    to normal mode
+  - more robust and self-explainatory I/O exceptions
+
+* 22/11/2002
+  - unofficial release v0.6 on the website
+  - new option -v activates verbose mode
+  - new option -nasty allows the program to store (and reload) the status file
+    of a grammar, which represents the annotated absyn tree used by the
+    generator and the shuffler: this way, multiple launches of the program
+    produce etherogeneous output as if the -X option was used
+  - now arguments are checked for conflicts
+  - new README.win32 for MSWin users claiming known bugs or lacks of the win32
+    executable due to OCaml compiler/library system incosistencies
+
+* 20/11/2002
+  - unofficial release v0.5 on the website
+  - HOWTO-grm rewritten in HTML
+  - neweconomy.grm renamed to manager.grm
+  - topgirl.grm renamed to teen.grm
+  - new b-film.grm, fiera.grm and genio.grm added to official grammar package
+  - further checker improvement:
+       (EE) overriding of non-terminal symbols
+            epsilon-productions for both destructive label selection
+              and actual epsilon terms
+  - language feature improvement: selections are now nestable and there can be
+    more than one active label; standalone dot operator now empties the list
+    of active labels
+  - further shuffling+random algorithm improvement: now probability weights
+    are given to branches and more-chosen as well as less-chosen ones
+    may be selected - this leads to much better results e.g. in loops
+  - new option -eof specifies string to be used as end of output
+
+* xx/10-11/2002
+  - www.polygen.org website under construction
+  - release-keeping stuff written: README, License, Credits, etc. files
+  - major checker improvement - now things are really getting serious:
+       (EE) existence of non-terminal symbols
+            cyclic recursions
+            recursive unfoldings
+       (WW) potential epsilon-productions
+            undefinition of non-termianl symbol "I'"
+  - support for two checking levels: the former starts from "S" (or specified
+    start sym) and explores grammar in depth; the latter iterates in-depth
+    exploration for all non-terminal syms
+  - new options -t and -T for check-only launches
+  - new option -o specifies output file
+
+* 14/10/2002
+  - unofficial release v0.4
+  - directory tree restructured: now grammars are collected by language and
+    source code lies on a subdir
+  - HOWTO-grm extended and translated into english as well
+  - bio.grm and neweconomy.grm translated into english
+  - new ms.grm and pythonizer.grm (english only) added to official grammar
+    package; epigrafi.grm and recensioni.grm (italian only) too
+  - source code restyling: checker and generator now stand on separate
+    files and modules
+  - added fairly simple recursive unfolding detection to the checker
+  - new language feature: labels and selection (dot operator)
+  - new shuffling+random algorithm for more etherogeneous output: now generator
+    keeps track of explored path and selects among unchosen (or least chosen)
+    branches only
+  - epsilon term added (underscore keyword) to the absyn
+  - now the optional subproduction is no more a term in the absyn and has been
+    replaced by a syntactical sugar: [P] ==> (_ | P)
+  - now the concatenation operator is a standalone term in the absyn and is no
+    more handled as a special terminal symbol
+  - conventional "I" non-terminal sym specifies grammar information string
+  - new option -S allows specification of a starting non-terminal symbol other
+    than "S"
+  - new option -info stands for "-S I"
+  - new options -ps and -seed allow output of and control over random seed
+  - new option -X for iterating generation several times and exploiting the
+    shuffling algorithm
+
+* 2/9/2002
+  - unofficial release v0.3
+  - new amiG.grm (dedicated to MatG), bio.grm, neweconomy.grm, payoff.grm
+    and topgirl.grm added to official grammar package
+  - first small HOWTO-grm version in italian written
+
+* ...I've been on holyday =;D
+
+* 21/7/2002
+  - unofficial release v0.2
+  - new language feature: unfolding operator
+  - new preprocessing phase does the unfoldings
+  - absyn has been doubled: the former is both output of the parser
+    and input of the preprocessor; the latter is output of the preprocessor
+    and input of the generator
+
+* 20/7/2002
+  - new tormentoni.grm (dedicated to Sergio) added to official grammar package
+
+* 18/7/2002
+  - first unofficial release v0.1
+

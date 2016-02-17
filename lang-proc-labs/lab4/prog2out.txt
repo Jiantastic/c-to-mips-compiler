@@ -1,0 +1,24 @@
+PREPROCESSOR_INCLUDE
+
+USING_DIRECTIVE
+
+(COMMENT)
+
+ID<int> ID<main>(){
+   LOOP_KWD<for>(ID<int> ID<i> ASSIGN_OP
+ INT_NUM<0> ID<i>COMP_OP<<>INT_NUM<10> ID<i>INC
+){
+       SELECT_KWD<if>((ID<i>MATH_OP<%>INT_NUM<2>)COMP_OP<==>INT_NUM<0>){
+            ID<cout> INSERT_OP
+ STRING<"hello"> INSERT_OP
+ ID<endl> (COMMENT)
+       }
+       SELECT_KWD<else>{
+           ID<cout> INSERT_OP
+ STRING<"goodbye"> INSERT_OP
+ ID<endl> (COMMENT)
+       }
+   }
+   ID<return> INT_NUM<0>
+   (COMMENT)
+}
