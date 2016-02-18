@@ -50,7 +50,8 @@ extern int yydebug;
     MULTOP = 260,
     LBRACKET = 261,
     RBRACKET = 262,
-    EOLINE = 263
+    EOLINE = 263,
+    ATT = 264
   };
 #endif
 

@@ -14,7 +14,7 @@ int yylex();
 int yyerror(const char* s);
 %}
 
-%token NUM ADDOP MULTOP LBRACKET RBRACKET EOLINE
+%token NUM ADDOP MULTOP LBRACKET RBRACKET EOLINE ATT
 
 /*
 the tokens for the language 
@@ -44,7 +44,7 @@ expr   : expr ADDOP term { $$ = $1 + $3;}
        | term 
        ; 
 term   : term MULTOP factor { $$ = $1 * $3; } 
-       | factor 
+       | factor
        ;
 factor : LBRACKET expr RBRACKET { $$ = $2;}
        | NUM { 
