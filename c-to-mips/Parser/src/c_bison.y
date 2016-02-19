@@ -11,7 +11,7 @@ int yyerror(const char* s);
 
 %%
 
-function : INT IDENTIFIER params { std::cout << "FUNCTION : " << $2 << std::endl; }
+function : INT IDENTIFIER params { std::cout << "FUNCTION : " << $$ << std::endl; }
          ;
 
 params : LROUNDBRACKET RROUNDBRACKET 

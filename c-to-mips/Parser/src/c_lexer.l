@@ -1,6 +1,5 @@
 %option noyywrap
 %{
-#include "c_bison.tab.h"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -40,8 +39,31 @@ STRINGLITERAL   [L]?\"(?:\\([abfnrtv\'\"\?\\]|[0-7]{1,3}|x[0-9A-Fa-f]+)|[^\\"])*
 
 WHITESPACE      [ \t\r]+
 
+FILE_LINE_FINDER ^#.*$
 
 %%
+
+{FILE_LINE_FINDER}      {
+                            /*
+                             string manipulation on # 1 "/usr/include/stdio.h" 1 3 4
+                             source_line is the 2nd argument - find first number
+                             SourceFile is the 3rd argument - find first "
+
+                            */
+                            string someString(yytext);  
+                            string word;
+                            istringstream iss(someString);
+                            int count = 1;
+                            while(iss >> word ){
+                                if(count == 2){
+                                    source_line = word;
+                                }
+                                else if(count == 3){
+                                    SourceFile = word;
+                                }
+                                count++;
+                            }
+                        }
 
 {KEYWORD}               {
                             /* string class has an in-built constructor that converts char* (yytext) -> string */
@@ -54,7 +76,6 @@ WHITESPACE      [ \t\r]+
                             }
                             else if(someString == "int"){
                                 cout << yytext << " Keyword " << "TInt" << " " << line_number << " " << SourceFile << " " << source_line << endl;
-                                return INT;
                             }
                             else if(someString == "struct"){
                                 cout << yytext << " Keyword " << "TStruct" << " " << line_number << " " << SourceFile << " " << source_line << endl;
@@ -147,11 +168,8 @@ WHITESPACE      [ \t\r]+
                                 cout << yytext << " Keyword " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;
                             }   
                         }
-{IDENTIFIER}            {
-                            cout << yytext << " Identifier " << "TIdentifier " << line_number << " " << SourceFile << " " << source_line << endl;
-                            return IDENTIFIER;
-                        }
-                    
+{IDENTIFIER}            cout << yytext << " Identifier " << "TIdentifier " << line_number << " " << SourceFile << " " << source_line << endl;
+
 
 {FLOATING_CONSTANT}     {
                             cout << yytext << " Constant " << "TFloatingConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;
@@ -159,8 +177,6 @@ WHITESPACE      [ \t\r]+
 
 {INTEGER_CONSTANT}      {
                             cout << yytext << " Constant " << "TIntegerConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;                          
-                            yylval = atoi(yytext);
-                            return NUM;
                         }
 
 {CHARACTER_CONSTANT}    {
@@ -172,11 +188,9 @@ WHITESPACE      [ \t\r]+
                             string opString(yytext);
                             if(opString == "("){
                                 cout << yytext << " Operator " << "TLeftRoundBracket" << " " << line_number << " " << SourceFile << " " << source_line << endl;
-                                return LROUNDBRACKET;
                             }
                             else if(opString == ")"){
                                cout << yytext << " Operator " << "TRightRoundBracket" << " " << line_number << " " << SourceFile << " " << source_line << endl;
-                               return RROUNDBRACKET;
                             }
                             else if(opString == "["){
                                 cout << yytext << " Operator " << "TLeftSquareBracket" << " " << line_number << " " << SourceFile << " " << source_line << endl;
@@ -306,19 +320,7 @@ WHITESPACE      [ \t\r]+
                             }  
                             else if(opString == "##"){
                                 cout << yytext << " Operator " << "THashTagHashTag" << " " << line_number << " " << SourceFile << " " << source_line << endl;
-                            }
-                            else if(opString == "{"){
-                                cout << yytext << " Operator " << "LCurlyBrace" << " " << line_number << " " << SourceFile << " " << source_line << endl;
-                                return LCURLYBRACE;
-                            }
-                            else if(opString == "}"){
-                                cout << yytext << " Operator " << "RCurlyBrace" << " " << line_number << " " << SourceFile << " " << source_line << endl;
-                                return RCURLYBRACE;
-                            }    
-                            else if(opString == ";"){
-                                cout << yytext << " Operator " << "SemiColon" << " " << line_number << " " << SourceFile << " " << source_line << endl;
-                                return SEMICOLON;
-                            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
                             else{
                                 cout << yytext << " Operator " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;                               
                             }
@@ -342,56 +344,3 @@ WHITESPACE      [ \t\r]+
 \n                      line_number++;
 
 %%
-
-int main()
-{
-
-    int x=0;
-    bool sourceline_init = false;
-    bool hashtag;
-    /* read input line by line */
-    while(getline(cin,input)){
-        hashtag = false;
-        istringstream iss(input);
-        string word;
-        int count = 1;
-        while(iss >> word){
-            if(input[0] == '#' && input[1] == ' '){
-                hashtag = true;
-                /* SourceFile is the third argument */
-    		    if(count == 3){
-    	            SourceFile = word;
-                }
-                /* SourceLine is the second argument */
-                if(count == 2){
-                    source_line = word;
-                    x = atoi(source_line.c_str());
-                    x--;
-                    stringstream ss3;
-                    ss3 << x;
-                    source_line = ss3.str();
-                }
-                count++;
-            }
-        }
-        if(!hashtag){
-            char *new_char = &input[0];
-            yy_scan_string(new_char);
-            return yylex();
-        }
-        line_number++;
-        /* Increment source_line number */
-        if(source_line != ""){
-            if(!sourceline_init){
-                sourceline_init = true;
-            }
-            else{
-    	       x = atoi(source_line.c_str());
-               x++;
-    	       stringstream ss2;
-    	       ss2 << x;
-               source_line = ss2.str();              
-            }
-        }
-    }
-}

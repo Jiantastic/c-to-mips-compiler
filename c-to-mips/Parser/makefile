@@ -1,12 +1,22 @@
-bin/c_lexer : src/c_lexer.yy.c src/c_bison.tab.c
-	g++ src/c_lexer.yy.c src/c_bison.tab.c -o bin/c_parser
+bin/c_parser: src/c_bison.tab.o src/c_lexer.yy.o
+	g++ src/c_bison.tab.o src/c_lexer.yy.o -o bin/c_parser
 
-src/c_lexer.yy.c : src/c_lexer.l
-	flex -o src/c_lexer.yy.c src/c_lexer.l
+src/c_lexer.yy.o: src/c_lexer.yy.c src/c_bison.tab.h
+	g++ -c src/c_lexer.yy.c
+	
+src/c_bison.tab.o: src/c_bison.tab.c src/c_bison.tab.h
+	g++ -c src/c_bison.tab.c
 
 src/c_bison.tab.c : src/c_bison.y
-	bison -d src/c_bison.y -o src/c_bison.tab.c
+	bison -d src/c_bison.y
+
+src/c_bison.tab.h: src/c_bison.y
+	bison -d src/c_bison.y
+
+src/c_lexer.yy.c: src/c_lexer.l
+	flex -o src/c_lexer.yy.c src/c_lexer.l
 
 clean :
 	rm src/c_lexer.yy.c src/c_bison.tab.c src/c_bison.tab.h
 	rm bin/c_lexer
+	rm src/*.o parser
