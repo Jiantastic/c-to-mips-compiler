@@ -320,7 +320,19 @@ FILE_LINE_FINDER ^#.*$
                             }  
                             else if(opString == "##"){
                                 cout << yytext << " Operator " << "THashTagHashTag" << " " << line_number << " " << SourceFile << " " << source_line << endl;
-                            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                            }
+                            else if(opString == ";"){
+                                cout << yytext << " Operator " << "TSemiColon" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "..."){
+                                cout << yytext << " Operator " << "T3Dots" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "{"){
+                                cout << yytext << " Operator " << "TLeftCurly" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }
+                            else if(opString == "}"){
+                                cout << yytext << " Operator " << "TRightCurly" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
                             else{
                                 cout << yytext << " Operator " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;                               
                             }

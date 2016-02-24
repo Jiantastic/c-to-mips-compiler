@@ -1,0 +1,12 @@
+int adasdasd_(){}
+
+int asdasd1212(){
+}
+
+int asd1212()
+{}
+
+int wqe213(){
+{}
+}
+

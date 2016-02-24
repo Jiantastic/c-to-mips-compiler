@@ -1,5 +1,6 @@
 %option noyywrap
 %{
+#include "c_bison.tab.h"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -69,261 +70,267 @@ FILE_LINE_FINDER ^#.*$
                             /* string class has an in-built constructor that converts char* (yytext) -> string */
                             string someString(yytext);
                             if(someString == "auto"){
-                                cout << yytext << " Keyword " << "TAuto" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return AUTO;
                             }
                             else if(someString == "double"){
-                                cout << yytext << " Keyword " << "TDouble" << " " << line_number << " " << SourceFile << " " << source_line << endl;                                
+                                return DOUBLE;
                             }
                             else if(someString == "int"){
-                                cout << yytext << " Keyword " << "TInt" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return INT;
                             }
                             else if(someString == "struct"){
-                                cout << yytext << " Keyword " << "TStruct" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return STRUCT;
                             }
                             else if(someString == "break"){
-                                cout << yytext << " Keyword " << "TBreak" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return BREAK;
                             }
                             else if(someString == "else"){
-                                cout << yytext << " Keyword " << "TElse" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return ELSE;
                             }
                             else if(someString == "long"){
-                                cout << yytext << " Keyword " << "TLong" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return LONG;
                             }
                             else if(someString == "switch"){
-                                cout << yytext << " Keyword " << "TSwitch" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return SWITCH;
                             }
                             else if(someString == "case"){
-                                cout << yytext << " Keyword " << "TCase" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return CASE;
                             }
                             else if(someString == "enum"){
-                                cout << yytext << " Keyword " << "TEnum" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return ENUM;
                             }
                             else if(someString == "register"){
-                                cout << yytext << " Keyword " << "TRegister" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return REGISTER;
                             }
                             else if(someString == "typedef"){
-                                cout << yytext << " Keyword " << "TTypedef" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return TYPEDEF;
                             }
                             else if(someString == "char"){
-                                cout << yytext << " Keyword " << "TChar" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return CHAR;
                             }
                             else if(someString == "extern"){
-                                cout << yytext << " Keyword " << "TExtern" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return EXTERN;
                             }
                             else if(someString == "return"){
-                                cout << yytext << " Keyword " << "TReturn" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return RETURN;
                             }
                             else if(someString == "union"){
-                                cout << yytext << " Keyword " << "TUnion" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return UNION;
                             }
                             else if(someString == "const"){
-                                cout << yytext << " Keyword " << "TConst" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return CONST;
                             }
                             else if(someString == "float"){
-                                cout << yytext << " Keyword " << "TFloat" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return FLOAT;
                             }
                             else if(someString == "short"){
-                                cout << yytext << " Keyword " << "TShort" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return SHORT;
                             }
                             else if(someString == "unsigned"){
-                                cout << yytext << " Keyword " << "TUnsigned" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return UNSIGNED;
                             }
                             else if(someString == "continue"){
-                                cout << yytext << " Keyword " << "TContinue" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return CONTINUE;
                             }
                             else if(someString == "for"){
-                                cout << yytext << " Keyword " << "TFor" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return FOR;
                             }
                             else if(someString == "signed"){
-                                cout << yytext << " Keyword " << "TSigned" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return SIGNED;
                             }
                             else if(someString == "void"){
-                                cout << yytext << " Keyword " << "TVoid" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return VOID;
                             }
                             else if(someString == "default"){
-                                cout << yytext << " Keyword " << "TDefault" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return DEFAULT;
                             }
                             else if(someString == "goto"){
-                                cout << yytext << " Keyword " << "TGoto" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return GOTO;
                             }
                             else if(someString == "sizeof"){
-                                cout << yytext << " Keyword " << "TSizeof" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return SIZEOF;
                             }
                             else if(someString == "volatile"){
-                                cout << yytext << " Keyword " << "TVolatile" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return VOLATILE;
                             }
                             else if(someString == "do"){
-                                cout << yytext << " Keyword " << "TDo" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return DO;
                             }
                             else if(someString == "if"){
-                                cout << yytext << " Keyword " << "TIf" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return IF;
                             }
                             else if(someString == "static"){
-                                cout << yytext << " Keyword " << "TStatic" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return STATIC;
                             }
                             else if(someString == "while"){
-                                cout << yytext << " Keyword " << "TWhile" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return WHILE;
                             }
-                            else{
-                                cout << yytext << " Keyword " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;
-                            }   
-                        }
-{IDENTIFIER}            cout << yytext << " Identifier " << "TIdentifier " << line_number << " " << SourceFile << " " << source_line << endl;
 
+                        }
+{IDENTIFIER}            {
+                            yylval.str = strdup(yytext);
+                            return IDENTIFIER;
+                        }
 
 {FLOATING_CONSTANT}     {
-                            cout << yytext << " Constant " << "TFloatingConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            yylval.float_num = atof(yytext);
+                            return FLOAT_NUMBER;
                         }
 
 {INTEGER_CONSTANT}      {
-                            cout << yytext << " Constant " << "TIntegerConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;                          
+                            yylval.number = atoi(yytext);
+                            return CONSTANT;
                         }
 
 {CHARACTER_CONSTANT}    {
-                            cout << yytext << " Constant " << "TCharacterConstant" << " " << line_number << " " << SourceFile << " " << source_line << endl;                           
+                            return CONSTANT;
                         }
 
 
 {OPERATOR}              {
                             string opString(yytext);
                             if(opString == "("){
-                                cout << yytext << " Operator " << "TLeftRoundBracket" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '(';
                             }
                             else if(opString == ")"){
-                               cout << yytext << " Operator " << "TRightRoundBracket" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                               return ')';
                             }
                             else if(opString == "["){
-                                cout << yytext << " Operator " << "TLeftSquareBracket" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '[';
                             }
                             else if(opString == "]"){
-                                cout << yytext << " Operator " << "TRightSquareBracket" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return ']';
                             }
                             else if(opString == "."){
-                                cout << yytext << " Operator " << "TDot" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '.';
                             }
                             else if(opString == "->"){
-                                cout << yytext << " Operator " << "TArrow" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return PTR_OPERATOR;
                             }
                             else if(opString == "++"){
-                                cout << yytext << " Operator " << "TPlusPlus" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return INC_OPERATOR;
                             }
                             else if(opString == "--"){
-                                cout << yytext << " Operator " << "TMinusMinus" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return DEC_OPERATOR;
                             }
                             else if(opString == "&"){
-                                cout << yytext << " Operator " << "TBitwiseAND" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '&';
                             }
                             else if(opString == "*"){
-                                cout << yytext << " Operator " << "TStar" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '*';
                             }
                             else if(opString == "+"){
-                                cout << yytext << " Operator " << "TPlus" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '+';
                             }
                             else if(opString == "-"){
-                                cout << yytext << " Operator " << "TMinus" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '-';
                             }
                             else if(opString == "~"){
-                                cout << yytext << " Operator " << "TTilde" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '~';
                             }
                             else if(opString == "!"){
-                                cout << yytext << " Operator " << "TExclaimationMark" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '!';
                             }
                             else if(opString == "sizeof"){
-                                cout << yytext << " Operator " << "TOpsizeof" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return SIZEOF;
                             }
                             else if(opString == "/"){
-                                cout << yytext << " Operator " << "TForwardSlash" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '/';
                             }
                             else if(opString == "%"){
-                                cout << yytext << " Operator " << "TPercentage" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '%';
                             }
                             else if(opString == "<<"){
-                                cout << yytext << " Operator " << "TShiftLeft" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return LEFT_OPERATOR;
                             }
                             else if(opString == ">>"){
-                                cout << yytext << " Operator " << "TShiftRight" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return RIGHT_OPERATOR;
                             }
                             else if(opString == "<"){
-                                cout << yytext << " Operator " << "TLeftArrow" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '<';
                             }
                             else if(opString == ">"){
-                                cout << yytext << " Operator " << "TRightArrow" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '>';
                             }
                             else if(opString == "<="){
-                                cout << yytext << " Operator " << "TLeftArrowEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return LE_OPERATOR;
                             }
                             else if(opString == ">="){
-                                cout << yytext << " Operator " << "TRightArrowEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return GE_OPERATOR;
                             }
                             else if(opString == "=="){
-                                cout << yytext << " Operator " << "TEqualEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return EQ_OPERATOR;
                             }
                             else if(opString == "!="){
-                                cout << yytext << " Operator " << "TExclaimationMarkEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return NE_OPERATOR;
                             }
                             else if(opString == "^"){
-                                cout << yytext << " Operator " << "TCaret" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '^';
                             }
                             else if(opString == "|"){
-                                cout << yytext << " Operator " << "TBitwiseOR" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '|';
                             }
                             else if(opString == "&&"){
-                                cout << yytext << " Operator " << "TAND" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return AND_OPERATOR;
                             }
                             else if(opString == "||"){
-                                cout << yytext << " Operator " << "TOR" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return OR_OPERATOR;
                             }
                             else if(opString == "?"){
-                                cout << yytext << " Operator " << "TQuestionMark" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '?';
                             }
                             else if(opString == ":"){
-                                cout << yytext << " Operator " << "TColon" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return ':';
                             }
                             else if(opString == "="){
-                                cout << yytext << " Operator " << "TEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return '=';
                             }
                             else if(opString == "*="){
-                                cout << yytext << " Operator " << "TStarEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return MUL_ASSIGNMENT;
                             }
                             else if(opString == "/="){
-                                cout << yytext << " Operator " << "TForwardSlashEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return DIV_ASSIGNMENT;
                             }
                             else if(opString == "%="){
-                                cout << yytext << " Operator " << "TPercentageEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return MOD_ASSIGNMENT;
                             }
                             else if(opString == "+="){
-                                cout << yytext << " Operator " << "TPlusEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return ADD_ASSIGNMENT;
                             }
                             else if(opString == "-="){
-                                cout << yytext << " Operator " << "TMinusEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return SUB_ASSIGNMENT;
                             }
                             else if(opString == "<<="){
-                                cout << yytext << " Operator " << "TLeftShiftEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return LEFT_ASSIGNMENT;
                             }
                             else if(opString == ">>="){
-                                cout << yytext << " Operator " << "TRightShiftEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return RIGHT_ASSIGNMENT;
                             }
                             else if(opString == "&="){
-                                cout << yytext << " Operator " << "TBitwiseANDEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return AND_ASSIGNMENT;
                             }
                             else if(opString == "^="){
-                                cout << yytext << " Operator " << "TCaretEqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return XOR_ASSIGNMENT;
                             }
                             else if(opString == "|="){
-                                cout << yytext << " Operator " << "TBitwiseOREqual" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return OR_ASSIGNMENT;
                             }
                             else if(opString == ","){
-                                cout << yytext << " Operator " << "TComma" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                                return ',';
                             }
-                            else if(opString == "#"){
-                                cout << yytext << " Operator " << "THashtag" << " " << line_number << " " << SourceFile << " " << source_line << endl;
-                            }  
-                            else if(opString == "##"){
-                                cout << yytext << " Operator " << "THashTagHashTag" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            else if(opString == ";"){
+                                return ';';
+                            }
+                            else if(opString == "..."){
+                                return ELLIPSIS;
+                            }
+                            else if(opString == "{"){
+                                return '{';
+                            }
+                            else if(opString == "}"){
+                                return '}';
                             }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-                            else{
-                                cout << yytext << " Operator " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;                               
-                            }
+
                         }
 
 {STRINGLITERAL}         {
@@ -333,7 +340,7 @@ FILE_LINE_FINDER ^#.*$
                             for(int i=1;i<strString.length()-1;++i){
                                 ans += strString[i]; 
                             }
-                            cout << ans << " StringLiteral " << "TString" << " " << line_number << " " << SourceFile << " " << source_line << endl;
+                            return STRINGLITERAL;
                         }
 
 
@@ -341,6 +348,9 @@ FILE_LINE_FINDER ^#.*$
 
 .                       cout << yytext << " Invalid " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;
 
-\n                      line_number++;
+\n                      {
+                            line_number++;
+                            return EOLINE; 
+                        }
 
 %%
