@@ -15,7 +15,6 @@ int counter = 0;
         char* str;
 }
 
-
 %token <number> NUM
 
 %token <float_num> FLOAT_NUMBER
@@ -28,11 +27,10 @@ int counter = 0;
 
 %token AUTO DOUBLE INT STRUCT BREAK ELSE LONG SWITCH CASE ENUM REGISTER TYPEDEF CHAR EXTERN RETURN UNION CONST FLOAT SHORT UNSIGNED CONTINUE FOR SIGNED VOID DEFAULT GOTO VOLATILE DO IF STATIC WHILE
 
-%token  LROUNDBRACKET RROUNDBRACKET EOLINE LCURLYBRACE RCURLYBRACE SEMICOLON COMMA
 
 /* operators */
 
-%token ELLIPSIS
+%token ELLIPSIS EOLINE
 
 %token PTR_OPERATOR INC_OPERATOR DEC_OPERATOR LEFT_OPERATOR RIGHT_OPERATOR LE_OPERATOR GE_OPERATOR EQ_OPERATOR NE_OPERATOR
 
@@ -61,39 +59,73 @@ indentations
 
 */
 
-primary_expression : IDENTIFIER           { std::cout << $1 << std::endl;}
-                   | CONSTANT
-                   | STRINGLITERAL
-                   | '(' expression ')'
-                   ;
-
 file   : line file
        | line
        ;
 
-line   : function EOLINE 
-       | function scope_start EOLINE
-       | function scope_start scope_end EOLINE
-       | variable EOLINE  
-       | scope_start EOLINE 
-       | scope_end EOLINE
-       | scope_start scope_end EOLINE
-       | EOLINE
+line   : function EOLINE                            
+       | function scope_start EOLINE                
+       | function scope_start scope_end EOLINE      
+       | variable EOLINE                            
+       | scope_start EOLINE                         
+       | scope_end EOLINE                           
+       | scope_start scope_end EOLINE               
+       | EOLINE                                     
        ;
 
-variable : INT IDENTIFIER         { for(int i=counter;i!=0;i--){std::cout << "    ";} std::cout << "VARIABLE : " << $2 << std::endl;}
+variable : INT IDENTIFIER ';'        { for(int i=counter;i!=0;i--){std::cout << "    ";} std::cout << "VARIABLE : " << $2 << std::endl; }
+         | INT IDENTIFIER assignment_operator NUM ';' { std::cout << "Number" << std::endl;}
+         | INT IDENTIFIER  FLOAT_NUMBER ';' { std::cout << "Float" << std::endl;}
+         | INT IDENTIFIER '=' IDENTIFIER ';' {std::cout << "IDEN" << std::endl;}
+         ; 
 
-function : INT IDENTIFIER         { for(int i=counter;i!=0;i--){std::cout << "    ";}std::cout << "FUNCTION : " << $2 << std::endl; } params 
+function : INT IDENTIFIER         { for(int i=counter;i!=0;i--){std::cout << "  ";}std::cout << "FUNCTION : " << $2 << std::endl; } '(' params ')' 
          ;
 
-params : '(' ')' 
-       | '(' expression ')'       { std::cout << "    PARAMETER : "; }
+params : INT IDENTIFIER           { std::cout << "    PARAMETER : " << $2 << std::endl; }
+       | params ',' INT IDENTIFIER { std::cout << "    SPARAMETER : " << $4 << std::endl; }
        ;
 
 
 scope_start : '{'       { counter++; std::cout << "SCOPE" << std::endl; } ;
 
 scope_end : '}'         { counter--;};
+
+
+
+
+
+/* NOTE : all implementations below are partial, REMEMBER to check against spec */
+
+assignment_operator : '='
+                    | MUL_ASSIGNMENT
+                    | DIV_ASSIGNMENT
+                    | MOD_ASSIGNMENT
+                    | ADD_ASSIGNMENT
+                    | SUB_ASSIGNMENT
+                    | LEFT_ASSIGNMENT
+                    | RIGHT_ASSIGNMENT
+                    | AND_ASSIGNMENT
+                    | XOR_ASSIGNMENT
+                    | OR_ASSIGNMENT
+                    ;
+
+iteration_statement
+  : WHILE '(' expression ')' statement
+  | FOR '(' expression_statement expression_statement ')' statement
+  | FOR '(' expression_statement expression_statement expression ')' statement
+  ;
+
+
+selection_statement
+  : IF '(' expression ')' statement
+  | IF '(' expression ')' statement ELSE statement
+  | SWITCH '(' expression ')' statement
+  ;
+
+
+/* ============== Expression Implementation ====================== */
+
 
 expression : assignment_expression
            | expression ',' assignment_expression
@@ -155,27 +187,9 @@ multiplicative_expression : cast_expression
                           | multiplicative_expression '%' cast_expression
                           ;
 
-/* incomplete - INT only */
-
 cast_expression : unary_expression
                 | '(' type_name ')' cast_expression
                 ;
-
-assignment_operator : '='
-                    | MUL_ASSIGNMENT
-                    | DIV_ASSIGNMENT
-                    | MOD_ASSIGNMENT
-                    | ADD_ASSIGNMENT
-                    | SUB_ASSIGNMENT
-                    | LEFT_ASSIGNMENT
-                    | RIGHT_ASSIGNMENT
-                    | AND_ASSIGNMENT
-                    | XOR_ASSIGNMENT
-                    | OR_ASSIGNMENT
-                    ;
-
-
-/* incomplete - INT only */
 
 unary_expression : postfix_expression
                  | INC_OPERATOR unary_expression
@@ -184,6 +198,7 @@ unary_expression : postfix_expression
                  | SIZEOF unary_expression
                  | SIZEOF '(' type_name ')'
                  ;
+
 
 postfix_expression : primary_expression
                    | postfix_expression '[' expression ']'
@@ -208,67 +223,6 @@ unary_operator : '&'
                ;
 
 type_name : INT
-
-control_flow : IF '(' expression ')' statement
-             | IF '(' expression ')' statement ELSE statement
-             | WHILE '(' expression ')' statement
-             | FOR '(' expression_statement expression_statement ')' statement
-             | FOR '(' expression_statement expression_statement expression ')' statement
-             ; 
-
-statement : labeled_statement
-          | compound_statement
-          | expression_statement
-          | selection_statement
-          | iteration_statement
-          | jump_statement
-          ;
-
-expression_statement : ';'
-                     | expression ';'
-                     ;
-
-
-
-
-/*
-
-etc...................
-
-values : INT IDENTIFIER                { std::cout << "    PARAMETER : " << $2 << std::endl; }
-       | values COMMA INT IDENTIFIER   { std::cout << "    PARAMETER : " << $4 << std::endl; }
-       ;
-
-
-==================================== OLD
-
-{
-  function(int a,int b,int c){}
-}
-
-
-variable : INT IDENTIFIER   { std::cout << "VARIABLE : " << $2 << std::endl; };
-
-bool scoping = false;
-
-Scopes
-{ scoping = true; std::cout << "SCOPE" << std::endl;}
-
- { scoping = false; }
-
-
-// TODO : identation of 4 spaces
-// TODO : Lexer is incomplete - code punctuators, both in regex and lexer cout << ....
-VARIABLE : keyword identifier | keyword identifier EXTENSION* ;
-
-
-EXTENSION : operator (identifier|num);
-
-SCOPE_START : left curly ----- { cout << "SCOPE" << endl; }
-
-SCOPE_END :
-
-*/
 
 
 %%

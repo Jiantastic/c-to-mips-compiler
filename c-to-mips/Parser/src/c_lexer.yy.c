@@ -1076,7 +1076,7 @@ YY_RULE_SETUP
 #line 180 "src/c_lexer.l"
 {
                             yylval.number = atoi(yytext);
-                            return CONSTANT;
+                            return NUM;
                         }
 	YY_BREAK
 case 6:

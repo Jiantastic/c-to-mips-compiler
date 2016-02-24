@@ -179,7 +179,7 @@ FILE_LINE_FINDER ^#.*$
 
 {INTEGER_CONSTANT}      {
                             yylval.number = atoi(yytext);
-                            return CONSTANT;
+                            return NUM;
                         }
 
 {CHARACTER_CONSTANT}    {
