@@ -1,3 +1,35 @@
+Expression
+Statement
+
+
+
+test for these cases: - step by step
+
+DECLARATIONS
+int x;
+int x,y;
+int x = 2;
+
+
+EXPRESSION
+a += 3;
+a -= 3 + b;
+a = 3 - b + c / 3 ;
+
+
+
+int 
+if
+while
+for
+
+
+Outside SCOPE for C90
+int a; 
+
+{
+  
+}
 
 
 /*
@@ -8,8 +40,6 @@ primary_expression : IDENTIFIER           { std::cout << $1 ;}
                    | STRINGLITERAL        
                    | '(' expression ')'
                    ;
-
-
 
 expression : assignment_expression
            | expression ',' assignment_expression
@@ -154,13 +184,9 @@ compound_statement : '{' '}'
                    | '{' {std::cout << "SCOPE" << std::endl } declaration_list statement_list '}'
                    ;
 
-statement_list : statement
-               | statement_list statement
-               ;
 
-declaration_list : declaration
-                 | declaration_list declaration
-                 ;
+
+
 
 declaration : declaration_specifiers ';'
             | declaration_specifiers init_declarator_list ';'
@@ -261,10 +287,7 @@ parameter_declaration
   ;
 
 
-identifier_list
-  : IDENTIFIER
-  | identifier_list ',' IDENTIFIER
-  ;
+
 
 
 

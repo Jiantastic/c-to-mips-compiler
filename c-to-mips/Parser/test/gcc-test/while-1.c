@@ -1,0 +1,3 @@
+while(x){
+	int a;
+}

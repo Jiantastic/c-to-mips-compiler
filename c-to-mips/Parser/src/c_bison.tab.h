@@ -45,10 +45,10 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NUM = 258,
-    FLOAT_NUMBER = 259,
+    INT_NUM = 258,
+    FLOAT_NUM = 259,
     IDENTIFIER = 260,
-    CONSTANT = 261,
+    CHAR_CONST = 261,
     STRINGLITERAL = 262,
     SIZEOF = 263,
     AUTO = 264,
@@ -83,28 +83,27 @@ extern int yydebug;
     STATIC = 293,
     WHILE = 294,
     ELLIPSIS = 295,
-    EOLINE = 296,
-    PTR_OPERATOR = 297,
-    INC_OPERATOR = 298,
-    DEC_OPERATOR = 299,
-    LEFT_OPERATOR = 300,
-    RIGHT_OPERATOR = 301,
-    LE_OPERATOR = 302,
-    GE_OPERATOR = 303,
-    EQ_OPERATOR = 304,
-    NE_OPERATOR = 305,
-    AND_OPERATOR = 306,
-    OR_OPERATOR = 307,
-    MUL_ASSIGNMENT = 308,
-    DIV_ASSIGNMENT = 309,
-    MOD_ASSIGNMENT = 310,
-    ADD_ASSIGNMENT = 311,
-    SUB_ASSIGNMENT = 312,
-    LEFT_ASSIGNMENT = 313,
-    RIGHT_ASSIGNMENT = 314,
-    AND_ASSIGNMENT = 315,
-    XOR_ASSIGNMENT = 316,
-    OR_ASSIGNMENT = 317
+    PTR_OPERATOR = 296,
+    INC_OPERATOR = 297,
+    DEC_OPERATOR = 298,
+    LEFT_OPERATOR = 299,
+    RIGHT_OPERATOR = 300,
+    LE_OPERATOR = 301,
+    GE_OPERATOR = 302,
+    EQ_OPERATOR = 303,
+    NE_OPERATOR = 304,
+    AND_OPERATOR = 305,
+    OR_OPERATOR = 306,
+    MUL_ASSIGNMENT = 307,
+    DIV_ASSIGNMENT = 308,
+    MOD_ASSIGNMENT = 309,
+    ADD_ASSIGNMENT = 310,
+    SUB_ASSIGNMENT = 311,
+    LEFT_ASSIGNMENT = 312,
+    RIGHT_ASSIGNMENT = 313,
+    AND_ASSIGNMENT = 314,
+    XOR_ASSIGNMENT = 315,
+    OR_ASSIGNMENT = 316
   };
 #endif
 
@@ -113,13 +112,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 12 "src/c_bison.y" /* yacc.c:1909  */
+#line 11 "src/c_bison.y" /* yacc.c:1909  */
 
         int number;
         float float_num;
         char* str;
 
-#line 123 "c_bison.tab.h" /* yacc.c:1909  */
+#line 122 "c_bison.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

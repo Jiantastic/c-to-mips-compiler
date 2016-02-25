@@ -112,6 +112,7 @@ FILE_LINE_FINDER ^#.*$
                                 return EXTERN;
                             }
                             else if(someString == "return"){
+                                cout << "returning..." << endl;
                                 return RETURN;
                             }
                             else if(someString == "union"){
@@ -173,17 +174,17 @@ FILE_LINE_FINDER ^#.*$
                         }
 
 {FLOATING_CONSTANT}     {
-                            yylval.float_num = atof(yytext);
-                            return FLOAT_NUMBER;
+                            yylval.float_num = atof(yytext); 
+                            return FLOAT_NUM;
                         }
 
 {INTEGER_CONSTANT}      {
                             yylval.number = atoi(yytext);
-                            return NUM;
+                            return INT_NUM;
                         }
 
 {CHARACTER_CONSTANT}    {
-                            return CONSTANT;
+                            return CHAR_CONST;
                         }
 
 
@@ -350,7 +351,7 @@ FILE_LINE_FINDER ^#.*$
 
 \n                      {
                             line_number++;
-                            return EOLINE; 
+
                         }
 
 %%
