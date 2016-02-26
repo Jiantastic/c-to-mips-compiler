@@ -999,7 +999,6 @@ YY_RULE_SETUP
                                 return EXTERN;
                             }
                             else if(someString == "return"){
-                                cout << "returning..." << endl;
                                 return RETURN;
                             }
                             else if(someString == "union"){
@@ -1058,7 +1057,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 171 "src/c_lexer.l"
+#line 170 "src/c_lexer.l"
 {
                             yylval.str = strdup(yytext);
                             return IDENTIFIER;
@@ -1066,7 +1065,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 176 "src/c_lexer.l"
+#line 175 "src/c_lexer.l"
 {
                             yylval.float_num = atof(yytext); 
                             return FLOAT_NUM;
@@ -1074,7 +1073,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 181 "src/c_lexer.l"
+#line 180 "src/c_lexer.l"
 {
                             yylval.number = atoi(yytext);
                             return INT_NUM;
@@ -1083,14 +1082,14 @@ YY_RULE_SETUP
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 186 "src/c_lexer.l"
+#line 185 "src/c_lexer.l"
 {
                             return CHAR_CONST;
                         }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 191 "src/c_lexer.l"
+#line 190 "src/c_lexer.l"
 {
                             string opString(yytext);
                             if(opString == "("){
@@ -1240,7 +1239,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 337 "src/c_lexer.l"
+#line 336 "src/c_lexer.l"
 {
                             string strString(yytext);
                             string ans;
@@ -1253,18 +1252,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 348 "src/c_lexer.l"
+#line 347 "src/c_lexer.l"
 
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 350 "src/c_lexer.l"
+#line 349 "src/c_lexer.l"
 cout << yytext << " Invalid " << "TokenType" << " " << line_number << " " << SourceFile << " " << source_line << endl;
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 352 "src/c_lexer.l"
+#line 351 "src/c_lexer.l"
 {
                             line_number++;
 
@@ -1272,10 +1271,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 357 "src/c_lexer.l"
+#line 356 "src/c_lexer.l"
 ECHO;
 	YY_BREAK
-#line 1280 "src/c_lexer.yy.c"
+#line 1279 "src/c_lexer.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2273,7 +2272,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 357 "src/c_lexer.l"
+#line 356 "src/c_lexer.l"
 
 
 

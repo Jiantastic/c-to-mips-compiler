@@ -4,7 +4,9 @@
 
 int yylex();
 int yyerror(const char* s);
-
+char* identifier_value;
+int scope_counter = 0;
+int is_function = 0;
 %}
 
 %union 
@@ -39,6 +41,8 @@ int yyerror(const char* s);
 
 %token XOR_ASSIGNMENT OR_ASSIGNMENT 
 
+%type <str> declarator 
+
 
 %%
 
@@ -59,25 +63,21 @@ indentations
 
 /* ===================== Parsing START ============================ */
 
-file   : translation_unit
+translation_unit : external_declaration
+                 | translation_unit external_declaration
+                 ;
 
-translation_unit
-  : external_declaration
-  | translation_unit external_declaration
-  ;
-
-external_declaration
-  : function_definition
-  | declaration
-  ;
-
+external_declaration : declaration             
+                     | function_definition     
+                     ;
 
 /* ===================== Parsing END ============================ */
 
 /* NOTE : all implementations below are partial, REMEMBER to check against spec */
 
 
-primary_expression : IDENTIFIER           { std::cout << "ASSIGNMENSST" << $1 << std::endl ;}
+
+primary_expression : IDENTIFIER           
                    | CONSTANT             
                    | STRINGLITERAL        
                    | '(' expression ')'
@@ -103,9 +103,8 @@ assignment_operator : '='
 
 
 
-constant_expression
-  : conditional_expression
-  ;
+constant_expression : conditional_expression
+                    ;
 
 
 /* ============== Expression Implementation ====================== */
@@ -281,10 +280,10 @@ labeled_statement : IDENTIFIER ':' statement
 
 /* TODO ====== Compound Statement ======= */
 
-compound_statement : '{' '}'
-                   | '{' statement_list '}'                 {std::cout << "compound_test1" << std::endl;}
-                   | '{' declaration_list '}'                  {std::cout << "compound_test2" << std::endl;}
-                   | '{' declaration_list statement_list '}'     {std::cout << "compound_test3" << std::endl;}
+compound_statement : start_scope end_scope
+                   | start_scope statement_list end_scope                 
+                   | start_scope declaration_list end_scope                  
+                   | start_scope declaration_list statement_list end_scope     
                    ;
 
 /* OK ====== Expression Statement ======= */
@@ -302,10 +301,10 @@ selection_statement : IF '(' expression ')' statement
 
 /* OK ====== Iteration Statement ======= */
 
-iteration_statement : WHILE '(' expression ')' statement {std::cout<<"test"<<std::endl;}
+iteration_statement : WHILE '(' expression ')' statement
                     | DO statement WHILE '(' expression ')' ';'
-                    | FOR '(' expression_statement expression_statement ')' statement
                     | FOR '(' expression_statement expression_statement expression ')' statement
+                    | FOR '(' expression_statement expression_statement ')' statement 
                     ;
 
 /* OK ====== Jump Statement ======= */
@@ -315,14 +314,12 @@ jump_statement : GOTO IDENTIFIER ';'
                | BREAK ';'
                | RETURN ';'
                | RETURN expression ';'
-               | RETURN {std::cout << "ewasadasdasd" << std::endl;}
-               | ')' {std::cout << "ewasadasdasd" << std::endl;}
                ;
 
 /* ============================ Statement recursion tree units ============================= */
 
-statement_list : statement                   {std::cout << "doI?" << std::endl;}
-               | statement_list statement     {std::cout << "doI?" << std::endl;}
+statement_list : statement                   
+               | statement_list statement     
                ;
 
 declaration_list : declaration
@@ -334,27 +331,30 @@ declaration_list : declaration
 
 
 declaration : declaration_specifiers ';'
-            | declaration_specifiers init_declarator_list ';'
+            | declaration_specifiers init_declarator_list ';'      {
+                                                                      for(int i=0;i<scope_counter;i++){
+                                                                        std::cout << "    " ;
+                                                                      }
+                                                                      std::cout << "VARIABLE : " << identifier_value << std::endl;
+                                                                   }
             ;
 
 /* ================ declaration_specifiers ================ */
 
-declaration_specifiers
-  : storage_class_specifier
-  | storage_class_specifier declaration_specifiers
-  | type_specifier
-  | type_specifier declaration_specifiers
-  | type_qualifier
-  | type_qualifier declaration_specifiers
-  ;
+declaration_specifiers : storage_class_specifier
+                       | storage_class_specifier declaration_specifiers
+                       | type_specifier
+                       | type_specifier declaration_specifiers
+                       | type_qualifier
+                       | type_qualifier declaration_specifiers
+                       ;
 
-storage_class_specifier
-  : TYPEDEF
-  | EXTERN
-  | STATIC
-  | AUTO
-  | REGISTER
-  ;
+storage_class_specifier : TYPEDEF
+                        | EXTERN
+                        | STATIC
+                        | AUTO
+                        | REGISTER
+                        ;
 
 /* 
 
@@ -366,42 +366,37 @@ storage_class_specifier
 
 */
 
-type_specifier
-  : VOID
-  | CHAR
-  | SHORT
-  | INT                   
-  | LONG
-  | FLOAT
-  | DOUBLE
-  | SIGNED
-  | UNSIGNED
-  ;
+type_specifier : VOID
+               | CHAR
+               | SHORT
+               | INT                   
+               | LONG
+               | FLOAT
+               | DOUBLE
+               | SIGNED
+               | UNSIGNED
+               ;
 
-type_qualifier
-  : CONST
-  | VOLATILE
-  ;
+type_qualifier : CONST
+               | VOLATILE
+               ;
 
 /* ============= init_declarator_list ============= */
 
-init_declarator_list
-  : init_declarator
-  | init_declarator_list ',' init_declarator
-  ;
+init_declarator_list : init_declarator
+                     | init_declarator_list ',' init_declarator
+                     ;
 
-init_declarator
-  : declarator
-  | declarator '=' initializer
-  ;
+init_declarator : declarator
+                | declarator '=' initializer
+                ;
 
 
 /* ============== declarator ============ */
 
-declarator
-  : pointer direct_declarator
-  | direct_declarator
-  ;
+declarator : pointer direct_declarator
+           | direct_declarator
+           ;
 
 pointer : '*'
         | '*' type_qualifier_list
@@ -409,21 +404,19 @@ pointer : '*'
         | '*' type_qualifier_list pointer
         ;
 
-type_qualifier_list
-  : type_qualifier
-  | type_qualifier_list type_qualifier
-  ;
+type_qualifier_list : type_qualifier
+                    | type_qualifier_list type_qualifier
+                    ;
 
-direct_declarator : IDENTIFIER                                                      { 
-                                                                                        std::cout << "VARIABLEZZZ : " << $1 << std:: endl;
-                                                                                    }
-                  | '(' declarator ')'
-                  | direct_declarator '[' constant_expression ']'
-                  | direct_declarator '[' ']'
-                  | direct_declarator '(' parameter_type_list ')'
-                  | direct_declarator '(' identifier_list ')'
-                  | direct_declarator '(' ')'
+direct_declarator : IDENTIFIER                                                      { identifier_value = $1; }
+                  | '(' declarator ')'                                               
+                  | direct_declarator '[' constant_expression ']'                         
+                  | direct_declarator '[' ']'                               
+                  | direct_declarator function_name parameter_type_list ')'                 
+                  | direct_declarator '(' identifier_list ')' 
+                  | direct_declarator '(' ')' 
                   ;
+
 
 
 parameter_type_list : parameter_list
@@ -442,21 +435,25 @@ parameter_list : parameter_declaration
 
 */
 
-parameter_declaration : declaration_specifiers declarator
+parameter_declaration : declaration_specifiers declarator                 {
+                                                                              for(int i=0;i<scope_counter;i++){
+                                                                                std::cout << "    " ;
+                                                                              }
+                                                                              std::cout << "    PARAMS : " << $2 << std::endl;
+                                                                          }
                       | declaration_specifiers
                       ;
 
-identifier_list
-  : IDENTIFIER                                                                        { std::cout << "VARIABLE2 : " << $1 << std::endl;}
-  | identifier_list ',' IDENTIFIER                                                    { std::cout << "VARIABLE3 : " << $3 << std::endl;}
-  ;
+identifier_list : IDENTIFIER                                                                        
+                | identifier_list ',' IDENTIFIER                                                    
+                ;
 
 
 /* ========= initializer ======== */
 
 initializer : assignment_expression
-            | '{' initializer_list '}'
-            | '{' initializer_list ',' '}'
+            | start_scope initializer_list end_scope
+            | start_scope initializer_list ',' end_scope
             ;
 
 initializer_list : initializer
@@ -464,24 +461,44 @@ initializer_list : initializer
                  ;
 
 
-
-
 /* ================== function definitions ====================== */
 
-function_definition : declaration_specifiers declarator declaration_list compound_statement   { std::cout << "FUNCTION : " << std::endl;}
-                    | declaration_specifiers declarator compound_statement                    { std::cout << "FUNCTION : " << std::endl;}
-                    | declarator declaration_list compound_statement                          { std::cout << "function3 end" << std::endl;}
-                    | declarator compound_statement                                         { std::cout << "function4 end" << std::endl;}
+function_definition : declaration_specifiers declarator declaration_list compound_statement   
+                    | declaration_specifiers declarator compound_statement                    
+                    | declarator declaration_list compound_statement                          
+                    | declarator compound_statement                                         
                     ;
 
 
+/* ====================== stdout handlers ====================== */
 
+start_scope : '{'        {
+                            for(int i=0;i<scope_counter;i++){
+                              std::cout << "    " ;
+                            }
+                            scope_counter++; std::cout << "SCOPE" << std::endl;
+                         }
+            ;
+
+end_scope : '}'          {scope_counter--;}
+          ;
+
+
+function_name : '('   {
+                        for(int i=0;i<scope_counter;i++){
+                          std::cout << "    " ;
+                        }
+                        std::cout << "FUNCTION : " << identifier_value << std::endl;
+                      }        
+              ;
+
+/* ====================== stdout handlers END ====================== */
 
 %%
 
 int yyerror(const char* s){ 
     std::cout << s << std::endl;
-    return -1;
+    yyparse();
 }
 
 int main(void) {

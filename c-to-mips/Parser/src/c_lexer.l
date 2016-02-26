@@ -112,7 +112,6 @@ FILE_LINE_FINDER ^#.*$
                                 return EXTERN;
                             }
                             else if(someString == "return"){
-                                cout << "returning..." << endl;
                                 return RETURN;
                             }
                             else if(someString == "union"){
