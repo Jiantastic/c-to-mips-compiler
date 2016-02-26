@@ -1,0 +1,1 @@
+gcc -std=c90 -pedantic -W -Wall -Werror
