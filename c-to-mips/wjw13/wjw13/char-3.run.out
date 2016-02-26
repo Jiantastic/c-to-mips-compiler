@@ -1,0 +1,5 @@
+int Keyword TInt 1  
+x Identifier TIdentifier 1  
+= Operator TEqual 1  
+'_' Constant TCharacterConstant 1  
+; Operator TokenType 1  

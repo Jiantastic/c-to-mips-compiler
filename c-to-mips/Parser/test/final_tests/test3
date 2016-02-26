@@ -1,0 +1,15 @@
+
+int f(int a,int b,int c){
+	if(x == 3){
+		int e;
+		return y;
+	}
+	else if( x == 4){
+		int f;
+		return a;
+	}
+	else{
+		int g;
+		return 0;
+	}
+}
