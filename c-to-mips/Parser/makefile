@@ -19,4 +19,4 @@ src/c_lexer.yy.c: src/c_lexer.l
 clean :
 	rm src/c_lexer.yy.c src/c_bison.tab.c src/c_bison.tab.h
 	rm bin/c_parser
-	rm src/*.o parser
+	rm src/*.o 

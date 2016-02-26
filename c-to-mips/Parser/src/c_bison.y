@@ -299,6 +299,8 @@ selection_statement : IF '(' expression ')' statement
                     | SWITCH '(' expression ')' statement
                     ;
 
+
+
 /* OK ====== Iteration Statement ======= */
 
 iteration_statement : WHILE '(' expression ')' statement
@@ -413,8 +415,8 @@ direct_declarator : IDENTIFIER                                                  
                   | direct_declarator '[' constant_expression ']'                         
                   | direct_declarator '[' ']'                               
                   | direct_declarator function_name parameter_type_list ')'                 
-                  | direct_declarator '(' identifier_list ')' 
-                  | direct_declarator '(' ')' 
+                  | direct_declarator function_name identifier_list ')' 
+                  | direct_declarator function_name ')' 
                   ;
 
 
@@ -498,7 +500,7 @@ function_name : '('   {
 
 int yyerror(const char* s){ 
     std::cout << s << std::endl;
-    yyparse();
+    return -1;
 }
 
 int main(void) {
