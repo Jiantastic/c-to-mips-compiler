@@ -21,7 +21,7 @@ KEYWORD     (auto|double|int|struct|break|else|long|switch|case|enum|register|ty
 
 IDENTIFIER  [A-Za-z_][A-Za-z0-9_]*  
 
-OPERATOR    \.\.\.|\[|\]|##|\|=|\^=|&=|->|>>=|<<=|\-=|\+=|%=|\/=|\*=|\|\||&&|\^|!=|==|>=|<=|>>|<<|\+\+|\-\-|[\.&+\-\*~!%\\(\)\/<>\|=,;#?:{}]|sizeof
+OPERATOR    \+|\.\.\.|\[|\]|##|\|=|\^=|&=|->|>>=|<<=|\-=|\+=|%=|\/=|\*=|\|\||&&|\^|!=|==|>=|<=|>>|<<|\+\+|\-\-|[\.\&\-\*~!%\\(\)\/<>\|=,;#?:{}]|sizeof
 
 EXPONENT    [e|E][\+|\-]?[0-9]+
 
@@ -31,7 +31,7 @@ FLOATING_SUFFIX [f|l|F|L]
 
 FLOATING_CONSTANT   [\+\-]?{FRACTIONAL_CONSTANT}{EXPONENT}?{FLOATING_SUFFIX}?|[\+\-]?[0-9]+{EXPONENT}{FLOATING_SUFFIX}?
 
-INTEGER_CONSTANT    (?:[\+|\-]?0[xX][A-Fa-f0-9]+|[\+|\-]?[1-9][0-9]*|[\+|\-]?0[0-7]*)(?:ul|uL|Ul|UL|lu|lU|Lu|LU|u|U|l|L)?
+INTEGER_CONSTANT    (?:[\+|\-]?0[xX][A-Fa-f0-9]+|[1-9][0-9]*|[\+|\-]?0[0-7]*)(?:ul|uL|Ul|UL|lu|lU|Lu|LU|u|U|l|L)?
 
 CHARACTER_CONSTANT  [L]?\'(?:\\([abfnrtv\'\"\?\\]|[0-7]{1,3}|x[0-9A-Fa-f]+)|[^\\'])+\'
 
