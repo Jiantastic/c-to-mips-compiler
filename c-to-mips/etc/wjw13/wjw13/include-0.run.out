@@ -1,0 +1,3 @@
+int Keyword TInt 8 "test-data/src/var-decl-1.c" 1
+x Identifier TIdentifier 8 "test-data/src/var-decl-1.c" 1
+; Operator TokenType 8 "test-data/src/var-decl-1.c" 1

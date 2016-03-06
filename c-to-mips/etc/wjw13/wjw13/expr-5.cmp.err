@@ -1,0 +1,97 @@
+  1 : text=@int@, class=@Keyword@, type=@Int@, line=2, srcF=@""@, srcL=2
+  2 : text=@main@, class=@Identifier@, type=@Identifier@, line=2, srcF=@""@, srcL=2
+  3 : text=@(@, class=@Operator@, type=@ParenLeft@, line=2, srcF=@""@, srcL=2
+  4 : text=@)@, class=@Operator@, type=@ParenRight@, line=2, srcF=@""@, srcL=2
+  5 : text=@{@, class=@Operator@, type=@CurlyLeft@, line=3, srcF=@""@, srcL=3
+  6 : text=@int@, class=@Keyword@, type=@Int@, line=5, srcF=@""@, srcL=5
+  7 : text=@x@, class=@Identifier@, type=@Identifier@, line=5, srcF=@""@, srcL=5
+  8 : text=@=@, class=@Operator@, type=@Assign@, line=5, srcF=@""@, srcL=5
+  9 : text=@10@, class=@Constant@, type=@IntegerConstant@, line=5, srcF=@""@, srcL=5
+  10 : text=@;@, class=@Operator@, type=@SemiColon@, line=5, srcF=@""@, srcL=5
+  11 : text=@x@, class=@Identifier@, type=@Identifier@, line=6, srcF=@""@, srcL=6
+  12 : text=@&=@, class=@Operator@, type=@AssignBitAnd@, line=6, srcF=@""@, srcL=6
+  13 : text=@11@, class=@Constant@, type=@IntegerConstant@, line=6, srcF=@""@, srcL=6
+  14 : text=@;@, class=@Operator@, type=@SemiColon@, line=6, srcF=@""@, srcL=6
+  15 : text=@x@, class=@Identifier@, type=@Identifier@, line=8, srcF=@""@, srcL=8
+  16 : text=@^=@, class=@Operator@, type=@AssignBitXor@, line=8, srcF=@""@, srcL=8
+  17 : text=@12@, class=@Constant@, type=@IntegerConstant@, line=8, srcF=@""@, srcL=8
+  18 : text=@;@, class=@Operator@, type=@SemiColon@, line=8, srcF=@""@, srcL=8
+  19 : text=@x@, class=@Identifier@, type=@Identifier@, line=10, srcF=@""@, srcL=10
+  20 : text=@|=@, class=@Operator@, type=@AssignBitOr@, line=10, srcF=@""@, srcL=10
+  21 : text=@13@, class=@Constant@, type=@IntegerConstant@, line=10, srcF=@""@, srcL=10
+  22 : text=@;@, class=@Operator@, type=@SemiColon@, line=10, srcF=@""@, srcL=10
+  23 : text=@}@, class=@Operator@, type=@CurlyRight@, line=12, srcF=@""@, srcL=12
+Read 23 lines from file 'test-data/ref/expr-5.run.out'
+  1 : text=@int@, class=@Keyword@, type=@TInt@, line=2, srcF=@@, srcL=-1
+  2 : text=@main@, class=@Identifier@, type=@TIdentifier@, line=2, srcF=@@, srcL=-1
+  3 : text=@(@, class=@Operator@, type=@TLeftRoundBracket@, line=2, srcF=@@, srcL=-1
+  4 : text=@)@, class=@Operator@, type=@TRightRoundBracket@, line=2, srcF=@@, srcL=-1
+  5 : text=@{@, class=@Operator@, type=@TokenType@, line=3, srcF=@@, srcL=-1
+  6 : text=@int@, class=@Keyword@, type=@TInt@, line=5, srcF=@@, srcL=-1
+  7 : text=@x@, class=@Identifier@, type=@TIdentifier@, line=5, srcF=@@, srcL=-1
+  8 : text=@=@, class=@Operator@, type=@TEqual@, line=5, srcF=@@, srcL=-1
+  9 : text=@10@, class=@Constant@, type=@TIntegerConstant@, line=5, srcF=@@, srcL=-1
+  10 : text=@;@, class=@Operator@, type=@TokenType@, line=5, srcF=@@, srcL=-1
+  11 : text=@x@, class=@Identifier@, type=@TIdentifier@, line=6, srcF=@@, srcL=-1
+  12 : text=@&=@, class=@Operator@, type=@TBitwiseANDEqual@, line=6, srcF=@@, srcL=-1
+  13 : text=@11@, class=@Constant@, type=@TIntegerConstant@, line=6, srcF=@@, srcL=-1
+  14 : text=@;@, class=@Operator@, type=@TokenType@, line=6, srcF=@@, srcL=-1
+  15 : text=@x@, class=@Identifier@, type=@TIdentifier@, line=8, srcF=@@, srcL=-1
+  16 : text=@^=@, class=@Operator@, type=@TCaretEqual@, line=8, srcF=@@, srcL=-1
+  17 : text=@12@, class=@Constant@, type=@TIntegerConstant@, line=8, srcF=@@, srcL=-1
+  18 : text=@;@, class=@Operator@, type=@TokenType@, line=8, srcF=@@, srcL=-1
+  19 : text=@x@, class=@Identifier@, type=@TIdentifier@, line=10, srcF=@@, srcL=-1
+  20 : text=@|=@, class=@Operator@, type=@TBitwiseOREqual@, line=10, srcF=@@, srcL=-1
+  21 : text=@13@, class=@Constant@, type=@TIntegerConstant@, line=10, srcF=@@, srcL=-1
+  22 : text=@;@, class=@Operator@, type=@TokenType@, line=10, srcF=@@, srcL=-1
+  23 : text=@}@, class=@Operator@, type=@TokenType@, line=12, srcF=@@, srcL=-1
+Read 23 lines from file 'output/wjw13/expr-5.run.out'
+Reference: 23 lines, Got: 23 lines.
+Token 1 : Expected sourceFile @""@@, got @@
+Token 1 : Expected sourceLine 2, got -1
+Token 2 : Expected sourceFile @""@@, got @@
+Token 2 : Expected sourceLine 2, got -1
+Token 3 : Expected sourceFile @""@@, got @@
+Token 3 : Expected sourceLine 2, got -1
+Token 4 : Expected sourceFile @""@@, got @@
+Token 4 : Expected sourceLine 2, got -1
+Token 5 : Expected sourceFile @""@@, got @@
+Token 5 : Expected sourceLine 3, got -1
+Token 6 : Expected sourceFile @""@@, got @@
+Token 6 : Expected sourceLine 5, got -1
+Token 7 : Expected sourceFile @""@@, got @@
+Token 7 : Expected sourceLine 5, got -1
+Token 8 : Expected sourceFile @""@@, got @@
+Token 8 : Expected sourceLine 5, got -1
+Token 9 : Expected sourceFile @""@@, got @@
+Token 9 : Expected sourceLine 5, got -1
+Token 10 : Expected sourceFile @""@@, got @@
+Token 10 : Expected sourceLine 5, got -1
+Token 11 : Expected sourceFile @""@@, got @@
+Token 11 : Expected sourceLine 6, got -1
+Token 12 : Expected sourceFile @""@@, got @@
+Token 12 : Expected sourceLine 6, got -1
+Token 13 : Expected sourceFile @""@@, got @@
+Token 13 : Expected sourceLine 6, got -1
+Token 14 : Expected sourceFile @""@@, got @@
+Token 14 : Expected sourceLine 6, got -1
+Token 15 : Expected sourceFile @""@@, got @@
+Token 15 : Expected sourceLine 8, got -1
+Token 16 : Expected sourceFile @""@@, got @@
+Token 16 : Expected sourceLine 8, got -1
+Token 17 : Expected sourceFile @""@@, got @@
+Token 17 : Expected sourceLine 8, got -1
+Token 18 : Expected sourceFile @""@@, got @@
+Token 18 : Expected sourceLine 8, got -1
+Token 19 : Expected sourceFile @""@@, got @@
+Token 19 : Expected sourceLine 10, got -1
+Token 20 : Expected sourceFile @""@@, got @@
+Token 20 : Expected sourceLine 10, got -1
+Token 21 : Expected sourceFile @""@@, got @@
+Token 21 : Expected sourceLine 10, got -1
+Token 22 : Expected sourceFile @""@@, got @@
+Token 22 : Expected sourceLine 10, got -1
+Token 23 : Expected sourceFile @""@@, got @@
+Token 23 : Expected sourceLine 12, got -1
+    User,             Test, Tokens,   Text,  Class,   Type, LineNo, SrcFil, SrcLin
+   wjw13,           expr-5,     23,  100.0,  100.0,  100.0,  100.0,    0.0,    0.0

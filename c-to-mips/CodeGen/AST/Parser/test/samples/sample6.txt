@@ -1,0 +1,4 @@
+int x;
+int a = 3;
+int a = 3 - 2 + b + c;
+

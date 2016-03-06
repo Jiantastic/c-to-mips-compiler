@@ -1,3 +1,0 @@
-union Keyword TUnion 1  
-x Identifier TIdentifier 1  
-; Operator TokenType 1  

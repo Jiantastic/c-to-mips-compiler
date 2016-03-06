@@ -1,0 +1,4 @@
+make[1]: Entering directory `/vagrant/_dt10_/documents/teaching/2015/compilers/cw/m1-lexer/curated/wjw13'
+flex -o src/c_lexer.yy.c src/c_lexer.l
+g++ src/c_lexer.yy.c -o bin/c_lexer
+make[1]: Leaving directory `/vagrant/_dt10_/documents/teaching/2015/compilers/cw/m1-lexer/curated/wjw13'

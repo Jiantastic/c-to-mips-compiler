@@ -1,0 +1,3 @@
+struct Keyword TStruct 1  
+x Identifier TIdentifier 1  
+; Operator TokenType 1  

@@ -410,7 +410,7 @@ type_qualifier_list : type_qualifier
                     | type_qualifier_list type_qualifier
                     ;
 
-direct_declarator : IDENTIFIER                                                      { identifier_value = $1; }
+direct_declarator : IDENTIFIER                                                      { identifier_value = $1;}
                   | '(' declarator ')'                                               
                   | direct_declarator '[' constant_expression ']'                         
                   | direct_declarator '[' ']'                               

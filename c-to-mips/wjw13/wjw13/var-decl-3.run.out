@@ -1,7 +1,0 @@
-long Keyword TLong 1  
-int Keyword TInt 1  
-y Identifier TIdentifier 1  
-; Operator TokenType 1  
-float Keyword TFloat 2  
-z Identifier TIdentifier 2  
-; Operator TokenType 2  
