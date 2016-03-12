@@ -1,5 +1,0 @@
-int Keyword TInt 1  
-x Identifier TIdentifier 1  
-= Operator TEqual 1  
--056 Constant TIntegerConstant 1  
-; Operator TokenType 1  

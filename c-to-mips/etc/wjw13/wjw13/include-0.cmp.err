@@ -1,0 +1,11 @@
+  1 : text=@int@, class=@Keyword@, type=@Int@, line=8, srcF=@"test-data/src/var-decl-1.c"@, srcL=1
+  2 : text=@x@, class=@Identifier@, type=@Identifier@, line=8, srcF=@"test-data/src/var-decl-1.c"@, srcL=1
+  3 : text=@;@, class=@Operator@, type=@SemiColon@, line=8, srcF=@"test-data/src/var-decl-1.c"@, srcL=1
+Read 3 lines from file 'test-data/ref/include-0.run.out'
+  1 : text=@int@, class=@Keyword@, type=@TInt@, line=8, srcF=@"test-data/src/var-decl-1.c"@, srcL=1
+  2 : text=@x@, class=@Identifier@, type=@TIdentifier@, line=8, srcF=@"test-data/src/var-decl-1.c"@, srcL=1
+  3 : text=@;@, class=@Operator@, type=@TokenType@, line=8, srcF=@"test-data/src/var-decl-1.c"@, srcL=1
+Read 3 lines from file 'output/wjw13/include-0.run.out'
+Reference: 3 lines, Got: 3 lines.
+    User,             Test, Tokens,   Text,  Class,   Type, LineNo, SrcFil, SrcLin
+   wjw13,        include-0,      3,  100.0,  100.0,  100.0,  100.0,  100.0,  100.0

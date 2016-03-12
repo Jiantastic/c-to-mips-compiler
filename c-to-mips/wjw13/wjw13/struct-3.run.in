@@ -1,2 +1,0 @@
-struct x { int f; };
-

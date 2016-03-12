@@ -1,0 +1,109 @@
+All submissions compiled first time! For everyone!
+I don't think This has never happened before, in any
+2nd year coursework, and it's only happened once in
+my 4th year course. Go team!
+
+That said, there were some problems with build systems
+and makefiles. The most common were:
+
+- Makefiles which had a target of './c_lexer', rather than
+  'bin/c_lexer'.
+
+- Makefiles which had rules referring to 'src/c_lexer.c'
+  or 'src/c_lexer.lex', but the files were actually in
+  './c_lexer.lex' or './c_lexer.c'
+
+Exactly where and how you build things is entirely up
+to you, but because of that the build process needs to
+be part of the API of your tool. So my part of the contract
+is that I will only call 'make bin/c_lexer', and you get
+the flexibility to do whatever build steps you want.
+In exchange for that freedom, the target must be
+called exactly 'bin/c_lexer'. (I'd observe that 'bin/c_lexer;
+doesn't really even need to be a binary - it could be
+a script that calls another executable, and I'd be
+none the wiser (nor would I care)).
+
+-
+
+The output you have consists of a lot of data (as usual). There
+are a number of test-cases, which cover most of the tokens (I
+wasn't trying to be exhaustive), with each test-case covering
+a group of token types. A restriction on the input is that it
+must be valid C90, so all of these are compiled with:
+
+   ```
+   gcc -std=c90 -pedantic -W -Wall -Werror
+   ```
+
+Thanks to jeg114 (IIRC) for pointing out that gcc does not
+enforce the old rules by default, even if you use the `-std=c90`
+flag.
+
+The results of each run are:
+
+ - *.run.out : What came out of your lexer
+ - *.run.err : Anything you printed to stderr (might be useful to you, could be empty)
+ - *.cmp.out : The result of comparing your output against a reference output, as .csv
+ - *.cmp.err : Messages printed during comparison
+
+I suggest you do something like:
+
+    ```
+    cat *.cmp.out
+    ```
+
+to see where any errors are, then open the relevant .cmp.out to dig
+into the details.
+
+I have sampled the failing cases to check that the reference version
+is correct. In one case it was my error (floating-point regex, sigh),
+but in all others I sampled, my opionion is that the reference is
+correct.
+
+Note that the token type field is different for everyone, so the
+comparer simply checks that there is an isomorphism (one-to-one
+function) from the token type of the reference to your token
+type.
+
+-
+
+One common issue was the file handling. Not everyone tried that,
+which is fair enough. However, a number of people were stripping
+the quotation marks surrounding the file. You can inferr that the
+file-names should be quoted in two ways:
+
+- The fact that they are quoted in the cpp output indicates there
+  is a problem that is being solved.
+
+- If you imagine how I will parse your lexer's output, how can I
+  reliably extract the filename?
+
+The first one is because the pre-processor needs to handle filenames
+with spaces, so it needs some kind of quotation or escaping
+mechanism. Quoted strings are a reliable way of doing that. For
+the second one, think about what the output is if you output
+the empty (default) filename "" without the quotes:
+
+    x Identifier TId 1  1
+
+I said that the parts of the line were white-space delimited, so
+this looks like a source file name of "1".
+
+I relented a bit and added logic that says that if there is
+filename that is a number, and there is no line number, then
+there is an empty filename.
+
+-
+
+A problem some people had was capatialisation of the token class.
+I didn't do anything to fix this - without further information,
+the assumption should be that capitalisation matters.
+
+-
+
+A few people put flex aside, and wrote their own. This is interesting
+to do, but risky. It may appear to be easy to write a lexer, but there
+is a lot to trip you up. At the very least, a good regular expression
+library is needed - rolling your own regex lib is not going to end
+well, unless you have a lot of time to spend on it.

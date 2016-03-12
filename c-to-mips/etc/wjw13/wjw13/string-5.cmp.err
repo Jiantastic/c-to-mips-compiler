@@ -1,0 +1,36 @@
+  1 : text=@const@, class=@Keyword@, type=@Const@, line=1, srcF=@""@, srcL=1
+  2 : text=@char@, class=@Keyword@, type=@Char@, line=1, srcF=@""@, srcL=1
+  3 : text=@*@, class=@Operator@, type=@Asterix@, line=1, srcF=@""@, srcL=1
+  4 : text=@x@, class=@Identifier@, type=@Identifier@, line=1, srcF=@""@, srcL=1
+  5 : text=@=@, class=@Operator@, type=@Assign@, line=1, srcF=@""@, srcL=1
+  6 : text=@"  X \t   "@, class=@StringLiteral@, type=@StringLiteral@, line=1, srcF=@""@, srcL=1
+  7 : text=@;@, class=@Operator@, type=@SemiColon@, line=1, srcF=@""@, srcL=1
+Read 7 lines from file 'test-data/ref/string-5.run.out'
+  1 : text=@const@, class=@Keyword@, type=@TConst@, line=1, srcF=@@, srcL=-1
+  2 : text=@char@, class=@Keyword@, type=@TChar@, line=1, srcF=@@, srcL=-1
+  3 : text=@*@, class=@Operator@, type=@TStar@, line=1, srcF=@@, srcL=-1
+  4 : text=@x@, class=@Identifier@, type=@TIdentifier@, line=1, srcF=@@, srcL=-1
+  5 : text=@=@, class=@Operator@, type=@TEqual@, line=1, srcF=@@, srcL=-1
+  6 : text=@X@, class=@\t@, type=@StringLiteral@, line=0, srcF=@@, srcL=-1
+  7 : text=@;@, class=@Operator@, type=@TokenType@, line=1, srcF=@@, srcL=-1
+Read 7 lines from file 'output/wjw13/string-5.run.out'
+Reference: 7 lines, Got: 7 lines.
+Token 1 : Expected sourceFile @""@@, got @@
+Token 1 : Expected sourceLine 1, got -1
+Token 2 : Expected sourceFile @""@@, got @@
+Token 2 : Expected sourceLine 1, got -1
+Token 3 : Expected sourceFile @""@@, got @@
+Token 3 : Expected sourceLine 1, got -1
+Token 4 : Expected sourceFile @""@@, got @@
+Token 4 : Expected sourceLine 1, got -1
+Token 5 : Expected sourceFile @""@@, got @@
+Token 5 : Expected sourceLine 1, got -1
+Token 6 : Expected text @"  X \t   "@
+Token 6 : Expected class @StringLiteral@, got @\t@
+Token 6 : line number is reported as 0
+Token 6 : Expected sourceFile @""@@, got @@
+Token 6 : Expected sourceLine 1, got -1
+Token 7 : Expected sourceFile @""@@, got @@
+Token 7 : Expected sourceLine 1, got -1
+    User,             Test, Tokens,   Text,  Class,   Type, LineNo, SrcFil, SrcLin
+   wjw13,         string-5,      7,   85.7,   85.7,  100.0,   85.7,    0.0,    0.0

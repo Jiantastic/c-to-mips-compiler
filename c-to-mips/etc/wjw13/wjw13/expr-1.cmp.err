@@ -1,0 +1,227 @@
+  1 : text=@int@, class=@Keyword@, type=@Int@, line=2, srcF=@""@, srcL=2
+  2 : text=@f@, class=@Identifier@, type=@Identifier@, line=2, srcF=@""@, srcL=2
+  3 : text=@(@, class=@Operator@, type=@ParenLeft@, line=2, srcF=@""@, srcL=2
+  4 : text=@)@, class=@Operator@, type=@ParenRight@, line=2, srcF=@""@, srcL=2
+  5 : text=@{@, class=@Operator@, type=@CurlyLeft@, line=3, srcF=@""@, srcL=3
+  6 : text=@int@, class=@Keyword@, type=@Int@, line=4, srcF=@""@, srcL=4
+  7 : text=@x@, class=@Identifier@, type=@Identifier@, line=4, srcF=@""@, srcL=4
+  8 : text=@=@, class=@Operator@, type=@Assign@, line=4, srcF=@""@, srcL=4
+  9 : text=@0@, class=@Constant@, type=@IntegerConstant@, line=4, srcF=@""@, srcL=4
+  10 : text=@+@, class=@Operator@, type=@Plus@, line=4, srcF=@""@, srcL=4
+  11 : text=@0@, class=@Constant@, type=@IntegerConstant@, line=4, srcF=@""@, srcL=4
+  12 : text=@;@, class=@Operator@, type=@SemiColon@, line=4, srcF=@""@, srcL=4
+  13 : text=@int@, class=@Keyword@, type=@Int@, line=5, srcF=@""@, srcL=5
+  14 : text=@u@, class=@Identifier@, type=@Identifier@, line=5, srcF=@""@, srcL=5
+  15 : text=@=@, class=@Operator@, type=@Assign@, line=5, srcF=@""@, srcL=5
+  16 : text=@x@, class=@Identifier@, type=@Identifier@, line=5, srcF=@""@, srcL=5
+  17 : text=@-@, class=@Operator@, type=@Minus@, line=5, srcF=@""@, srcL=5
+  18 : text=@x@, class=@Identifier@, type=@Identifier@, line=5, srcF=@""@, srcL=5
+  19 : text=@;@, class=@Operator@, type=@SemiColon@, line=5, srcF=@""@, srcL=5
+  20 : text=@int@, class=@Keyword@, type=@Int@, line=6, srcF=@""@, srcL=6
+  21 : text=@z@, class=@Identifier@, type=@Identifier@, line=6, srcF=@""@, srcL=6
+  22 : text=@=@, class=@Operator@, type=@Assign@, line=6, srcF=@""@, srcL=6
+  23 : text=@u@, class=@Identifier@, type=@Identifier@, line=6, srcF=@""@, srcL=6
+  24 : text=@*@, class=@Operator@, type=@Asterix@, line=6, srcF=@""@, srcL=6
+  25 : text=@u@, class=@Identifier@, type=@Identifier@, line=6, srcF=@""@, srcL=6
+  26 : text=@;@, class=@Operator@, type=@SemiColon@, line=6, srcF=@""@, srcL=6
+  27 : text=@int@, class=@Keyword@, type=@Int@, line=7, srcF=@""@, srcL=7
+  28 : text=@y@, class=@Identifier@, type=@Identifier@, line=7, srcF=@""@, srcL=7
+  29 : text=@=@, class=@Operator@, type=@Assign@, line=7, srcF=@""@, srcL=7
+  30 : text=@z@, class=@Identifier@, type=@Identifier@, line=7, srcF=@""@, srcL=7
+  31 : text=@/@, class=@Operator@, type=@Divide@, line=7, srcF=@""@, srcL=7
+  32 : text=@x@, class=@Identifier@, type=@Identifier@, line=7, srcF=@""@, srcL=7
+  33 : text=@;@, class=@Operator@, type=@SemiColon@, line=7, srcF=@""@, srcL=7
+  34 : text=@return@, class=@Keyword@, type=@Return@, line=8, srcF=@""@, srcL=8
+  35 : text=@y@, class=@Identifier@, type=@Identifier@, line=8, srcF=@""@, srcL=8
+  36 : text=@;@, class=@Operator@, type=@SemiColon@, line=8, srcF=@""@, srcL=8
+  37 : text=@}@, class=@Operator@, type=@CurlyRight@, line=9, srcF=@""@, srcL=9
+Read 37 lines from file 'test-data/ref/expr-1.run.out'
+  1 : text=@int@, class=@Keyword@, type=@TInt@, line=2, srcF=@@, srcL=-1
+  2 : text=@f@, class=@Identifier@, type=@TIdentifier@, line=2, srcF=@@, srcL=-1
+  3 : text=@(@, class=@Operator@, type=@TLeftRoundBracket@, line=2, srcF=@@, srcL=-1
+  4 : text=@)@, class=@Operator@, type=@TRightRoundBracket@, line=2, srcF=@@, srcL=-1
+  5 : text=@{@, class=@Operator@, type=@TokenType@, line=3, srcF=@@, srcL=-1
+  6 : text=@int@, class=@Keyword@, type=@TInt@, line=4, srcF=@@, srcL=-1
+  7 : text=@x@, class=@Identifier@, type=@TIdentifier@, line=4, srcF=@@, srcL=-1
+  8 : text=@=@, class=@Operator@, type=@TEqual@, line=4, srcF=@@, srcL=-1
+  9 : text=@0@, class=@Constant@, type=@TIntegerConstant@, line=4, srcF=@@, srcL=-1
+  10 : text=@+0@, class=@Constant@, type=@TIntegerConstant@, line=4, srcF=@@, srcL=-1
+  11 : text=@;@, class=@Operator@, type=@TokenType@, line=4, srcF=@@, srcL=-1
+  12 : text=@int@, class=@Keyword@, type=@TInt@, line=5, srcF=@@, srcL=-1
+  13 : text=@u@, class=@Identifier@, type=@TIdentifier@, line=5, srcF=@@, srcL=-1
+  14 : text=@=@, class=@Operator@, type=@TEqual@, line=5, srcF=@@, srcL=-1
+  15 : text=@x@, class=@Identifier@, type=@TIdentifier@, line=5, srcF=@@, srcL=-1
+  16 : text=@-@, class=@Operator@, type=@TMinus@, line=5, srcF=@@, srcL=-1
+  17 : text=@x@, class=@Identifier@, type=@TIdentifier@, line=5, srcF=@@, srcL=-1
+  18 : text=@;@, class=@Operator@, type=@TokenType@, line=5, srcF=@@, srcL=-1
+  19 : text=@int@, class=@Keyword@, type=@TInt@, line=6, srcF=@@, srcL=-1
+  20 : text=@z@, class=@Identifier@, type=@TIdentifier@, line=6, srcF=@@, srcL=-1
+  21 : text=@=@, class=@Operator@, type=@TEqual@, line=6, srcF=@@, srcL=-1
+  22 : text=@u@, class=@Identifier@, type=@TIdentifier@, line=6, srcF=@@, srcL=-1
+  23 : text=@*@, class=@Operator@, type=@TStar@, line=6, srcF=@@, srcL=-1
+  24 : text=@u@, class=@Identifier@, type=@TIdentifier@, line=6, srcF=@@, srcL=-1
+  25 : text=@;@, class=@Operator@, type=@TokenType@, line=6, srcF=@@, srcL=-1
+  26 : text=@int@, class=@Keyword@, type=@TInt@, line=7, srcF=@@, srcL=-1
+  27 : text=@y@, class=@Identifier@, type=@TIdentifier@, line=7, srcF=@@, srcL=-1
+  28 : text=@=@, class=@Operator@, type=@TEqual@, line=7, srcF=@@, srcL=-1
+  29 : text=@z@, class=@Identifier@, type=@TIdentifier@, line=7, srcF=@@, srcL=-1
+  30 : text=@/@, class=@Operator@, type=@TForwardSlash@, line=7, srcF=@@, srcL=-1
+  31 : text=@x@, class=@Identifier@, type=@TIdentifier@, line=7, srcF=@@, srcL=-1
+  32 : text=@;@, class=@Operator@, type=@TokenType@, line=7, srcF=@@, srcL=-1
+  33 : text=@return@, class=@Keyword@, type=@TReturn@, line=8, srcF=@@, srcL=-1
+  34 : text=@y@, class=@Identifier@, type=@TIdentifier@, line=8, srcF=@@, srcL=-1
+  35 : text=@;@, class=@Operator@, type=@TokenType@, line=8, srcF=@@, srcL=-1
+  36 : text=@}@, class=@Operator@, type=@TokenType@, line=9, srcF=@@, srcL=-1
+Read 36 lines from file 'output/wjw13/expr-1.run.out'
+Reference: 37 lines, Got: 36 lines.
+Token 1 : Expected sourceFile @""@@, got @@
+Token 1 : Expected sourceLine 2, got -1
+Token 2 : Expected sourceFile @""@@, got @@
+Token 2 : Expected sourceLine 2, got -1
+Token 3 : Expected sourceFile @""@@, got @@
+Token 3 : Expected sourceLine 2, got -1
+Token 4 : Expected sourceFile @""@@, got @@
+Token 4 : Expected sourceLine 2, got -1
+Token 5 : Expected sourceFile @""@@, got @@
+Token 5 : Expected sourceLine 3, got -1
+Token 6 : Expected sourceFile @""@@, got @@
+Token 6 : Expected sourceLine 4, got -1
+Token 7 : Expected sourceFile @""@@, got @@
+Token 7 : Expected sourceLine 4, got -1
+Token 8 : Expected sourceFile @""@@, got @@
+Token 8 : Expected sourceLine 4, got -1
+Token 9 : Expected sourceFile @""@@, got @@
+Token 9 : Expected sourceLine 4, got -1
+Token 10 : Expected text @+@
+Token 10 : Expected class @Operator@, got @Constant@
+Token 10 : Expected sourceFile @""@@, got @@
+Token 10 : Expected sourceLine 4, got -1
+Token 11 : Expected text @0@
+Token 11 : Expected class @Constant@, got @Operator@
+Token 11 : Expected token type TIntegerConstant, to match previous token on line 9
+Token 11 : Expected sourceFile @""@@, got @@
+Token 11 : Expected sourceLine 4, got -1
+Token 12 : Expected text @;@
+Token 12 : Expected class @Operator@, got @Keyword@
+Token 12 : line number is reported as 5
+Token 12 : Expected sourceFile @""@@, got @@
+Token 12 : Expected sourceLine 4, got -1
+Token 13 : Expected text @int@
+Token 13 : Expected class @Keyword@, got @Identifier@
+Token 13 : Expected token type TInt, to match previous token on line 1
+Token 13 : Expected sourceFile @""@@, got @@
+Token 13 : Expected sourceLine 5, got -1
+Token 14 : Expected text @u@
+Token 14 : Expected class @Identifier@, got @Operator@
+Token 14 : Expected token type TIdentifier, to match previous token on line 2
+Token 14 : Expected sourceFile @""@@, got @@
+Token 14 : Expected sourceLine 5, got -1
+Token 15 : Expected text @=@
+Token 15 : Expected class @Operator@, got @Identifier@
+Token 15 : Expected token type TEqual, to match previous token on line 8
+Token 15 : Expected sourceFile @""@@, got @@
+Token 15 : Expected sourceLine 5, got -1
+Token 16 : Expected text @x@
+Token 16 : Expected class @Identifier@, got @Operator@
+Token 16 : Expected token type TIdentifier, to match previous token on line 2
+Token 16 : Expected sourceFile @""@@, got @@
+Token 16 : Expected sourceLine 5, got -1
+Token 17 : Expected text @-@
+Token 17 : Expected class @Operator@, got @Identifier@
+Token 17 : Expected sourceFile @""@@, got @@
+Token 17 : Expected sourceLine 5, got -1
+Token 18 : Expected text @x@
+Token 18 : Expected class @Identifier@, got @Operator@
+Token 18 : Expected token type TIdentifier, to match previous token on line 2
+Token 18 : Expected sourceFile @""@@, got @@
+Token 18 : Expected sourceLine 5, got -1
+Token 19 : Expected text @;@
+Token 19 : Expected class @Operator@, got @Keyword@
+Token 19 : line number is reported as 6
+Token 19 : Expected sourceFile @""@@, got @@
+Token 19 : Expected sourceLine 5, got -1
+Token 20 : Expected text @int@
+Token 20 : Expected class @Keyword@, got @Identifier@
+Token 20 : Expected token type TInt, to match previous token on line 1
+Token 20 : Expected sourceFile @""@@, got @@
+Token 20 : Expected sourceLine 6, got -1
+Token 21 : Expected text @z@
+Token 21 : Expected class @Identifier@, got @Operator@
+Token 21 : Expected token type TIdentifier, to match previous token on line 2
+Token 21 : Expected sourceFile @""@@, got @@
+Token 21 : Expected sourceLine 6, got -1
+Token 22 : Expected text @=@
+Token 22 : Expected class @Operator@, got @Identifier@
+Token 22 : Expected token type TEqual, to match previous token on line 8
+Token 22 : Expected sourceFile @""@@, got @@
+Token 22 : Expected sourceLine 6, got -1
+Token 23 : Expected text @u@
+Token 23 : Expected class @Identifier@, got @Operator@
+Token 23 : Expected token type TIdentifier, to match previous token on line 2
+Token 23 : Expected sourceFile @""@@, got @@
+Token 23 : Expected sourceLine 6, got -1
+Token 24 : Expected text @*@
+Token 24 : Expected class @Operator@, got @Identifier@
+Token 24 : Expected sourceFile @""@@, got @@
+Token 24 : Expected sourceLine 6, got -1
+Token 25 : Expected text @u@
+Token 25 : Expected class @Identifier@, got @Operator@
+Token 25 : Expected token type TIdentifier, to match previous token on line 2
+Token 25 : Expected sourceFile @""@@, got @@
+Token 25 : Expected sourceLine 6, got -1
+Token 26 : Expected text @;@
+Token 26 : Expected class @Operator@, got @Keyword@
+Token 26 : line number is reported as 7
+Token 26 : Expected sourceFile @""@@, got @@
+Token 26 : Expected sourceLine 6, got -1
+Token 27 : Expected text @int@
+Token 27 : Expected class @Keyword@, got @Identifier@
+Token 27 : Expected token type TInt, to match previous token on line 1
+Token 27 : Expected sourceFile @""@@, got @@
+Token 27 : Expected sourceLine 7, got -1
+Token 28 : Expected text @y@
+Token 28 : Expected class @Identifier@, got @Operator@
+Token 28 : Expected token type TIdentifier, to match previous token on line 2
+Token 28 : Expected sourceFile @""@@, got @@
+Token 28 : Expected sourceLine 7, got -1
+Token 29 : Expected text @=@
+Token 29 : Expected class @Operator@, got @Identifier@
+Token 29 : Expected token type TEqual, to match previous token on line 8
+Token 29 : Expected sourceFile @""@@, got @@
+Token 29 : Expected sourceLine 7, got -1
+Token 30 : Expected text @z@
+Token 30 : Expected class @Identifier@, got @Operator@
+Token 30 : Expected token type TIdentifier, to match previous token on line 2
+Token 30 : Expected sourceFile @""@@, got @@
+Token 30 : Expected sourceLine 7, got -1
+Token 31 : Expected text @/@
+Token 31 : Expected class @Operator@, got @Identifier@
+Token 31 : Expected sourceFile @""@@, got @@
+Token 31 : Expected sourceLine 7, got -1
+Token 32 : Expected text @x@
+Token 32 : Expected class @Identifier@, got @Operator@
+Token 32 : Expected token type TIdentifier, to match previous token on line 2
+Token 32 : Expected sourceFile @""@@, got @@
+Token 32 : Expected sourceLine 7, got -1
+Token 33 : Expected text @;@
+Token 33 : Expected class @Operator@, got @Keyword@
+Token 33 : line number is reported as 8
+Token 33 : Expected token type TInt, to match previous token on line 12
+Token 33 : Expected sourceFile @""@@, got @@
+Token 33 : Expected sourceLine 7, got -1
+Token 34 : Expected text @return@
+Token 34 : Expected class @Keyword@, got @Identifier@
+Token 34 : Expected sourceFile @""@@, got @@
+Token 34 : Expected sourceLine 8, got -1
+Token 35 : Expected text @y@
+Token 35 : Expected class @Identifier@, got @Operator@
+Token 35 : Expected token type TIdentifier, to match previous token on line 2
+Token 35 : Expected sourceFile @""@@, got @@
+Token 35 : Expected sourceLine 8, got -1
+Token 36 : Expected text @;@
+Token 36 : line number is reported as 9
+Token 36 : Expected token type TInt, to match previous token on line 12
+Token 36 : Expected sourceFile @""@@, got @@
+Token 36 : Expected sourceLine 8, got -1
+    User,             Test, Tokens,   Text,  Class,   Type, LineNo, SrcFil, SrcLin
+   wjw13,           expr-1,     37,   24.3,   27.0,   45.9,   83.8,    0.0,    0.0
