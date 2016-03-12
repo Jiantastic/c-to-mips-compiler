@@ -67,6 +67,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <stack>
+#include "ast.h"
 #include "ast.cpp"
 
 int yylex();
@@ -74,9 +76,11 @@ int yyerror(const char* s);
 char* identifier_value;
 int scope_counter = 0;
 int is_function = 0;
+std::stack<Expression*> mystack;
+mipsRegisters mips32;
 
 
-#line 80 "c_bison.tab.c" /* yacc.c:339  */
+#line 84 "c_bison.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -178,14 +182,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 16 "src/c_bison.y" /* yacc.c:355  */
+#line 20 "src/c_bison.y" /* yacc.c:355  */
 
         int number;
         float float_num;
         char* str;
         class Expression* exp;
 
-#line 189 "c_bison.tab.c" /* yacc.c:355  */
+#line 193 "c_bison.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -202,7 +206,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 206 "c_bison.tab.c" /* yacc.c:358  */
+#line 210 "c_bison.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -505,24 +509,24 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    72,    72,    73,    76,    77,    86,    87,    88,    89,
-      98,    99,   100,   101,   102,   103,   104,   105,   106,   107,
-     108,   113,   120,   121,   126,   127,   133,   134,   137,   138,
-     139,   140,   141,   142,   148,   149,   153,   154,   155,   156,
-     157,   158,   159,   160,   163,   164,   165,   166,   167,   168,
-     171,   172,   179,   180,   183,   184,   192,   193,   198,   199,
-     204,   205,   210,   211,   212,   217,   218,   219,   220,   221,
-     226,   227,   228,   233,   234,   235,   240,   241,   242,   243,
-     252,   256,   257,   258,   259,   271,   272,   273,   274,   275,
-     276,   282,   283,   284,   289,   290,   291,   292,   297,   298,
-     303,   304,   305,   312,   313,   314,   315,   320,   321,   322,
-     323,   324,   329,   330,   333,   334,   341,   342,   352,   353,
-     354,   355,   356,   357,   360,   361,   362,   363,   364,   377,
-     378,   379,   380,   381,   382,   383,   384,   385,   388,   389,
-     394,   395,   398,   399,   405,   406,   409,   410,   411,   412,
-     415,   416,   419,   420,   421,   422,   423,   424,   425,   430,
-     431,   434,   435,   446,   452,   455,   456,   462,   463,   464,
-     467,   468,   474,   475,   476,   477,   483,   491,   495
+       0,    73,    73,    74,    77,    78,    87,    88,    89,    90,
+      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
+     109,   114,   121,   125,   130,   131,   175,   176,   179,   180,
+     181,   182,   183,   184,   190,   191,   195,   196,   197,   198,
+     199,   200,   201,   202,   205,   206,   207,   208,   209,   210,
+     213,   214,   221,   222,   225,   226,   234,   235,   240,   241,
+     246,   247,   252,   253,   254,   259,   260,   261,   262,   263,
+     268,   269,   270,   275,   276,   287,   292,   293,   294,   295,
+     304,   308,   309,   310,   311,   323,   324,   325,   326,   327,
+     328,   334,   335,   336,   341,   342,   343,   344,   349,   350,
+     355,   356,   357,   364,   365,   366,   367,   372,   373,   374,
+     375,   376,   381,   382,   385,   386,   393,   394,   406,   407,
+     408,   409,   410,   411,   414,   415,   416,   417,   418,   431,
+     432,   433,   434,   435,   436,   437,   438,   439,   442,   443,
+     448,   449,   452,   453,   459,   460,   463,   464,   465,   466,
+     469,   470,   473,   474,   475,   476,   477,   478,   479,   484,
+     485,   488,   489,   500,   509,   512,   513,   519,   520,   521,
+     524,   525,   531,   532,   533,   534,   540,   548,   552
 };
 #endif
 
@@ -1642,123 +1646,293 @@ yyreduce:
   switch (yyn)
     {
         case 6:
-#line 86 "src/c_bison.y" /* yacc.c:1646  */
-    {(yyval.exp) = new IdentifierExpression((yyvsp[0].str));}
-#line 1648 "c_bison.tab.c" /* yacc.c:1646  */
+#line 87 "src/c_bison.y" /* yacc.c:1646  */
+    {(yyval.exp) = new IdentifierExpression((yyvsp[0].str));mystack.push((yyval.exp));}
+#line 1652 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 87 "src/c_bison.y" /* yacc.c:1646  */
-    {(yyval.exp) = new ConstantExpression((yyvsp[0].number));}
-#line 1654 "c_bison.tab.c" /* yacc.c:1646  */
+#line 88 "src/c_bison.y" /* yacc.c:1646  */
+    {(yyval.exp) = new ConstantExpression((yyvsp[0].number));mystack.push((yyval.exp));}
+#line 1658 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 22:
+#line 121 "src/c_bison.y" /* yacc.c:1646  */
+    { 
+                                                            (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"assignment_expression");
+
+                                                          }
+#line 1667 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 24:
+#line 130 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"conditional_expression"); mystack.push((yyval.exp));}
+#line 1673 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 25:
+#line 131 "src/c_bison.y" /* yacc.c:1646  */
+    {
+                                                                                      Expression* exp1,exp2;
+                                                                                      std::string var;
+                                                                                      int x;
+                                                                                      bool testCase = false;
+                                                                                      exp1 = (yyvsp[-2].exp);
+                                                                                      exp2 = (yyvsp[0].exp);
+                                                                                      while(!testCase){
+                                                                                       if(exp1->getType() == "Identifier"){
+                                                                                          var = exp1->getName();
+                                                                                          testCase = true;
+                                                                                        }
+                                                                                        else{
+                                                                                          exp1 = exp1->getNext();
+                                                                                        }
+                                                                                        
+                                                                                      }
+                                                                                      testCase = false;
+                                                                                      while(!testCase){
+                                                                                        if(exp2->getType() == "Constant"){
+                                                                                          x = exp2->getConstant();
+                                                                                          testCase = true;
+                                                                                        }
+                                                                                        else{
+                                                                                          exp2 = exp2->getNext();
+                                                                                        }
+                                                                                        
+                                                                                      }
+
+                                                                                      int finder = mips32.registerLookup(var);
+                                                                                      if(finder == -1){
+                                                                                        std::cout << "syntax error" << std::endl;
+                                                                                        return -1;
+                                                                                      }
+                                                                                      else{
+                                                                                        mips32.Bind(x,finder,var);
+                                                                                      }
+                                                                                      mips32.printAllRegisters();
+                                                                                    }
+#line 1717 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 26:
+#line 175 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"logical_or_expression");mystack.push((yyval.exp));}
+#line 1723 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 137 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new PostfixExpression((yyvsp[0].exp));}
-#line 1660 "c_bison.tab.c" /* yacc.c:1646  */
+#line 179 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"postfix_expression");mystack.push((yyval.exp));}
+#line 1729 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 34:
+#line 190 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"logical_and_expression");mystack.push((yyval.exp));}
+#line 1735 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 153 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new PrimaryExpression((yyvsp[0].exp));}
-#line 1666 "c_bison.tab.c" /* yacc.c:1646  */
+#line 195 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"primary_expression");mystack.push((yyval.exp));}
+#line 1741 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 171 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp));}
-#line 1672 "c_bison.tab.c" /* yacc.c:1646  */
+#line 213 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"unary_expression");mystack.push((yyval.exp));}
+#line 1747 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 52:
+#line 221 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"inclusive_or_expression");mystack.push((yyval.exp));}
+#line 1753 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 56:
+#line 234 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"exclusive_or_expression");mystack.push((yyval.exp));}
+#line 1759 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 58:
+#line 240 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"and_expression");mystack.push((yyval.exp));}
+#line 1765 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 60:
+#line 246 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"equality_expression");mystack.push((yyval.exp));}
+#line 1771 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 62:
+#line 252 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"relational_expression");mystack.push((yyval.exp));}
+#line 1777 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 65:
+#line 259 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"shift_expression");mystack.push((yyval.exp));}
+#line 1783 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 226 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyvsp[0].exp)->test_print();}
-#line 1678 "c_bison.tab.c" /* yacc.c:1646  */
+#line 268 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"additive_expression");mystack.push((yyval.exp));}
+#line 1789 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 73:
+#line 275 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"multiplicative_expression");mystack.push((yyval.exp));}
+#line 1795 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 234 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new Plus((yyvsp[-2].exp),(yyvsp[0].exp));}
-#line 1684 "c_bison.tab.c" /* yacc.c:1646  */
+#line 276 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"+",(yyvsp[0].exp));mystack.push((yyval.exp));
+                                                                              std::cout << "ADDITION COMPLETE" << std::endl;
+                                                                              mystack.push((yyval.exp));
+                                                                              std::cout << "Made it!" << std::endl;
+                                                                              while (!mystack.empty())
+                                                                              {
+                                                                                mystack.top()->printer();
+                                                                                 mystack.pop();
+                                                                              }
+                                                                              std::cout << std::endl;
+                                                                           }
+#line 1811 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 75:
+#line 287 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"-",(yyvsp[0].exp));mystack.push((yyval.exp));}
+#line 1817 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 240 "src/c_bison.y" /* yacc.c:1646  */
-    {(yyval.exp) = new CastExpression((yyvsp[0].exp));}
-#line 1690 "c_bison.tab.c" /* yacc.c:1646  */
+#line 292 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"cast_expression");mystack.push((yyval.exp));}
+#line 1823 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 241 "src/c_bison.y" /* yacc.c:1646  */
-    {(yyval.exp) = new Multiply((yyvsp[-2].exp),(yyvsp[0].exp));}
-#line 1696 "c_bison.tab.c" /* yacc.c:1646  */
+#line 293 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"*",(yyvsp[0].exp));mystack.push((yyval.exp));}
+#line 1829 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 78:
+#line 294 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"/",(yyvsp[0].exp));mystack.push((yyval.exp));}
+#line 1835 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 79:
+#line 295 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"%",(yyvsp[0].exp));mystack.push((yyval.exp));}
+#line 1841 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 117:
-#line 342 "src/c_bison.y" /* yacc.c:1646  */
+#line 394 "src/c_bison.y" /* yacc.c:1646  */
     {
+
+
                                                                       for(int i=0;i<scope_counter;i++){
                                                                         std::cout << "    " ;
                                                                       }
                                                                       std::cout << "VARIABLE : " << identifier_value << std::endl;
                                                                    }
-#line 1707 "c_bison.tab.c" /* yacc.c:1646  */
+#line 1854 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 143:
-#line 399 "src/c_bison.y" /* yacc.c:1646  */
+#line 453 "src/c_bison.y" /* yacc.c:1646  */
     {std::cout << "hohohoohoh" << std::endl;}
-#line 1713 "c_bison.tab.c" /* yacc.c:1646  */
+#line 1860 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 152:
-#line 419 "src/c_bison.y" /* yacc.c:1646  */
-    { identifier_value = (yyvsp[0].str); }
-#line 1719 "c_bison.tab.c" /* yacc.c:1646  */
+#line 473 "src/c_bison.y" /* yacc.c:1646  */
+    {identifier_value = (yyvsp[0].str);}
+#line 1866 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 156:
+#line 477 "src/c_bison.y" /* yacc.c:1646  */
+    {std::cout << "asdasdasdasdsa" << std::endl;}
+#line 1872 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 157:
+#line 478 "src/c_bison.y" /* yacc.c:1646  */
+    {std::cout << "sqqqqqqqq" << std::endl;}
+#line 1878 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 158:
+#line 479 "src/c_bison.y" /* yacc.c:1646  */
+    {std::cout << "pppppppppppppppp" << std::endl;}
+#line 1884 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 163:
-#line 446 "src/c_bison.y" /* yacc.c:1646  */
+#line 500 "src/c_bison.y" /* yacc.c:1646  */
     {
+                                                                              int reg = mips32.findEmptyRegister();
+                                                                              mips32.Bind(0,reg,(yyvsp[0].str));
+                                                                              mips32.printAllRegisters();
                                                                               for(int i=0;i<scope_counter;i++){
                                                                                 std::cout << "    " ;
                                                                               }
                                                                               std::cout << "    PARAMS : " << (yyvsp[0].str) << std::endl;
                                                                           }
-#line 1730 "c_bison.tab.c" /* yacc.c:1646  */
+#line 1898 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 173:
+#line 532 "src/c_bison.y" /* yacc.c:1646  */
+    {std::cout << "function definition compound statemnet" << std::endl;}
+#line 1904 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 176:
-#line 483 "src/c_bison.y" /* yacc.c:1646  */
+#line 540 "src/c_bison.y" /* yacc.c:1646  */
     {
                             for(int i=0;i<scope_counter;i++){
                               std::cout << "    " ;
                             }
                             scope_counter++; std::cout << "SCOPE" << std::endl;
                          }
-#line 1741 "c_bison.tab.c" /* yacc.c:1646  */
+#line 1915 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 177:
-#line 491 "src/c_bison.y" /* yacc.c:1646  */
+#line 548 "src/c_bison.y" /* yacc.c:1646  */
     {scope_counter--;}
-#line 1747 "c_bison.tab.c" /* yacc.c:1646  */
+#line 1921 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 178:
-#line 495 "src/c_bison.y" /* yacc.c:1646  */
+#line 552 "src/c_bison.y" /* yacc.c:1646  */
     {
                         for(int i=0;i<scope_counter;i++){
                           std::cout << "    " ;
                         }
                         std::cout << "FUNCTION : " << identifier_value << std::endl;
                       }
-#line 1758 "c_bison.tab.c" /* yacc.c:1646  */
+#line 1932 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1762 "c_bison.tab.c" /* yacc.c:1646  */
+#line 1936 "c_bison.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1986,7 +2160,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 505 "src/c_bison.y" /* yacc.c:1906  */
+#line 562 "src/c_bison.y" /* yacc.c:1906  */
 
 
 int yyerror(const char* s){ 

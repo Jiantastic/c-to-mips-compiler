@@ -112,7 +112,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 16 "src/c_bison.y" /* yacc.c:1909  */
+#line 20 "src/c_bison.y" /* yacc.c:1909  */
 
         int number;
         float float_num;

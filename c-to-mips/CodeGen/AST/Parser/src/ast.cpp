@@ -1,117 +1,131 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <vector>
+#include "ast.h"
 
-/*
-IMPORTANT : consider using int counts to traverse the AST later on;
-create a pretty print function that traverses through the entire tree!
-]
+// Expression Handlers
 
-http://stackoverflow.com/questions/10739923/what-is-in-bison
-REVELATION : $$ is returned as $x !
+void Expression::getType(){
+	std::cout << "TYPE : Expression top-level node" << std::endl;
+}
 
-Example:
-shift_expression : additive_expression                                   { $1->test_print();}
-this means that $1 is whatever I returned to $$ for additive expressions!,
-in this case $$ = new Plus !
+const Expression* BinaryExpression::getLeft() const{
+	return left;
+}
+
+std::string BinaryExpression::getOperator() const{
+	return opCode;
+}
+
+const Expression* BinaryExpression::getRight() const{
+	return right;
+}
+
+const Expression* UnaryExpression::getNext() const{
+	return exp1;
+}
+
+std::string BinaryExpression::getType(){
+	return opCode;
+}
+
+void BinaryExpression::printer(){
+	std::cout << "TYPE: Binary Expression with operation " << getOperator() << std::endl;
+}
+
+void BinaryExpression::codeGen(){
+	
+}
+
+std::string UnaryExpression::getType(){
+	return type;
+}
+
+void UnaryExpression::printer(){
+	std::cout << "TYPE : UnaryExpression of " << type << std::endl;
+}
+
+std::string IdentifierExpression::getType(){
+	return "Identifier";
+}
+
+void IdentifierExpression::printer(){
+	std::cout << "TYPE: IdentifierExpression with identifier of " << id << std::endl;
+}
+
+std::string IdentifierExpression::getName(){
+	return id;
+}
+
+std::string ConstantExpression::getType(){
+	return "Constant";
+}
+
+int ConstantExpression::getConstant() const{
+	return num;
+}
+
+void ConstantExpression::printer(){
+	std::cout << "TYPE : ConstantExpression with constant of " << num << std::endl;
+}
 
 
-Consider using smart pointers
-http://stackoverflow.com/questions/106508/what-is-a-smart-pointer-and-when-should-i-use-one
 
-*/
+// CodeGen for operations +-*/
 
-// Base node class for AST
-class Node{
-public:
-	virtual ~Node() {}
-};
 
-// Expressions
-class Expression : public Node{
-public:
-	// const Type * getType();
-	// virtual evaluate() = 0;
-	// Render using current identifier-register bindings in ctxt
-	// void renderAssembly(const Context & ctxt) const;
-	virtual void test_print(){
-		std::cout << "Expression leader :)" << std::endl;
+// Statement Handlers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// MIPS Registers Handlers
+
+Register mipsRegisters::getValue(const int &registerName){
+	return registers[registerName];
+}
+
+void mipsRegisters::Bind(const int &val,const int &registerName,const std::string &var){
+	registers[registerName].value = val;
+	registers[registerName].varName = var;
+	registers[registerName].inUse = true;
+}
+
+int mipsRegisters::registerLookup(const std::string &varName){
+	for(int i=0;i<registers.size();i++){
+		if(registers[i].varName == varName){
+			return i;
+		}
 	}
-};
+}
 
-class UnaryExpression : public Expression{
-	Expression* exp1;
-public:
-	UnaryExpression(Expression* exp): exp1(exp) {}
-};
+void mipsRegisters::clearRegisters(){
+	registers.clear();
+	registers.resize(31);
+}
 
-class PrimaryExpression : public Expression{
-	Expression* exp1;
-public:
-	PrimaryExpression(Expression* exp): exp1(exp) {}
-};
-
-class PostfixExpression : public Expression{
-	Expression* exp1;
-public:
-	PostfixExpression(Expression* exp): exp1(exp) {}
-};
-
-class CastExpression : public Expression{
-	Expression* exp1;
-public:
-	CastExpression(Expression* exp): exp1(exp) {}
-};
-
-class IdentifierExpression : public Expression{
-	std::string id;
-public:
-	std::string getName() const;
-	IdentifierExpression(std::string str1){
-		id = str1;
+void mipsRegisters::printAllRegisters(){
+	for(int i=0;i<registers.size();i++){
+		std::cout << "REGISTER : " << i << " - " << registers[i].varName << " - " << registers[i].value << std::endl;
 	}
-};
+}
 
-class ConstantExpression : public Expression{
-	int num;
-public:
-	int getConstant() const;
-	ConstantExpression(const int &num1){
-		num = num1;
+int mipsRegisters::findEmptyRegister(){
+	for(int i=15;i<23;i++){
+		if(!registers[i].inUse){
+			return i;
+		}
 	}
-};
-
-
-// generic class for plus,minus for 2 operands and 1 operator
-class BinaryExpression : public Expression{
-private:
-	Expression *left;
-	Expression *right;
-	string opCode;
-public:
-	BinaryExpression(Expression *l,string op,Expression *r): left(l),opCode(op),right(r) {}
-	const Expression *getLeft() const;
-	string getOperator() const;
-	const Expression *getRight() const;
-};
-
-
-/*
-class Plus : public Expression{
-protected:
-	Expression *left;
-	Expression *right;
-public:
-	Plus(Expression *l,Expression *r): left(l),right(r) {}
-	void test_print(){
-		std::cout << "if this works, I understand what I am supposed to do :)" << std::endl;
-	}
-};
-
-class Multiply : public Expression{
-protected:
-	Expression *left;
-	Expression *right;
-public:
-	Multiply(Expression *l,Expression *r): left(l),right(r) {}
-};*/
+	return -1;
+}
