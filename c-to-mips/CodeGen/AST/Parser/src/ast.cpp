@@ -22,9 +22,6 @@ const Expression* BinaryExpression::getRight() const{
 	return right;
 }
 
-const Expression* UnaryExpression::getNext() const{
-	return exp1;
-}
 
 std::string BinaryExpression::getType(){
 	return opCode;
@@ -35,15 +32,7 @@ void BinaryExpression::printer(){
 }
 
 void BinaryExpression::codeGen(){
-	
-}
 
-std::string UnaryExpression::getType(){
-	return type;
-}
-
-void UnaryExpression::printer(){
-	std::cout << "TYPE : UnaryExpression of " << type << std::endl;
 }
 
 std::string IdentifierExpression::getType(){

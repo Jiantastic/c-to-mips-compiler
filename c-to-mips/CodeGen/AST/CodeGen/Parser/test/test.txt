@@ -1,0 +1,5 @@
+int asdas(int a,int b,int c){}
+int b(){
+}
+int c;
+

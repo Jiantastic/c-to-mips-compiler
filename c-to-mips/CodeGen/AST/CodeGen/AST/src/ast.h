@@ -47,8 +47,15 @@ public:
 	// virtual evaluate() = 0;
 	// Render using current identifier-register bindings in ctxt
 	// void codeGen(const Context & ctxt) const;
-	virtual std::string getType();
-	virtual void printer();
+	virtual std::string getType() const {}
+	virtual void printer() const {}
+	virtual const Expression *getLeft() const {}
+	virtual const Expression *getRight() const {}
+	virtual const Expression *getNext() const {}
+	virtual std::string getName() const {}
+	virtual int getConstant() const {}
+	//virtual void evaluate() const {}
+	//virtual int getSum() const {}
 
 };
 
@@ -63,19 +70,30 @@ public:
 	const Expression *getLeft() const;
 	std::string getOperator() const;
 	const Expression *getRight() const;
-	std::string getType();
-	void printer();
-	void codeGen();
+	std::string getType() const;
+	void printer() const;
+	void codeGen();			// takes left expression and right expression, does an operation on them ( according to opCode )
+//	void evaluate() const;
+	//int getSum() const;
 };
 
+class UnaryExpression : public Expression{
+	Expression* exp1 = NULL;
+	std::string type;
+public:
+	UnaryExpression(Expression* exp,std::string ExpType): exp1(exp),type(ExpType) {}
+	const Expression *getNext() const;
+	std::string getType() const;
+	void printer() const;
+};
 
 class IdentifierExpression : public Expression{
 	std::string id;
 public:
 	std::string getName() const;
 	IdentifierExpression(std::string str1): id(str1) {}
-	std::string getType();
-	void printer();
+	std::string getType() const;
+	void printer() const;
 };
 
 class ConstantExpression : public Expression{
@@ -83,8 +101,8 @@ class ConstantExpression : public Expression{
 public:
 	int getConstant() const;
 	ConstantExpression(const int &num1) : num(num1) {}
-	std::string getType();
-	void printer();
+	std::string getType() const;
+	void printer() const;
 };
 
 
@@ -160,7 +178,7 @@ public:
 class mipsRegisters{
 	std::vector<Register> registers;	// sets 31 registers to 0,make this public?
 public:
-	mipsRegisters():registers(31) {
+	mipsRegisters():registers(32) {
 		std::cout << "initializing mips32 registers" << std::endl;
 	}
 	Register getValue(const int &registerName);
