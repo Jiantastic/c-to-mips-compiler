@@ -67,19 +67,19 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
-#include <stack>
 #include <sstream>
 #include "ast.h"
 #include "ast.cpp"
-  std::stringstream ss;
 
 int yylex();
 int yyerror(const char* s);
 char* identifier_value;
 int scope_counter = 0;
 int is_function = 0;
-std::stack<Expression*> mystack;
+std::vector<Expression*> completeTree;
 mipsRegisters mips32;
+bool isMinus = false;
+bool debugMode = true;
 
 
 #line 86 "c_bison.tab.c" /* yacc.c:339  */
@@ -513,22 +513,22 @@ static const yytype_uint16 yyrline[] =
 {
        0,    90,    90,    91,    94,    95,   104,   105,   106,   107,
      116,   117,   118,   119,   120,   121,   122,   123,   124,   125,
-     126,   131,   138,   142,   147,   148,   154,   155,   158,   159,
-     160,   161,   162,   163,   169,   170,   174,   175,   176,   177,
-     178,   179,   180,   181,   184,   185,   186,   187,   188,   189,
-     192,   193,   200,   201,   204,   205,   213,   214,   219,   220,
-     225,   226,   231,   232,   233,   238,   239,   240,   241,   242,
-     247,   248,   249,   254,   255,   258,   267,   268,   269,   270,
-     279,   283,   284,   285,   286,   298,   299,   300,   301,   302,
-     303,   309,   310,   311,   316,   317,   318,   319,   324,   325,
-     330,   331,   332,   339,   340,   341,   342,   347,   348,   349,
-     350,   351,   356,   357,   360,   361,   368,   369,   379,   380,
-     381,   382,   383,   384,   387,   388,   389,   390,   391,   404,
-     405,   406,   407,   408,   409,   410,   411,   412,   415,   416,
-     421,   422,   425,   426,   508,   509,   512,   513,   514,   515,
-     518,   519,   522,   534,   535,   536,   537,   538,   539,   544,
-     545,   548,   549,   560,   569,   572,   573,   579,   580,   581,
-     584,   585,   591,   592,   593,   594,   600,   608,   612
+     126,   131,   138,   139,   144,   145,   274,   275,   278,   279,
+     280,   281,   282,   283,   289,   290,   294,   295,   296,   297,
+     298,   299,   300,   301,   304,   305,   306,   307,   308,   309,
+     312,   313,   320,   321,   324,   325,   333,   334,   339,   340,
+     345,   346,   351,   352,   353,   358,   359,   360,   361,   362,
+     367,   368,   369,   374,   375,   384,   389,   390,   391,   392,
+     401,   405,   406,   407,   408,   420,   421,   422,   423,   424,
+     425,   431,   432,   433,   438,   439,   440,   441,   446,   447,
+     452,   453,   454,   461,   462,   463,   464,   469,   470,   471,
+     472,   473,   478,   479,   482,   483,   490,   491,   504,   505,
+     506,   507,   508,   509,   512,   513,   514,   515,   516,   529,
+     530,   531,   532,   533,   534,   535,   536,   537,   540,   541,
+     546,   547,   550,   570,   699,   700,   703,   704,   705,   706,
+     709,   710,   713,   716,   717,   718,   719,   720,   721,   726,
+     727,   730,   731,   742,   754,   757,   758,   764,   765,   766,
+     769,   770,   776,   777,   778,   779,   785,   794,   803
 };
 #endif
 
@@ -1651,13 +1651,13 @@ yyreduce:
     {
         case 6:
 #line 104 "src/c_bison.y" /* yacc.c:1646  */
-    {(yyval.exp) = new IdentifierExpression((yyvsp[0].str));mystack.push((yyval.exp));}
+    {(yyval.exp) = new IdentifierExpression((yyvsp[0].str));completeTree.push_back((yyval.exp));}
 #line 1656 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
 #line 105 "src/c_bison.y" /* yacc.c:1646  */
-    {(yyval.exp) = new ConstantExpression((yyvsp[0].number));mystack.push((yyval.exp));}
+    {(yyval.exp) = new ConstantExpression((yyvsp[0].number));completeTree.push_back((yyval.exp));}
 #line 1662 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1729,347 +1729,519 @@ yyreduce:
 
   case 22:
 #line 138 "src/c_bison.y" /* yacc.c:1646  */
-    { 
-                                                            (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"assignment_expression");
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"assignment_expression"); }
+#line 1734 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
 
-                                                          }
-#line 1737 "c_bison.tab.c" /* yacc.c:1646  */
+  case 23:
+#line 139 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),",",(yyvsp[0].exp));}
+#line 1740 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 147 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"conditional_expression"); mystack.push((yyval.exp));}
-#line 1743 "c_bison.tab.c" /* yacc.c:1646  */
+#line 144 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"conditional_expression"); completeTree.push_back((yyval.exp));}
+#line 1746 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 148 "src/c_bison.y" /* yacc.c:1646  */
-    { std::cout << "testing" << std::endl;}
-#line 1749 "c_bison.tab.c" /* yacc.c:1646  */
+#line 145 "src/c_bison.y" /* yacc.c:1646  */
+    { 
+                                                                                            if(debugMode){
+                                                                                              std::cout << "testing" << std::endl;
+                                                                                            }
+                                                                                            int counter = 0;
+                                                                                            int holder;
+                                                                                            std::string binder;
+
+                                                                                            /* check if identifier $1 exists or not */
+                                                                                            bool checker = false;
+                                                                                            const Expression * temp1 = (yyvsp[-2].exp);
+                                                                                            while(!checker){
+                                                                                              if(temp1->getType() == "Identifier"){
+                                                                                                /* identifier has to exist prior to this */
+                                                                                                int v = mips32.registerLookup(temp1->getName());
+                                                                                                if(v == -1){
+                                                                                                  std::cout << "variable has to be declared before usage" << std::endl;
+                                                                                                  return -1;
+                                                                                                }
+                                                                                                else{
+                                                                                                  checker = true;
+                                                                                                }
+                                                                                              }
+                                                                                              else{
+                                                                                                temp1 = temp1->getNext();
+                                                                                              }
+                                                                                            }
+                                                                                          std::string strOp = "";
+                                                                                          std::vector<int> values;
+                                                                                          int sum = 0;
+                                                                                          for(int i=0;i<completeTree.size();i++){
+                                                                                            if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
+                                                                                              if(debugMode){
+                                                                                                completeTree[i]->printer();
+                                                                                              }
+                                                                                              if(completeTree[i]->getType() == "Constant"){
+                                                                                                values.push_back(completeTree[i]->getConstant());
+                                                                                              }
+                                                                                              if(completeTree[i]->getType() == "Identifier"){
+                                                                                                if(counter == 0){
+                                                                                                  counter++;
+                                                                                                  binder = completeTree[i]->getName();
+                                                                                                }
+                                                                                                else{
+                                                                                                int y = mips32.registerLookup(completeTree[i]->getName());
+
+                                                                                                Register r = mips32.getValue(y);
+
+                                                                                                values.push_back(r.value);
+                                                                                                }
+                                                                                              }
+                                                                                              if(completeTree[i]->getType() == "Binary"){
+                                                                                                strOp = completeTree[i]->getOperator();
+                                                                                              }
+
+                                                                                              if(strOp != ""){
+                                                                                                if(values.size() == 0){
+                                                                                                    if(strOp == "-"){
+                                                                                                      int temp2 = -holder;
+                                                                                                      sum -= holder;
+                                                                                                      sum += temp2;
+                                                                                                    }
+                                                                                                  }
+                                                                                                if(debugMode){
+                                                                                                  for(int i=0;i<values.size();i++){
+                                                                                                    std::cout << "STASH : " << values[i] << std::endl;
+                                                                                                  }
+                                                                                                }
+                                                                                                if(strOp == "+"){
+                                                                                                  for(int i=0;i<values.size();i++){
+                                                                                                    sum += values[i];
+                                                                                                  }
+                                                                                                }
+                                                                                                else if(strOp == "-"){
+                                                                                                  if(values.size() == 2){
+                                                                                                    sum = values[0] - values[1];
+                                                                                                  }
+                                                                                                  else{
+                                                                                                    for(int i=0;i<values.size();i++){
+                                                                                                      sum -= values[i];
+                                                                                                    }
+                                                                                                  }
+                                                                                                }
+                                                                                                else if(strOp == "*"){
+                                                                                                  int temp = 1;
+                                                                                                  for(int i=0;i<values.size();i++){
+                                                                                                    temp *= values[i];
+                                                                                                  }
+                                                                                                  holder = temp;
+                                                                                                  sum += temp;
+                                                                                                }
+                                                                                                else if(strOp == "/"){
+                                                                                                  int temp;
+                                                                                                  if(values.size() == 2){
+                                                                                                    temp = values[0] / values[1];
+                                                                                                    holder = temp;
+                                                                                                    sum += temp;
+                                                                                                  }
+                                                                                                  else{
+                                                                                                    sum /= values[0];
+                                                                                                  }
+                                                                                                }
+                                                                                                values.clear();
+                                                                                                strOp = "";
+                                                                                              }
+                                                                                              if(debugMode){
+                                                                                                std::cout << "TOTAL SUM : " << sum << std::endl;
+                                                                                              }
+                                                                                            }
+                                                                                            
+                                                                                          }
+                                                                                            if(values.size() == 1){
+                                                                                              sum = values[0];
+                                                                                            }
+                                                                                              int v = mips32.registerLookup(binder);
+                                                                                              mips32.Bind(sum,v,binder);
+                                                                                              if(debugMode){
+                                                                                                mips32.printAllRegisters();
+                                                                                                std::cout << "over and out" << std::endl;
+                                                                                              }
+                                                                                          completeTree.clear();
+                                                                                          codeGen(v,mips32);
+                                                                                        }
+#line 1874 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 154 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"logical_or_expression");mystack.push((yyval.exp));}
-#line 1755 "c_bison.tab.c" /* yacc.c:1646  */
+#line 274 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"logical_or_expression");completeTree.push_back((yyval.exp));}
+#line 1880 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 158 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"postfix_expression");mystack.push((yyval.exp));}
-#line 1761 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 31:
-#line 161 "src/c_bison.y" /* yacc.c:1646  */
-    {std::cout << "TODO - UNARY EXPRESSION " << std::endl;}
-#line 1767 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 34:
-#line 169 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"logical_and_expression");mystack.push((yyval.exp));}
-#line 1773 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 36:
-#line 174 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"primary_expression");mystack.push((yyval.exp));}
-#line 1779 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 50:
-#line 192 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"unary_expression");mystack.push((yyval.exp));}
-#line 1785 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 52:
-#line 200 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"inclusive_or_expression");mystack.push((yyval.exp));}
-#line 1791 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 56:
-#line 213 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"exclusive_or_expression");mystack.push((yyval.exp));}
-#line 1797 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 58:
-#line 219 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"and_expression");mystack.push((yyval.exp));}
-#line 1803 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 60:
-#line 225 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"equality_expression");mystack.push((yyval.exp));}
-#line 1809 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 62:
-#line 231 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"relational_expression");mystack.push((yyval.exp));}
-#line 1815 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 65:
-#line 238 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"shift_expression");mystack.push((yyval.exp));}
-#line 1821 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 70:
-#line 247 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"additive_expression");mystack.push((yyval.exp));}
-#line 1827 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 73:
-#line 254 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"multiplicative_expression");mystack.push((yyval.exp));}
-#line 1833 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 74:
-#line 255 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"+",(yyvsp[0].exp));mystack.push((yyval.exp));
-                                                                              std::cout << "ADDITION COMPLETE,recursive testing" << std::endl;
-                                                                           }
-#line 1841 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 75:
-#line 258 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"-",(yyvsp[0].exp));mystack.push((yyval.exp));
-
-
-
-                    }
-#line 1851 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 76:
-#line 267 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"cast_expression");mystack.push((yyval.exp));}
-#line 1857 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 77:
-#line 268 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"*",(yyvsp[0].exp));mystack.push((yyval.exp));std::cout << "MULT" << std::endl;}
-#line 1863 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 78:
-#line 269 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"/",(yyvsp[0].exp));mystack.push((yyval.exp));}
-#line 1869 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 79:
-#line 270 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"%",(yyvsp[0].exp));mystack.push((yyval.exp));}
-#line 1875 "c_bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 117:
-#line 369 "src/c_bison.y" /* yacc.c:1646  */
-    {
-                                                                      for(int i=0;i<scope_counter;i++){
-                                                                        std::cout << "    " ;
-                                                                      }
-                                                                      std::cout << "VARIABLE : " << identifier_value << std::endl;
-                                                                   }
+#line 278 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"postfix_expression");completeTree.push_back((yyval.exp));}
 #line 1886 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
-  case 140:
-#line 421 "src/c_bison.y" /* yacc.c:1646  */
-    {std::cout << "times of number" << std::endl;}
+  case 31:
+#line 281 "src/c_bison.y" /* yacc.c:1646  */
+    { std::cout << "TODO: UNARY FOR MINUS" <<std::endl;isMinus = true;}
 #line 1892 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
-  case 141:
-#line 422 "src/c_bison.y" /* yacc.c:1646  */
-    {std::cout << "number of times" << std::endl;}
+  case 34:
+#line 289 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"logical_and_expression");completeTree.push_back((yyval.exp));}
 #line 1898 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
-  case 143:
-#line 426 "src/c_bison.y" /* yacc.c:1646  */
-    { 
-                                                                                          std::cout << "hohohoohoh" << std::endl;
-                                                                                          std::string strOp;
-                                                                                          std::vector<int> vec1;
-                                                                                          std::vector<std::string> operations;
-
-                                                                                          /* store initialization of register variable */
-                                                                                          int reg = mips32.findEmptyRegister();
-                                                                                          mips32.Bind(0,reg,(yyvsp[-2].str));
-                                                                                          while (!mystack.empty()){
-                                                                                              mystack.top()->printer();
-                                                                                            if(mystack.top()->getType() == "+" || mystack.top()->getType() == "*" || mystack.top()->getType() == "-" || mystack.top()->getType() == "/"){
-                                                                                              strOp = mystack.top()->getType();
-                                                                                              operations.push_back(strOp);
-                                                                                              for(int i=0;i<operations.size();i++){
-                                                                                                std::cout << "this works " << operations[i] << std::endl;
-                                                                                              }
-                                                                                            }
-                                                                                            else if(mystack.top()->getType() == "Identifier"){
-                                                                                              /* check if identifier exists prior to this */
-                                                                                              int check = mips32.registerLookup(mystack.top()->getName());
-                                                                                              if(check == -1){
-                                                                                                std::cout << "variable " << mystack.top()->getName() << " is undeclared" << std::endl;
-                                                                                                return -1;
-                                                                                              }
-                                                                                              else{
-                                                                                                Register reg1 = mips32.getValue(check);
-                                                                                                int val = reg1.value;
-                                                                                                vec1.push_back(val);
-                                                                                              }
-                                                                                            }
-                                                                                            else if(mystack.top()->getType() == "Constant"){
-                                                                                              vec1.push_back(mystack.top()->getConstant());
-                                                                                            }
-                                                                                            mystack.pop();
-                                                                                          }
-                                                                                          /* after collecting all necessary data, combine them */
-                                                                                          for(int i=0;i<vec1.size();i++){
-                                                                                            std::cout << "COLLECTION : " << vec1[i] << std::endl;
-                                                                                          }
-                                                                                          for(int i=0;i<operations.size();i++){
-                                                                                            std::cout << "OPERATORSSSS : " << operations[i] << std::endl;
-                                                                                          }
-                                                                                          int sum = 0;
-                                                                                          std::cout << "OPERATIONS SIZE : " <<operations.size() << std::endl;
-                                                                                          for(int i=0;i<operations.size();i++){
-                                                                                            std::cout << "inside the loop" << std::endl;
-                                                                                            if(operations[i] == "+"){
-                                                                                              std::cout << "VALUE : " << vec1[vec1.size()-1] << std::endl;
-                                                                                              sum += vec1[vec1.size()-1];
-
-                                                                                              vec1.pop_back();
-                                                                                            }
-                                                                                            else if(operations[i] == "*"){
-                                                                                              std::cout << "VALUES : " << vec1[vec1.size()-1] << " " << vec1[vec1.size()-2] << std::endl;
-                                                                                              sum += (vec1[vec1.size()-2] * vec1[vec1.size()-1]);
-                                                                                              std::cout << "MULT is this working?" << std::endl;
-                                                                                              vec1.pop_back();
-                                                                                              vec1.pop_back();
-                                                                                            }
-                                                                                            else if(operations[i] == "-"){
-                                                                                              std::cout << "MINUS : " << vec1[0] << std::endl;
-                                                                                              sum = sum - vec1[0];
-                                                                                              vec1.pop_back();
-                                                                                            }
-                                                                                            else if(operations[i] == "/"){
-                                                                                              sum += (vec1[1] / vec1[0]);
-                                                                                              vec1.erase(vec1.begin());
-                                                                                              vec1.erase(vec1.begin());
-                                                                                            }
-                                                                                          }
-                                                                                          /* add remaining components */
-
-                                                                                          std::cout << "FINAL ANSWER : " << (yyvsp[-2].str) << " = " << sum << std::endl;
-                                                                                          mips32.Bind(sum,reg,(yyvsp[-2].str));
-                                                                                          std::cout << std::endl;
-                                                                                        }
-#line 1980 "c_bison.tab.c" /* yacc.c:1646  */
+  case 36:
+#line 294 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"primary_expression");completeTree.push_back((yyval.exp));}
+#line 1904 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
-  case 152:
-#line 522 "src/c_bison.y" /* yacc.c:1646  */
-    { identifier_value = (yyvsp[0].str);
-                                                                                      int x = mips32.findEmptyRegister();
-                                                                                      if(x == -1){
-                                                                                        std::cout << "redeclaration of variable / registers are filled with existing data" << std::endl;
-                                                                                        return -1;
-                                                                                      }
-                                                                                      else{
-
-                                                                                        mips32.Bind(0,x,(yyvsp[0].str));
-                                                                                        mips32.printAllRegisters();
-                                                                                      }
-                                                                                    }
-#line 1997 "c_bison.tab.c" /* yacc.c:1646  */
+  case 50:
+#line 312 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"unary_expression");completeTree.push_back((yyval.exp));}
+#line 1910 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
-  case 156:
-#line 537 "src/c_bison.y" /* yacc.c:1646  */
-    {std::cout << "asdasdasdasdsa" << std::endl;}
-#line 2003 "c_bison.tab.c" /* yacc.c:1646  */
+  case 52:
+#line 320 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"inclusive_or_expression");completeTree.push_back((yyval.exp));}
+#line 1916 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
-  case 157:
-#line 538 "src/c_bison.y" /* yacc.c:1646  */
-    {std::cout << "sqqqqqqqq" << std::endl;}
-#line 2009 "c_bison.tab.c" /* yacc.c:1646  */
+  case 56:
+#line 333 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"exclusive_or_expression");completeTree.push_back((yyval.exp));}
+#line 1922 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
-  case 158:
-#line 539 "src/c_bison.y" /* yacc.c:1646  */
-    {std::cout << "pppppppppppppppp" << std::endl;}
-#line 2015 "c_bison.tab.c" /* yacc.c:1646  */
+  case 58:
+#line 339 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"and_expression");completeTree.push_back((yyval.exp));}
+#line 1928 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
-  case 163:
-#line 560 "src/c_bison.y" /* yacc.c:1646  */
-    {
-                                                                              int reg = mips32.findEmptyRegister();
-                                                                              mips32.Bind(0,reg,(yyvsp[0].str));
-                                                                              mips32.printAllRegisters();
-                                                                              for(int i=0;i<scope_counter;i++){
-                                                                                std::cout << "    " ;
+  case 60:
+#line 345 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"equality_expression");completeTree.push_back((yyval.exp));}
+#line 1934 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 62:
+#line 351 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"relational_expression");completeTree.push_back((yyval.exp));}
+#line 1940 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 65:
+#line 358 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"shift_expression");completeTree.push_back((yyval.exp));}
+#line 1946 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 70:
+#line 367 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"additive_expression");completeTree.push_back((yyval.exp));}
+#line 1952 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 73:
+#line 374 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"multiplicative_expression");completeTree.push_back((yyval.exp));}
+#line 1958 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 74:
+#line 375 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"+",(yyvsp[0].exp));completeTree.push_back((yyval.exp));
+                                                                              if(debugMode){
+                                                                                std::cout << "ADDITION COMPLETE,recursive testing" << std::endl;
+                                                                                for(int i=0;i<completeTree.size();i++){
+                                                                                  completeTree[i]->printer();
+                                                                                }
+                                                                                
                                                                               }
-                                                                              std::cout << "    PARAMS : " << (yyvsp[0].str) << std::endl;
-                                                                          }
-#line 2029 "c_bison.tab.c" /* yacc.c:1646  */
+                                                                           }
+#line 1972 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
-  case 167:
-#line 579 "src/c_bison.y" /* yacc.c:1646  */
-    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"assignment_expression");}
-#line 2035 "c_bison.tab.c" /* yacc.c:1646  */
+  case 75:
+#line 384 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"-",(yyvsp[0].exp));completeTree.push_back((yyval.exp));std::cout << "SUB" << std::endl; }
+#line 1978 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
-  case 173:
-#line 592 "src/c_bison.y" /* yacc.c:1646  */
-    {mips32.clearRegisters();  std::cout << "IMPORTANT : " << ss.str() << std::endl;std::cout << "function definition compound statemnet end" << std::endl;}
+  case 76:
+#line 389 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new UnaryExpression((yyvsp[0].exp),"cast_expression");completeTree.push_back((yyval.exp));}
+#line 1984 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 77:
+#line 390 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"*",(yyvsp[0].exp));completeTree.push_back((yyval.exp));std::cout << "MULT" << std::endl;}
+#line 1990 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 78:
+#line 391 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"/",(yyvsp[0].exp));completeTree.push_back((yyval.exp));}
+#line 1996 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 79:
+#line 392 "src/c_bison.y" /* yacc.c:1646  */
+    { (yyval.exp) = new BinaryExpression((yyvsp[-2].exp),"%",(yyvsp[0].exp));completeTree.push_back((yyval.exp));}
+#line 2002 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 117:
+#line 491 "src/c_bison.y" /* yacc.c:1646  */
+    {
+                                                                      if(debugMode){
+                                                                        for(int i=0;i<scope_counter;i++){
+                                                                          std::cout << "    " ;
+                                                                        }
+                                                                        std::cout << "VARIABLE : " << identifier_value << std::endl;
+                                                                      }
+                                                                      
+                                                                   }
+#line 2016 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 142:
+#line 550 "src/c_bison.y" /* yacc.c:1646  */
+    {
+                                                                                          
+                                                                                          int invalid_check = mips32.registerLookup((yyvsp[0].str));
+                                                                                          if(invalid_check != -1){
+                                                                                            std::cout << "variable " << (yyvsp[0].str) << " has already been declared" << std::endl;
+                                                                                            return -1;
+                                                                                          }
+                                                                                          int x = mips32.findEmptyRegister();
+                                                                                          if(x == -1){
+                                                                                            std::cout << "redeclaration of variable / registers are filled with existing data" << std::endl;
+                                                                                            return -1;
+                                                                                          }
+                                                                                          else{
+                                                                                            int f = mips32.findEmptyRegister();
+                                                                                            mips32.Bind(0,f,(yyvsp[0].str));
+                                                                                            if(debugMode){
+                                                                                              mips32.printAllRegisters();
+                                                                                            }
+                                                                                          }
+                                                                                        }
 #line 2041 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
-  case 176:
-#line 600 "src/c_bison.y" /* yacc.c:1646  */
+  case 143:
+#line 570 "src/c_bison.y" /* yacc.c:1646  */
+    { 
+                                                                                            int holder = 0;
+                                                                                            bool init = false;
+                                                                                            int x = mips32.findEmptyRegister();
+                                                                                            if(x == -1){
+                                                                                              if(debugMode){
+                                                                                                std::cout << "redeclaration of variable / registers are filled with existing data" << std::endl;
+                                                                                              }
+                                                                                              return -1;
+                                                                                            }
+                                                                                            else{
+                                                                                              for(int i=0;i<completeTree.size();i++){
+                                                                                                if(completeTree[i]->getType() == "Constant"){
+                                                                                                  mips32.Bind(completeTree[i]->getConstant(),x,(yyvsp[-2].str));
+                                                                                                  int counter = 0;
+                                                                                                  for(int i=0;i<completeTree.size();i++){
+                                                                                                    if(completeTree[i]->getType() == "Binary" ){
+                                                                                                      counter++;
+                                                                                                    }
+                                                                                                  }
+                                                                                                  if(counter == 0){
+                                                                                                    init = true;
+                                                                                                  }
+                                                                                                }
+                                                                                              }
+                                                                                              if(debugMode){
+                                                                                                mips32.printAllRegisters();
+                                                                                              }
+                                                                                            }
+                                                                                        
+                                                                                            /* basic idea is that keep getting all values until the next operator */
+                                                                                            if(debugMode){
+                                                                                              std::cout << "hohohoohoh" << std::endl; 
+                                                                                            }
+                                                                                            std::string strOp = "";
+                                                                                            std::vector<int> values;
+                                                                                            int sum = 0;
+                                                                                            for(int i=0;i<completeTree.size();i++){
+                                                                                              if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
+                                                                                                if(debugMode){
+                                                                                                  completeTree[i]->printer();
+                                                                                                }
+                                                                                                if(completeTree[i]->getType() == "Constant"){
+                                                                                                  values.push_back(completeTree[i]->getConstant());
+                                                                                                }
+                                                                                                else if(completeTree[i]->getType() == "Identifier"){
+                                                                                                  // logic to handle identifier conversion
+                                                                                                  int y = mips32.registerLookup(completeTree[i]->getName());
+                                                                                                  Register r = mips32.getValue(y);
+                                                                                                  values.push_back(r.value);
+                                                                                                }
+                                                                                                else if(completeTree[i]->getType() == "Binary"){
+                                                                                                  strOp = completeTree[i]->getOperator();
+                                                                                                }
+
+                                                                                                if(strOp != ""){
+                                                                                                  if(values.size() == 0){
+                                                                                                    if(strOp == "-"){
+                                                                                                      int temp2 = -holder;
+                                                                                                      sum -= holder;
+                                                                                                      sum += temp2;
+                                                                                                    }
+                                                                                                  }
+                                                                                                  if(debugMode){
+                                                                                                    for(int i=0;i<values.size();i++){
+                                                                                                      std::cout << "STASH : " << values[i] << std::endl;
+                                                                                                    }
+                                                                                                  }
+                                                                                                  
+                                                                                                  if(strOp == "+"){
+                                                                                                    for(int i=0;i<values.size();i++){
+                                                                                                      sum += values[i];
+                                                                                                    }
+                                                                                                  }
+                                                                                                  else if(strOp == "-"){
+                                                                                                    if(values.size() == 2){
+                                                                                                      sum = values[0] - values[1];
+                                                                                                    }
+                                                                                                    else{
+                                                                                                      for(int i=0;i<values.size();i++){
+                                                                                                        sum -= values[i];
+                                                                                                      }
+                                                                                                    }
+                                                                                                  }
+                                                                                                  else if(strOp == "*"){
+                                                                                                    int temp = 1;
+                                                                                                    for(int i=0;i<values.size();i++){
+                                                                                                      temp *= values[i];
+                                                                                                    }
+                                                                                                    holder = temp;
+                                                                                                    sum += temp;
+                                                                                                  }
+                                                                                                else if(strOp == "/"){
+                                                                                                  int temp;
+                                                                                                  if(values.size() == 2){
+                                                                                                    temp = values[0] / values[1];
+                                                                                                    holder = temp;
+                                                                                                    sum += temp;
+                                                                                                  }
+                                                                                                  else{
+                                                                                                    sum /= values[0];
+                                                                                                  }
+                                                                                                }
+                                                                                                  values.clear();
+                                                                                                  strOp = "";
+                                                                                                }
+                                                                                                if(debugMode){
+                                                                                                  std::cout << "TOTAL SUM : " << sum << std::endl;
+                                                                                                }
+                                                                                              }
+                                                                                            }
+                                                                                              int v = mips32.registerLookup((yyvsp[-2].str));
+                                                                                              if(!init){
+                                                                                                mips32.Bind(sum,v,(yyvsp[-2].str));
+                                                                                                if(debugMode){
+                                                                                                  mips32.printAllRegisters();
+                                                                                                  std::cout << "over and out" << std::endl;
+                                                                                                }
+                                                                                              }
+                                                                                                
+                                                                                            completeTree.clear();
+                                                                                            codeGen(v,mips32);
+
+                                                                                        }
+#line 2170 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 152:
+#line 713 "src/c_bison.y" /* yacc.c:1646  */
+    { identifier_value = (yyvsp[0].str);
+
+                                                                                    }
+#line 2178 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 163:
+#line 742 "src/c_bison.y" /* yacc.c:1646  */
     {
+                                                                              int reg = mips32.findEmptyRegister();
+                                                                              mips32.Bind(0,reg,(yyvsp[0].str));
+                                                                              if(debugMode){
+                                                                                mips32.printAllRegisters();
+                                                                                for(int i=0;i<scope_counter;i++){
+                                                                                  std::cout << "    " ;
+                                                                                }
+                                                                                std::cout << "    PARAMS : " << (yyvsp[0].str) << std::endl;
+                                                                              }
+                                                                             
+                                                                          }
+#line 2195 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 173:
+#line 777 "src/c_bison.y" /* yacc.c:1646  */
+    {mips32.clearRegisters();}
+#line 2201 "c_bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 176:
+#line 785 "src/c_bison.y" /* yacc.c:1646  */
+    {  /*
                             for(int i=0;i<scope_counter;i++){
                               std::cout << "    " ;
                             }
                             scope_counter++; std::cout << "SCOPE" << std::endl;
+                            */
                          }
-#line 2052 "c_bison.tab.c" /* yacc.c:1646  */
+#line 2213 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 177:
-#line 608 "src/c_bison.y" /* yacc.c:1646  */
-    {scope_counter--;}
-#line 2058 "c_bison.tab.c" /* yacc.c:1646  */
+#line 794 "src/c_bison.y" /* yacc.c:1646  */
+    {scope_counter--;
+                            std::cout << "      j     $31" << std::endl;
+                            std::cout << "      nop" << std::endl;
+                            std::cout << std::endl;
+                            std::cout << "      .end  main" << std::endl;
+                          }
+#line 2224 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 178:
-#line 612 "src/c_bison.y" /* yacc.c:1646  */
+#line 803 "src/c_bison.y" /* yacc.c:1646  */
     {
                         for(int i=0;i<scope_counter;i++){
                           std::cout << "    " ;
                         }
-                        std::cout << "FUNCTION : " << identifier_value << std::endl;
+                          std::cout << "      .text" << std::endl;
+                          std::cout << "      .align 2" << std::endl;
+                          std::cout << "      .ent    " << identifier_value << std::endl;
+                          std::cout << identifier_value << ":" << std::endl;
+                          if(debugMode){
+                            std::cout << "FUNCTION : " << identifier_value << std::endl;  
+                          }
                       }
-#line 2069 "c_bison.tab.c" /* yacc.c:1646  */
+#line 2241 "c_bison.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2073 "c_bison.tab.c" /* yacc.c:1646  */
+#line 2245 "c_bison.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2297,7 +2469,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 622 "src/c_bison.y" /* yacc.c:1906  */
+#line 819 "src/c_bison.y" /* yacc.c:1906  */
 
 
 
@@ -2307,7 +2479,7 @@ int yyerror(const char* s){
 }
 
 int main(void) {
-
+  std::stringstream ss;
   ss << yyparse();
 }
 

@@ -1,9 +1,11 @@
+#ifndef AST_H
+#define	AST_H
+
 #include <iostream>
 #include <cstdlib>
 #include <string>
 #include <vector>
-#ifndef AST_H
-#define	AST_H
+
 
 /*
 IMPORTANT : consider using int counts to traverse the AST later on;
@@ -39,6 +41,7 @@ public:
 	virtual ~Node() {}
 };
 
+
 // Expressions
 
 class Expression : public Node{
@@ -46,7 +49,6 @@ public:
 	// const Type * getType();
 	// virtual evaluate() = 0;
 	// Render using current identifier-register bindings in ctxt
-	// void codeGen(const Context & ctxt) const;
 	virtual std::string getType() const {}
 	virtual void printer() const {}
 	virtual const Expression *getLeft() const {}
@@ -54,6 +56,7 @@ public:
 	virtual const Expression *getNext() const {}
 	virtual std::string getName() const {}
 	virtual int getConstant() const {}
+	virtual std::string getOperator() const {}
 	//virtual void evaluate() const {}
 	//virtual int getSum() const {}
 
@@ -72,7 +75,7 @@ public:
 	const Expression *getRight() const;
 	std::string getType() const;
 	void printer() const;
-	void codeGen();			// takes left expression and right expression, does an operation on them ( according to opCode )
+	//void codeGen();			takes left expression and right expression, does an operation on them ( according to opCode )
 //	void evaluate() const;
 	//int getSum() const;
 };
@@ -162,6 +165,13 @@ class JumpStatement : public Statement{
 	
 };
 
+
+
+
+
+
+
+
 // "struct with properties associated with a register"
 class Register{
 public:
@@ -178,9 +188,7 @@ public:
 class mipsRegisters{
 	std::vector<Register> registers;	// sets 31 registers to 0,make this public?
 public:
-	mipsRegisters():registers(32) {
-		std::cout << "initializing mips32 registers" << std::endl;
-	}
+	mipsRegisters():registers(32) {}
 	Register getValue(const int &registerName);
 	void Bind(const int &val,const int &registerName,const std::string &var);
 	int registerLookup(const std::string &varName);
@@ -188,20 +196,6 @@ public:
 	void printAllRegisters();
 	int findEmptyRegister();
 };
-
-
-/*
-// returns the biggest available register
-int mipsRegisters::Lookup(){
-	int available;
-	for(int i=15;i<23;i++){
-		if(in_use){
-			available = i;
-		}
-	}
-	return available;
-}
-*/
 
 
 #endif

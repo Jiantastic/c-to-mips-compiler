@@ -1,3 +1,0 @@
-while(x){
-	int a;
-}

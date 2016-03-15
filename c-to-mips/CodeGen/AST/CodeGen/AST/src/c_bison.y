@@ -2,7 +2,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
-#include <stack>
 #include <sstream>
 #include "ast.h"
 #include "ast.cpp"
@@ -12,8 +11,10 @@ int yyerror(const char* s);
 char* identifier_value;
 int scope_counter = 0;
 int is_function = 0;
-std::stack<Expression*> mystack;
+std::vector<Expression*> completeTree;
 mipsRegisters mips32;
+bool isMinus = false;
+bool debugMode = true;
 
 %}
 
@@ -100,8 +101,8 @@ external_declaration : declaration
 
 
 
-primary_expression : IDENTIFIER     {$$ = new IdentifierExpression($1);mystack.push($$);}      
-                   | INT_NUM        {$$ = new ConstantExpression($1);mystack.push($$);}             
+primary_expression : IDENTIFIER     {$$ = new IdentifierExpression($1);completeTree.push_back($$);}      
+                   | INT_NUM        {$$ = new ConstantExpression($1);completeTree.push_back($$);}             
                    | STRINGLITERAL        
                    | '(' expression ')'
                    ;
@@ -134,30 +135,150 @@ constant_expression : conditional_expression
 /* ============== Expression Implementation ====================== */
 
 
-expression : assignment_expression                        { 
-                                                            $$ = new UnaryExpression($1,"assignment_expression");
-
-                                                          }
-           | expression ',' assignment_expression         
+expression : assignment_expression                        { $$ = new UnaryExpression($1,"assignment_expression"); }
+           | expression ',' assignment_expression         { $$ = new BinaryExpression($1,",",$3);}
            ; 
 
 /* ================ assignment expression =================== */
 
-assignment_expression : conditional_expression            { $$ = new UnaryExpression($1,"conditional_expression"); mystack.push($$);}
-                      | unary_expression assignment_operator assignment_expression { std::cout << "testing" << std::endl;}
+assignment_expression : conditional_expression            { $$ = new UnaryExpression($1,"conditional_expression"); completeTree.push_back($$);}
+                      | unary_expression assignment_operator assignment_expression       { 
+                                                                                            if(debugMode){
+                                                                                              std::cout << "testing" << std::endl;
+                                                                                            }
+                                                                                            int counter = 0;
+                                                                                            int holder;
+                                                                                            std::string binder;
+
+                                                                                            /* check if identifier $1 exists or not */
+                                                                                            bool checker = false;
+                                                                                            const Expression * temp1 = $1;
+                                                                                            while(!checker){
+                                                                                              if(temp1->getType() == "Identifier"){
+                                                                                                /* identifier has to exist prior to this */
+                                                                                                int v = mips32.registerLookup(temp1->getName());
+                                                                                                if(v == -1){
+                                                                                                  std::cout << "variable has to be declared before usage" << std::endl;
+                                                                                                  return -1;
+                                                                                                }
+                                                                                                else{
+                                                                                                  checker = true;
+                                                                                                }
+                                                                                              }
+                                                                                              else{
+                                                                                                temp1 = temp1->getNext();
+                                                                                              }
+                                                                                            }
+                                                                                          std::string strOp = "";
+                                                                                          std::vector<int> values;
+                                                                                          int sum = 0;
+                                                                                          for(int i=0;i<completeTree.size();i++){
+                                                                                            if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
+                                                                                              if(debugMode){
+                                                                                                completeTree[i]->printer();
+                                                                                              }
+                                                                                              if(completeTree[i]->getType() == "Constant"){
+                                                                                                values.push_back(completeTree[i]->getConstant());
+                                                                                              }
+                                                                                              if(completeTree[i]->getType() == "Identifier"){
+                                                                                                if(counter == 0){
+                                                                                                  counter++;
+                                                                                                  binder = completeTree[i]->getName();
+                                                                                                }
+                                                                                                else{
+                                                                                                int y = mips32.registerLookup(completeTree[i]->getName());
+
+                                                                                                Register r = mips32.getValue(y);
+
+                                                                                                values.push_back(r.value);
+                                                                                                }
+                                                                                              }
+                                                                                              if(completeTree[i]->getType() == "Binary"){
+                                                                                                strOp = completeTree[i]->getOperator();
+                                                                                              }
+
+                                                                                              if(strOp != ""){
+                                                                                                if(values.size() == 0){
+                                                                                                    if(strOp == "-"){
+                                                                                                      int temp2 = -holder;
+                                                                                                      sum -= holder;
+                                                                                                      sum += temp2;
+                                                                                                    }
+                                                                                                  }
+                                                                                                if(debugMode){
+                                                                                                  for(int i=0;i<values.size();i++){
+                                                                                                    std::cout << "STASH : " << values[i] << std::endl;
+                                                                                                  }
+                                                                                                }
+                                                                                                if(strOp == "+"){
+                                                                                                  for(int i=0;i<values.size();i++){
+                                                                                                    sum += values[i];
+                                                                                                  }
+                                                                                                }
+                                                                                                else if(strOp == "-"){
+                                                                                                  if(values.size() == 2){
+                                                                                                    sum = values[0] - values[1];
+                                                                                                  }
+                                                                                                  else{
+                                                                                                    for(int i=0;i<values.size();i++){
+                                                                                                      sum -= values[i];
+                                                                                                    }
+                                                                                                  }
+                                                                                                }
+                                                                                                else if(strOp == "*"){
+                                                                                                  int temp = 1;
+                                                                                                  for(int i=0;i<values.size();i++){
+                                                                                                    temp *= values[i];
+                                                                                                  }
+                                                                                                  holder = temp;
+                                                                                                  sum += temp;
+                                                                                                }
+                                                                                                else if(strOp == "/"){
+                                                                                                  int temp;
+                                                                                                  if(values.size() == 2){
+                                                                                                    temp = values[0] / values[1];
+                                                                                                    holder = temp;
+                                                                                                    sum += temp;
+                                                                                                  }
+                                                                                                  else{
+                                                                                                    sum /= values[0];
+                                                                                                  }
+                                                                                                }
+                                                                                                values.clear();
+                                                                                                strOp = "";
+                                                                                              }
+                                                                                              if(debugMode){
+                                                                                                std::cout << "TOTAL SUM : " << sum << std::endl;
+                                                                                              }
+                                                                                            }
+                                                                                            
+                                                                                          }
+                                                                                            if(values.size() == 1){
+                                                                                              sum = values[0];
+                                                                                            }
+                                                                                              int v = mips32.registerLookup(binder);
+                                                                                              mips32.Bind(sum,v,binder);
+                                                                                              if(debugMode){
+                                                                                                mips32.printAllRegisters();
+                                                                                                std::cout << "over and out" << std::endl;
+                                                                                              }
+                                                                                          completeTree.clear();
+                                                                                          codeGen(v,mips32);
+                                                                                        }
+
                       ;
 
 /* ===================================== */
 
 
-conditional_expression : logical_or_expression             { $$ = new UnaryExpression($1,"logical_or_expression");mystack.push($$);}
+conditional_expression : logical_or_expression             { $$ = new UnaryExpression($1,"logical_or_expression");completeTree.push_back($$);}
                        | logical_or_expression '?' expression ':' conditional_expression
                        ;
 
-unary_expression : postfix_expression                      { $$ = new UnaryExpression($1,"postfix_expression");mystack.push($$);}
+unary_expression : postfix_expression                      { $$ = new UnaryExpression($1,"postfix_expression");completeTree.push_back($$);}
                  | INC_OPERATOR unary_expression
                  | DEC_OPERATOR unary_expression
-                 | unary_operator cast_expression           {std::cout << "TODO - UNARY EXPRESSION " << std::endl;}
+                 | unary_operator cast_expression           { std::cout << "TODO: UNARY FOR MINUS" <<std::endl;isMinus = true;}
                  | SIZEOF unary_expression
                  | SIZEOF '(' type_name ')'
                  ;
@@ -165,12 +286,12 @@ unary_expression : postfix_expression                      { $$ = new UnaryExpre
 
 /* ================ assignment expression recurse tree units =================== */
 
-logical_or_expression : logical_and_expression                                    { $$ = new UnaryExpression($1,"logical_and_expression");mystack.push($$);}
+logical_or_expression : logical_and_expression                                    { $$ = new UnaryExpression($1,"logical_and_expression");completeTree.push_back($$);}
                       | logical_or_expression OR_OPERATOR logical_and_expression
                       ;
 
 
-postfix_expression : primary_expression                                           { $$ = new UnaryExpression($1,"primary_expression");mystack.push($$);}
+postfix_expression : primary_expression                                           { $$ = new UnaryExpression($1,"primary_expression");completeTree.push_back($$);}
                    | postfix_expression '[' expression ']'
                    | postfix_expression '(' ')'
                    | postfix_expression '(' argument_expression_list ')'
@@ -188,7 +309,7 @@ unary_operator : '&'
                | '!'
                ;
 
-cast_expression : unary_expression                                      { $$ = new UnaryExpression($1,"unary_expression");mystack.push($$);}
+cast_expression : unary_expression                                      { $$ = new UnaryExpression($1,"unary_expression");completeTree.push_back($$);}
                 | '(' type_name ')' cast_expression
                 ;
 
@@ -196,7 +317,7 @@ cast_expression : unary_expression                                      { $$ = n
 /* ===================================== */
 
 
-logical_and_expression : inclusive_or_expression                         { $$ = new UnaryExpression($1,"inclusive_or_expression");mystack.push($$);}
+logical_and_expression : inclusive_or_expression                         { $$ = new UnaryExpression($1,"inclusive_or_expression");completeTree.push_back($$);}
                        | logical_and_expression AND_OPERATOR inclusive_or_expression
                        ;
 
@@ -209,32 +330,32 @@ argument_expression_list : assignment_expression
 /* ===================================== */
 
 
-inclusive_or_expression : exclusive_or_expression                         { $$ = new UnaryExpression($1,"exclusive_or_expression");mystack.push($$);}
+inclusive_or_expression : exclusive_or_expression                         { $$ = new UnaryExpression($1,"exclusive_or_expression");completeTree.push_back($$);}
                         | inclusive_or_expression '|' exclusive_or_expression
                         ;
 
 /* ===================================== */
 
-exclusive_or_expression : and_expression                                  { $$ = new UnaryExpression($1,"and_expression");mystack.push($$);}
+exclusive_or_expression : and_expression                                  { $$ = new UnaryExpression($1,"and_expression");completeTree.push_back($$);}
                         | exclusive_or_expression '^' and_expression
                         ;
 
 /* ===================================== */
 
-and_expression : equality_expression                                      { $$ = new UnaryExpression($1,"equality_expression");mystack.push($$);}
+and_expression : equality_expression                                      { $$ = new UnaryExpression($1,"equality_expression");completeTree.push_back($$);}
                | and_expression '&' equality_expression
                ;
 
 /* ===================================== */
 
-equality_expression : relational_expression                               { $$ = new UnaryExpression($1,"relational_expression");mystack.push($$);}
+equality_expression : relational_expression                               { $$ = new UnaryExpression($1,"relational_expression");completeTree.push_back($$);}
                     | equality_expression EQ_OPERATOR relational_expression
                     | equality_expression NE_OPERATOR relational_expression
                     ;
 
 /* ===================================== */
 
-relational_expression : shift_expression                                  { $$ = new UnaryExpression($1,"shift_expression");mystack.push($$);}
+relational_expression : shift_expression                                  { $$ = new UnaryExpression($1,"shift_expression");completeTree.push_back($$);}
                       | relational_expression '<' shift_expression        
                       | relational_expression '>' shift_expression        
                       | relational_expression LE_OPERATOR shift_expression 
@@ -243,30 +364,32 @@ relational_expression : shift_expression                                  { $$ =
 
 /* ===================================== */
 
-shift_expression : additive_expression                                   { $$ = new UnaryExpression($1,"additive_expression");mystack.push($$);}
+shift_expression : additive_expression                                   { $$ = new UnaryExpression($1,"additive_expression");completeTree.push_back($$);}
                  | shift_expression LEFT_OPERATOR additive_expression
                  | shift_expression RIGHT_OPERATOR additive_expression
                  ;
 
 /* ===================================== */
 
-additive_expression : multiplicative_expression                            { $$ = new UnaryExpression($1,"multiplicative_expression");mystack.push($$);}
-                    | additive_expression '+' multiplicative_expression    { $$ = new BinaryExpression($1,"+",$3);mystack.push($$);
-                                                                              std::cout << "ADDITION COMPLETE,recursive testing" << std::endl;
+additive_expression : multiplicative_expression                            { $$ = new UnaryExpression($1,"multiplicative_expression");completeTree.push_back($$);}
+                    | additive_expression '+' multiplicative_expression    { $$ = new BinaryExpression($1,"+",$3);completeTree.push_back($$);
+                                                                              if(debugMode){
+                                                                                std::cout << "ADDITION COMPLETE,recursive testing" << std::endl;
+                                                                                for(int i=0;i<completeTree.size();i++){
+                                                                                  completeTree[i]->printer();
+                                                                                }
+                                                                                
+                                                                              }
                                                                            }
-                    | additive_expression '-' multiplicative_expression    { $$ = new BinaryExpression($1,"-",$3);mystack.push($$);
-
-
-
-                    }
+                    | additive_expression '-' multiplicative_expression    { $$ = new BinaryExpression($1,"-",$3);completeTree.push_back($$);std::cout << "SUB" << std::endl; }
                     ;
 
 /* ===================================== */
 
-multiplicative_expression : cast_expression                                { $$ = new UnaryExpression($1,"cast_expression");mystack.push($$);}   
-                          | multiplicative_expression '*' cast_expression  { $$ = new BinaryExpression($1,"*",$3);mystack.push($$);std::cout << "MULT" << std::endl;}
-                          | multiplicative_expression '/' cast_expression  { $$ = new BinaryExpression($1,"/",$3);mystack.push($$);}
-                          | multiplicative_expression '%' cast_expression  { $$ = new BinaryExpression($1,"%",$3);mystack.push($$);}
+multiplicative_expression : cast_expression                                { $$ = new UnaryExpression($1,"cast_expression");completeTree.push_back($$);}   
+                          | multiplicative_expression '*' cast_expression  { $$ = new BinaryExpression($1,"*",$3);completeTree.push_back($$);std::cout << "MULT" << std::endl;}
+                          | multiplicative_expression '/' cast_expression  { $$ = new BinaryExpression($1,"/",$3);completeTree.push_back($$);}
+                          | multiplicative_expression '%' cast_expression  { $$ = new BinaryExpression($1,"%",$3);completeTree.push_back($$);}
                           ;
 
 /*
@@ -366,10 +489,13 @@ declaration_list : declaration
 
 declaration : declaration_specifiers ';'
             | declaration_specifiers init_declarator_list ';'      {
-                                                                      for(int i=0;i<scope_counter;i++){
-                                                                        std::cout << "    " ;
+                                                                      if(debugMode){
+                                                                        for(int i=0;i<scope_counter;i++){
+                                                                          std::cout << "    " ;
+                                                                        }
+                                                                        std::cout << "VARIABLE : " << identifier_value << std::endl;
                                                                       }
-                                                                      std::cout << "VARIABLE : " << identifier_value << std::endl;
+                                                                      
                                                                    }
             ;
 
@@ -417,87 +543,166 @@ type_qualifier : CONST
 
 /* ============= init_declarator_list ============= */
 
-init_declarator_list : init_declarator                                    {std::cout << "times of number" << std::endl;}
-                     | init_declarator_list ',' init_declarator           {std::cout << "number of times" << std::endl;}
+init_declarator_list : init_declarator                                    
+                     | init_declarator_list ',' init_declarator           
                      ;
 
-init_declarator : declarator
+init_declarator : declarator                                                            {
+                                                                                          
+                                                                                          int invalid_check = mips32.registerLookup($1);
+                                                                                          if(invalid_check != -1){
+                                                                                            std::cout << "variable " << $1 << " has already been declared" << std::endl;
+                                                                                            return -1;
+                                                                                          }
+                                                                                          int x = mips32.findEmptyRegister();
+                                                                                          if(x == -1){
+                                                                                            std::cout << "redeclaration of variable / registers are filled with existing data" << std::endl;
+                                                                                            return -1;
+                                                                                          }
+                                                                                          else{
+                                                                                            int f = mips32.findEmptyRegister();
+                                                                                            mips32.Bind(0,f,$1);
+                                                                                            if(debugMode){
+                                                                                              mips32.printAllRegisters();
+                                                                                            }
+                                                                                          }
+                                                                                        }
                 | declarator '=' initializer                                            { 
-                                                                                          std::cout << "hohohoohoh" << std::endl;
-                                                                                          std::string strOp;
-                                                                                          std::vector<int> vec1;
-                                                                                          std::vector<std::string> operations;
-
-                                                                                          /* store initialization of register variable */
-                                                                                          int reg = mips32.findEmptyRegister();
-                                                                                          mips32.Bind(0,reg,$1);
-                                                                                          while (!mystack.empty()){
-                                                                                              mystack.top()->printer();
-                                                                                            if(mystack.top()->getType() == "+" || mystack.top()->getType() == "*" || mystack.top()->getType() == "-" || mystack.top()->getType() == "/"){
-                                                                                              strOp = mystack.top()->getType();
-                                                                                              operations.push_back(strOp);
-                                                                                              for(int i=0;i<operations.size();i++){
-                                                                                                std::cout << "this works " << operations[i] << std::endl;
+                                                                                            int holder = 0;
+                                                                                            bool init = false;
+                                                                                            int holdOutlier = 0;
+                                                                                            std::vector<int> vec3;
+                                                                                            int x = mips32.findEmptyRegister();
+                                                                                            if(x == -1){
+                                                                                              if(debugMode){
+                                                                                                std::cout << "redeclaration of variable / registers are filled with existing data" << std::endl;
+                                                                                              }
+                                                                                              return -1;
+                                                                                            }
+                                                                                            else{
+                                                                                              for(int i=0;i<completeTree.size();i++){
+                                                                                                if(completeTree[i]->getType() == "Constant"){
+                                                                                                  mips32.Bind(completeTree[i]->getConstant(),x,$1);
+                                                                                                  int counter = 0;
+                                                                                                  for(int i=0;i<completeTree.size();i++){
+                                                                                                    if(completeTree[i]->getType() == "Binary" ){
+                                                                                                      counter++;
+                                                                                                    }
+                                                                                                  }
+                                                                                                  if(counter == 0){
+                                                                                                    init = true;
+                                                                                                  }
+                                                                                                }
+                                                                                              }
+                                                                                              if(debugMode){
+                                                                                                mips32.printAllRegisters();
                                                                                               }
                                                                                             }
-                                                                                            else if(mystack.top()->getType() == "Identifier"){
-                                                                                              /* check if identifier exists prior to this */
-                                                                                              int check = mips32.registerLookup(mystack.top()->getName());
-                                                                                              if(check == -1){
-                                                                                                std::cout << "variable " << mystack.top()->getName() << " is undeclared" << std::endl;
-                                                                                                return -1;
-                                                                                              }
-                                                                                              else{
-                                                                                                Register reg1 = mips32.getValue(check);
-                                                                                                int val = reg1.value;
-                                                                                                vec1.push_back(val);
-                                                                                              }
+                                                                                        
+                                                                                            /* basic idea is that keep getting all values until the next operator */
+                                                                                            if(debugMode){
+                                                                                              std::cout << "hohohoohoh" << std::endl; 
                                                                                             }
-                                                                                            else if(mystack.top()->getType() == "Constant"){
-                                                                                              vec1.push_back(mystack.top()->getConstant());
-                                                                                            }
-                                                                                            mystack.pop();
-                                                                                          }
-                                                                                          /* after collecting all necessary data, combine them */
-                                                                                          for(int i=0;i<vec1.size();i++){
-                                                                                            std::cout << "COLLECTION : " << vec1[i] << std::endl;
-                                                                                          }
-                                                                                          for(int i=0;i<operations.size();i++){
-                                                                                            std::cout << "OPERATORSSSS : " << operations[i] << std::endl;
-                                                                                          }
-                                                                                          int sum = 0;
-                                                                                          std::cout << "OPERATIONS SIZE : " <<operations.size() << std::endl;
-                                                                                          for(int i=0;i<operations.size();i++){
-                                                                                            std::cout << "inside the loop" << std::endl;
-                                                                                            if(operations[i] == "+"){
-                                                                                              std::cout << "VALUE : " << vec1[vec1.size()-1] << std::endl;
-                                                                                              sum += vec1[vec1.size()-1];
+                                                                                            std::string strOp = "";
+                                                                                            std::vector<int> values;
+                                                                                            int sum = 0;
+                                                                                            for(int i=0;i<completeTree.size();i++){
+                                                                                              if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
+                                                                                                if(debugMode){
+                                                                                                  completeTree[i]->printer();
+                                                                                                }
+                                                                                                if(completeTree[i]->getType() == "Constant"){
+                                                                                                  values.push_back(completeTree[i]->getConstant());
+                                                                                                }
+                                                                                                else if(completeTree[i]->getType() == "Identifier"){
+                                                                                                  // logic to handle identifier conversion
+                                                                                                  int y = mips32.registerLookup(completeTree[i]->getName());
+                                                                                                  Register r = mips32.getValue(y);
+                                                                                                  values.push_back(r.value);
+                                                                                                }
+                                                                                                else if(completeTree[i]->getType() == "Binary"){
+                                                                                                  strOp = completeTree[i]->getOperator();
+                                                                                                }
 
-                                                                                              vec1.pop_back();
-                                                                                            }
-                                                                                            else if(operations[i] == "*"){
-                                                                                              std::cout << "VALUES : " << vec1[vec1.size()-1] << " " << vec1[vec1.size()-2] << std::endl;
-                                                                                              sum += (vec1[vec1.size()-2] * vec1[vec1.size()-1]);
-                                                                                              std::cout << "MULT is this working?" << std::endl;
-                                                                                              vec1.pop_back();
-                                                                                              vec1.pop_back();
-                                                                                            }
-                                                                                            else if(operations[i] == "-"){
-                                                                                              std::cout << "MINUS : " << vec1[0] << std::endl;
-                                                                                              sum = sum - vec1[0];
-                                                                                              vec1.pop_back();
-                                                                                            }
-                                                                                            else if(operations[i] == "/"){
-                                                                                              sum += (vec1[1] / vec1[0]);
-                                                                                              vec1.erase(vec1.begin());
-                                                                                              vec1.erase(vec1.begin());
-                                                                                            }
-                                                                                          }
-                                                                                          /* add remaining components */
+                                                                                                if(values.size() == 3 && strOp != ""){
+                                                                                                  handleOutlier = true; /* look for first + or - that occurs after */
+                                                                                                  holdOutlier = values[0];
+                                                                                                  if(strOp == "*"){
+                                                                                                    sum += values[1] * values[2];
+                                                                                                  }
+                                                                                                  else if(strOp == "/"){
+                                                                                                    sum += values[1] / values[2];
+                                                                                                  }
+                                                                                                }
 
-                                                                                          std::cout << "FINAL ANSWER : " << $1 << " = " << sum << std::endl;
-                                                                                          mips32.Bind(sum,reg,$1);
-                                                                                          std::cout << std::endl;
+                                                                                                if(strOp != "" && handleOutlier == false){
+                                                                                                  if(values.size() == 0){
+                                                                                                    if(strOp == "-"){
+                                                                                                      int temp2 = -holder;
+                                                                                                      sum -= holder;
+                                                                                                      sum += temp2;
+                                                                                                    }
+                                                                                                  }
+                                                                                                  if(debugMode){
+                                                                                                    for(int i=0;i<values.size();i++){
+                                                                                                      std::cout << "STASH : " << values[i] << std::endl;
+                                                                                                    }
+                                                                                                  }
+                                                                                                  
+                                                                                                  if(strOp == "+"){
+                                                                                                    for(int i=0;i<values.size();i++){
+                                                                                                      sum += values[i];
+                                                                                                    }
+                                                                                                  }
+                                                                                                  else if(strOp == "-"){
+                                                                                                    if(values.size() == 2){
+                                                                                                      sum = values[0] - values[1];
+                                                                                                    }
+                                                                                                    else{
+                                                                                                      for(int i=0;i<values.size();i++){
+                                                                                                        sum -= values[i];
+                                                                                                      }
+                                                                                                    }
+                                                                                                  }
+                                                                                                  else if(strOp == "*"){
+                                                                                                    int temp = 1;
+                                                                                                    for(int i=0;i<values.size();i++){
+                                                                                                      temp *= values[i];
+                                                                                                    }
+                                                                                                    holder = temp;
+                                                                                                    sum += temp;
+                                                                                                  }
+                                                                                                else if(strOp == "/"){
+                                                                                                  int temp;
+                                                                                                  if(values.size() == 2){
+                                                                                                    temp = values[0] / values[1];
+                                                                                                    holder = temp;
+                                                                                                    sum += temp;
+                                                                                                  }
+                                                                                                  else{
+                                                                                                    sum /= values[0];
+                                                                                                  }
+                                                                                                }
+                                                                                                  values.clear();
+                                                                                                  strOp = "";
+                                                                                                }
+                                                                                                if(debugMode){
+                                                                                                  std::cout << "TOTAL SUM : " << sum << std::endl;
+                                                                                                }
+                                                                                              }
+                                                                                            }
+                                                                                              int v = mips32.registerLookup($1);
+                                                                                              if(!init){
+                                                                                                mips32.Bind(sum,v,$1);
+                                                                                                if(debugMode){
+                                                                                                  mips32.printAllRegisters();
+                                                                                                  std::cout << "over and out" << std::endl;
+                                                                                                }
+                                                                                              }
+                                                                                                
+                                                                                            completeTree.clear();
+                                                                                            codeGen(v,mips32);
+
                                                                                         }
                 ;
 
@@ -519,23 +724,14 @@ type_qualifier_list : type_qualifier
                     ;
 
 direct_declarator : IDENTIFIER                                                      { identifier_value = $1;
-                                                                                      int x = mips32.findEmptyRegister();
-                                                                                      if(x == -1){
-                                                                                        std::cout << "redeclaration of variable / registers are filled with existing data" << std::endl;
-                                                                                        return -1;
-                                                                                      }
-                                                                                      else{
 
-                                                                                        mips32.Bind(0,x,$1);
-                                                                                        mips32.printAllRegisters();
-                                                                                      }
                                                                                     }
                   | '(' declarator ')'                                               
                   | direct_declarator '[' constant_expression ']'                         
                   | direct_declarator '[' ']'                               
-                  | direct_declarator function_name parameter_type_list ')'         {std::cout << "asdasdasdasdsa" << std::endl;}         
-                  | direct_declarator function_name identifier_list ')'             {std::cout << "sqqqqqqqq" << std::endl;}
-                  | direct_declarator function_name ')'                             {std::cout << "pppppppppppppppp" << std::endl;}
+                  | direct_declarator function_name parameter_type_list ')'                 
+                  | direct_declarator function_name identifier_list ')'             
+                  | direct_declarator function_name ')'                             
                   ;
 
 
@@ -559,11 +755,14 @@ parameter_list : parameter_declaration
 parameter_declaration : declaration_specifiers declarator                 {
                                                                               int reg = mips32.findEmptyRegister();
                                                                               mips32.Bind(0,reg,$2);
-                                                                              mips32.printAllRegisters();
-                                                                              for(int i=0;i<scope_counter;i++){
-                                                                                std::cout << "    " ;
+                                                                              if(debugMode){
+                                                                                mips32.printAllRegisters();
+                                                                                for(int i=0;i<scope_counter;i++){
+                                                                                  std::cout << "    " ;
+                                                                                }
+                                                                                std::cout << "    PARAMS : " << $2 << std::endl;
                                                                               }
-                                                                              std::cout << "    PARAMS : " << $2 << std::endl;
+                                                                             
                                                                           }
                       | declaration_specifiers
                       ;
@@ -575,7 +774,7 @@ identifier_list : IDENTIFIER
 
 /* ========= initializer ======== */
 
-initializer : assignment_expression                                     { $$ = new UnaryExpression($1,"assignment_expression");}
+initializer : assignment_expression                                     
             | start_scope initializer_list end_scope
             | start_scope initializer_list ',' end_scope
             ;
@@ -588,7 +787,7 @@ initializer_list : initializer
 /* ================== function definitions ====================== */
 
 function_definition : declaration_specifiers declarator declaration_list compound_statement   
-                    | declaration_specifiers declarator compound_statement                         {mips32.clearRegisters();std::cout << "function definition compound statemnet end" << std::endl;}
+                    | declaration_specifiers declarator compound_statement                         {mips32.clearRegisters();}
                     | declarator declaration_list compound_statement                          
                     | declarator compound_statement                                         
                     ;
@@ -596,15 +795,21 @@ function_definition : declaration_specifiers declarator declaration_list compoun
 
 /* ====================== stdout handlers ====================== */
 
-start_scope : '{'        {
+start_scope : '{'        {  /*
                             for(int i=0;i<scope_counter;i++){
                               std::cout << "    " ;
                             }
                             scope_counter++; std::cout << "SCOPE" << std::endl;
+                            */
                          }
             ;
 
-end_scope : '}'          {scope_counter--;}
+end_scope : '}'          {scope_counter--;
+                            std::cout << "      j     $31" << std::endl;
+                            std::cout << "      nop" << std::endl;
+                            std::cout << std::endl;
+                            std::cout << "      .end  main" << std::endl;
+                          }
           ;
 
 
@@ -612,7 +817,13 @@ function_name : '('   {
                         for(int i=0;i<scope_counter;i++){
                           std::cout << "    " ;
                         }
-                        std::cout << "FUNCTION : " << identifier_value << std::endl;
+                          std::cout << "      .text" << std::endl;
+                          std::cout << "      .align 2" << std::endl;
+                          std::cout << "      .ent    " << identifier_value << std::endl;
+                          std::cout << identifier_value << ":" << std::endl;
+                          if(debugMode){
+                            std::cout << "FUNCTION : " << identifier_value << std::endl;  
+                          }
                       }        
               ;
 

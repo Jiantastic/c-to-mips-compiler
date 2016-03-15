@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
+#include <sstream>
 #include "ast.h"
 
 // Expression Handlers
@@ -23,7 +24,7 @@ const Expression* UnaryExpression::getNext() const{
 }
 
 std::string BinaryExpression::getType() const{
-	return opCode;
+	return "Binary";
 }
 
 void BinaryExpression::printer() const{
@@ -31,7 +32,7 @@ void BinaryExpression::printer() const{
 }
 
 std::string UnaryExpression::getType() const{
-	return type;
+	return "Unary";
 }
 
 void UnaryExpression::printer() const{
@@ -123,21 +124,76 @@ else{
 // CodeGen for operations +-*/
 
 
-void BinaryExpression::codeGen(){
-	if(opCode == "+"){
-		// generate ADD code
+// Post Order Tree Traversal for summing up all values of the RHS, eg: int x = 3 +2, this function returns 5!
+// Run once for left nodes, another time for right nodes
+void Traversal(Expression* root, int &sum,int &leftTemp, int &rightTemp,mipsRegisters mips){
+	if(root != NULL){
+		std::vector<int> vec1;
+		if(root->getType() == "Unary"){
+			Traversal(root->getNext());
+		}
+		else if(root->getType() == "Constant"){
+			vec1.push_back(root->getConstant());
+		}
+		else if(root->getType() == "Identifier"){
+			int register_num = mips.registerLookup(root->getName());
+			Register r1 = mips.getValue(register_num);
+			vec1.push_back(r1.value);
+		}
+		else if(root->getType() == "Binary"){
+			Traversal(root->left);
+			Traversal(root->right);
+			if(root->getType() == "Binary"){
+				if(root->left != NULL && root->right != NULL){
+					std::string op = root->getOperator();
+					if(op == "+"){
+						leftTemp = vec1[0] + vec1[1];
+					}
+					else if(op == "-"){
+						leftTemp = vec1[0] - vec1[1];
+					}
+					else if(op == "*"){
+						leftTemp = vec1[0] * vec1[1];
+					}
+					else if(op == "/"){
+						leftTemp = vec1[0] / vec1[1];
+					}
+					return leftTemp;
+				}
+				/* makes no sense where left is not null and right is null - will occur under no circumstances
+				else if(root->left != NULL && root->right == NULL){
+					if(op == "+"){
+						sum += vec1[0];
+					}
+					else if(op == "-"){
+						sum += vec1[0];
+					}
+					else if(op == "*"){
+						sum += vec1[0];
+					}
+					else if(op == "/"){
+						sum += vec1[0];
+					}
+				}*/
+			}	
+		}
 
-	}
-	else if(opCode == "-"){
-		// generate SUB code
-	}
-	else if(opCode == "*"){
-		// generate MULT code
-	}
-	else if(opCode == "/"){
-		// generate DIV code
+		vec1.clear();
 	}
 }
+
+
+void codeGen(const int &registerName,mipsRegisters mips){
+	std::stringstream ss;
+	int x = registerName - 8;
+	ss << x;
+	std::string name = "$t" + ss.str();
+	Register r1 = mips.getValue(registerName);
+	std::cout << "move " << name << "," << r1.value << std::endl;
+	ss.str("");
+}
+
+
 
 
 // Statement Handlers
