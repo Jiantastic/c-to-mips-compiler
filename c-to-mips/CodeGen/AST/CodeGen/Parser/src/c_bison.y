@@ -2,8 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
-#include <stack>
-#include "ast.h"
+
 #include "ast.cpp"
 
 int yylex();
@@ -11,17 +10,18 @@ int yyerror(const char* s);
 char* identifier_value;
 int scope_counter = 0;
 int is_function = 0;
-std::stack<Expression*> mystack;
-mipsRegisters mips32;
+
+stack <Expression *> nodes;
 
 %}
 
 %union 
 {
+
+        Expression *exp;
         int number;
         float float_num;
         char* str;
-        class Expression* exp;
 }
 
 %token <number> INT_NUM
@@ -52,21 +52,24 @@ mipsRegisters mips32;
 %type <str> declarator 
 
 %type <exp> additive_expression multiplicative_expression cast_expression unary_expression postfix_expression primary_expression
-expression
-assignment_expression
-conditional_expression
-logical_or_expression
-logical_and_expression
-inclusive_or_expression
-exclusive_or_expression
-and_expression
-equality_expression
-relational_expression
-shift_expression
 
 
 %%
 
+/*
+TODO:
+
+data-type : int
+
+control-flow : if, while, for
+
+function - parameters
+
+scope - 
+
+indentations
+
+*/
 
 /* ===================== Parsing START ============================ */
 
@@ -84,17 +87,16 @@ external_declaration : declaration
 
 
 
-primary_expression : IDENTIFIER     {$$ = new IdentifierExpression($1);mystack.push($$);}      
-                   | INT_NUM        {$$ = new ConstantExpression($1);mystack.push($$);}             
+primary_expression : IDENTIFIER           
+                   | CONSTANT             
                    | STRINGLITERAL        
                    | '(' expression ')'
                    ;
 
-/*
 CONSTANT : INT_NUM                        
          | FLOAT_NUM                     
          ;
-*/
+
 
 assignment_operator : '=' 
                     | MUL_ASSIGNMENT 
@@ -118,65 +120,24 @@ constant_expression : conditional_expression
 /* ============== Expression Implementation ====================== */
 
 
-expression : assignment_expression                        { 
-                                                            $$ = new UnaryExpression($1,"assignment_expression");
-
-                                                          }
-           | expression ',' assignment_expression         
+expression : assignment_expression
+           | expression ',' assignment_expression
            ; 
 
 /* ================ assignment expression =================== */
 
-assignment_expression : conditional_expression            { $$ = new UnaryExpression($1,"conditional_expression"); mystack.push($$);}
-                      | unary_expression assignment_operator assignment_expression  {
-                                                                                      Expression* exp1,exp2;
-                                                                                      std::string var;
-                                                                                      int x;
-                                                                                      bool testCase = false;
-                                                                                      exp1 = $1;
-                                                                                      exp2 = $3;
-                                                                                      while(!testCase){
-                                                                                       if(exp1->getType() == "Identifier"){
-                                                                                          var = exp1->getName();
-                                                                                          testCase = true;
-                                                                                        }
-                                                                                        else{
-                                                                                          exp1 = exp1->getNext();
-                                                                                        }
-                                                                                        
-                                                                                      }
-                                                                                      testCase = false;
-                                                                                      while(!testCase){
-                                                                                        if(exp2->getType() == "Constant"){
-                                                                                          x = exp2->getConstant();
-                                                                                          testCase = true;
-                                                                                        }
-                                                                                        else{
-                                                                                          exp2 = exp2->getNext();
-                                                                                        }
-                                                                                        
-                                                                                      }
-
-                                                                                      int finder = mips32.registerLookup(var);
-                                                                                      if(finder == -1){
-                                                                                        std::cout << "syntax error" << std::endl;
-                                                                                        return -1;
-                                                                                      }
-                                                                                      else{
-                                                                                        mips32.Bind(x,finder,var);
-                                                                                      }
-                                                                                      mips32.printAllRegisters();
-                                                                                    }
+assignment_expression : conditional_expression
+                      | unary_expression assignment_operator assignment_expression
                       ;
 
 /* ===================================== */
 
 
-conditional_expression : logical_or_expression             { $$ = $1;}
+conditional_expression : logical_or_expression
                        | logical_or_expression '?' expression ':' conditional_expression
                        ;
 
-unary_expression : postfix_expression                      { $$ = $1;}
+unary_expression : postfix_expression
                  | INC_OPERATOR unary_expression
                  | DEC_OPERATOR unary_expression
                  | unary_operator cast_expression
@@ -187,12 +148,12 @@ unary_expression : postfix_expression                      { $$ = $1;}
 
 /* ================ assignment expression recurse tree units =================== */
 
-logical_or_expression : logical_and_expression                                    { $$ = $1;}
+logical_or_expression : logical_and_expression
                       | logical_or_expression OR_OPERATOR logical_and_expression
                       ;
 
 
-postfix_expression : primary_expression                                           { $$ = $1;}
+postfix_expression : primary_expression
                    | postfix_expression '[' expression ']'
                    | postfix_expression '(' ')'
                    | postfix_expression '(' argument_expression_list ')'
@@ -210,7 +171,7 @@ unary_operator : '&'
                | '!'
                ;
 
-cast_expression : unary_expression                                      { $$ = $1;}
+cast_expression : unary_expression
                 | '(' type_name ')' cast_expression
                 ;
 
@@ -218,7 +179,7 @@ cast_expression : unary_expression                                      { $$ = $
 /* ===================================== */
 
 
-logical_and_expression : inclusive_or_expression                         { $$ = $1;}
+logical_and_expression : inclusive_or_expression
                        | logical_and_expression AND_OPERATOR inclusive_or_expression
                        ;
 
@@ -231,60 +192,58 @@ argument_expression_list : assignment_expression
 /* ===================================== */
 
 
-inclusive_or_expression : exclusive_or_expression                         { $$ = $1;}
+inclusive_or_expression : exclusive_or_expression
                         | inclusive_or_expression '|' exclusive_or_expression
                         ;
 
 /* ===================================== */
 
-exclusive_or_expression : and_expression                                  { $$ = $1;}
+exclusive_or_expression : and_expression
                         | exclusive_or_expression '^' and_expression
                         ;
 
 /* ===================================== */
 
-and_expression : equality_expression                                      { $$ = $1;}
+and_expression : equality_expression
                | and_expression '&' equality_expression
                ;
 
 /* ===================================== */
 
-equality_expression : relational_expression                               { $$ = $1;}
+equality_expression : relational_expression
                     | equality_expression EQ_OPERATOR relational_expression
                     | equality_expression NE_OPERATOR relational_expression
                     ;
 
 /* ===================================== */
 
-relational_expression : shift_expression                                  { $$ = $1;}
-                      | relational_expression '<' shift_expression        
-                      | relational_expression '>' shift_expression        
-                      | relational_expression LE_OPERATOR shift_expression 
+relational_expression : shift_expression
+                      | relational_expression '<' shift_expression
+                      | relational_expression '>' shift_expression
+                      | relational_expression LE_OPERATOR shift_expression
                       | relational_expression GE_OPERATOR shift_expression
                       ;
 
 /* ===================================== */
 
-shift_expression : additive_expression                                   { $$ = $1;}
+shift_expression : additive_expression
                  | shift_expression LEFT_OPERATOR additive_expression
                  | shift_expression RIGHT_OPERATOR additive_expression
                  ;
 
 /* ===================================== */
 
-additive_expression : multiplicative_expression                            { $$ = $1;}
-                    | additive_expression '+' multiplicative_expression    { $$ = new BinaryExpression($1,"+",$3);mystack.push($$);
-                                                                              std::cout << "ADDITION COMPLETE" << std::endl;
-                                                                           }
-                    | additive_expression '-' multiplicative_expression    { $$ = new BinaryExpression($1,"-",$3);mystack.push($$);}
+additive_expression : multiplicative_expression              
+                    | additive_expression '+' multiplicative_expression    { $$ = $1 + $3;}
+                    | additive_expression '-' multiplicative_expression
                     ;
 
 /* ===================================== */
 
-multiplicative_expression : cast_expression                                { $$ = $1;}   
-                          | multiplicative_expression '*' cast_expression  { $$ = new BinaryExpression($1,"*",$3);mystack.push($$);}
-                          | multiplicative_expression '/' cast_expression  { $$ = new BinaryExpression($1,"/",$3);mystack.push($$);}
-                          | multiplicative_expression '%' cast_expression  { $$ = new BinaryExpression($1,"%",$3);mystack.push($$);}
+multiplicative_expression : cast_expression                             {std::cout << "cast expression after additive" << std::endl;}   
+                          | multiplicative_expression '*' cast_expression
+                          | multiplicative_expression '/' cast_expression
+                          | multiplicative_expression '%' cast_expression
                           ;
 
 /*
@@ -312,12 +271,12 @@ specifier_qualifier_list
 
 /* ============== Statement Implementation ========================== */
 
-statement : labeled_statement         {$$ = $1;}      
-          | compound_statement        {$$ = $1;}
-          | expression_statement      {$$ = $1;}
-          | selection_statement       {$$ = $1;}
-          | iteration_statement       {$$ = $1;}
-          | jump_statement            {$$ = $1;}
+statement : labeled_statement
+          | compound_statement
+          | expression_statement
+          | selection_statement
+          | iteration_statement
+          | jump_statement
           ;
 
 
@@ -344,7 +303,7 @@ expression_statement : ';'
 
 /* OK ====== Selection Statement ======= */
 
-selection_statement : IF '(' expression ')' statement                                               
+selection_statement : IF '(' expression ')' statement
                     | IF '(' expression ')' statement ELSE statement
                     | SWITCH '(' expression ')' statement
                     ;
@@ -370,11 +329,11 @@ jump_statement : GOTO IDENTIFIER ';'
 
 /* ============================ Statement recursion tree units ============================= */
 
-statement_list : statement                   {$$ = $1;}
+statement_list : statement                   
                | statement_list statement     
                ;
 
-declaration_list : declaration                {$$ = $1;}
+declaration_list : declaration
                  | declaration_list declaration
                  ;
 
@@ -384,8 +343,6 @@ declaration_list : declaration                {$$ = $1;}
 
 declaration : declaration_specifiers ';'
             | declaration_specifiers init_declarator_list ';'      {
-
-
                                                                       for(int i=0;i<scope_counter;i++){
                                                                         std::cout << "    " ;
                                                                       }
@@ -442,7 +399,7 @@ init_declarator_list : init_declarator
                      ;
 
 init_declarator : declarator
-                | declarator '=' initializer                                            {std::cout << "hohohoohoh" << std::endl;}
+                | declarator '=' initializer {std::cout << "hohohoohoh" << std::endl;}
                 ;
 
 
@@ -462,13 +419,13 @@ type_qualifier_list : type_qualifier
                     | type_qualifier_list type_qualifier
                     ;
 
-direct_declarator : IDENTIFIER                                                      {identifier_value = $1;}
+direct_declarator : IDENTIFIER                                                      { identifier_value = $1; }
                   | '(' declarator ')'                                               
                   | direct_declarator '[' constant_expression ']'                         
                   | direct_declarator '[' ']'                               
-                  | direct_declarator function_name parameter_type_list ')'         {std::cout << "asdasdasdasdsa" << std::endl;}         
-                  | direct_declarator function_name identifier_list ')'             {std::cout << "sqqqqqqqq" << std::endl;}
-                  | direct_declarator function_name ')'                             {std::cout << "pppppppppppppppp" << std::endl;}
+                  | direct_declarator function_name parameter_type_list ')'                 
+                  | direct_declarator function_name identifier_list ')' 
+                  | direct_declarator function_name ')' 
                   ;
 
 
@@ -490,9 +447,6 @@ parameter_list : parameter_declaration
 */
 
 parameter_declaration : declaration_specifiers declarator                 {
-                                                                              int reg = mips32.findEmptyRegister();
-                                                                              mips32.Bind(0,reg,$2);
-                                                                              mips32.printAllRegisters();
                                                                               for(int i=0;i<scope_counter;i++){
                                                                                 std::cout << "    " ;
                                                                               }
@@ -521,7 +475,7 @@ initializer_list : initializer
 /* ================== function definitions ====================== */
 
 function_definition : declaration_specifiers declarator declaration_list compound_statement   
-                    | declaration_specifiers declarator compound_statement                    {std::cout << "function definition compound statemnet" << std::endl;}
+                    | declaration_specifiers declarator compound_statement                    
                     | declarator declaration_list compound_statement                          
                     | declarator compound_statement                                         
                     ;

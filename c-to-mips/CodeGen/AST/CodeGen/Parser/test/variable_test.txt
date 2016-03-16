@@ -1,0 +1,11 @@
+int x;
+int x = y;
+int x = y + 3;
+int x = 3 + y;
+int x = 3 + 3 + y;
+int x = y + x + y + 3;
+int x =
+
+KEYWORD IDENTIFIER | KEYWORD IDENTIFIER OPERATOR RHS
+
+RHS : IDENTIFIER OPERATOR | IDENTIFIER OPERATOR 
