@@ -63,6 +63,14 @@ void ConstantExpression::printer() const{
 	std::cout << "TYPE : ConstantExpression with constant of " << num << std::endl;
 }
 
+std::string BracketExpression::getType() const{
+	return "Bracket";
+}
+
+void BracketExpression::printer() const{
+	std::cout << "Brackets around ( expression ) with expression type = " << exp1->getType() << std::endl;
+}
+
 /*
 const Expression* exp1 = $$;
 bool test_case = false;
@@ -126,61 +134,7 @@ else{
 
 // Post Order Tree Traversal for summing up all values of the RHS, eg: int x = 3 +2, this function returns 5!
 // Run once for left nodes, another time for right nodes
-void Traversal(Expression* root, int &sum,int &leftTemp, int &rightTemp,mipsRegisters mips){
-	if(root != NULL){
-		std::vector<int> vec1;
-		if(root->getType() == "Unary"){
-			Traversal(root->getNext());
-		}
-		else if(root->getType() == "Constant"){
-			vec1.push_back(root->getConstant());
-		}
-		else if(root->getType() == "Identifier"){
-			int register_num = mips.registerLookup(root->getName());
-			Register r1 = mips.getValue(register_num);
-			vec1.push_back(r1.value);
-		}
-		else if(root->getType() == "Binary"){
-			Traversal(root->left);
-			Traversal(root->right);
-			if(root->getType() == "Binary"){
-				if(root->left != NULL && root->right != NULL){
-					std::string op = root->getOperator();
-					if(op == "+"){
-						leftTemp = vec1[0] + vec1[1];
-					}
-					else if(op == "-"){
-						leftTemp = vec1[0] - vec1[1];
-					}
-					else if(op == "*"){
-						leftTemp = vec1[0] * vec1[1];
-					}
-					else if(op == "/"){
-						leftTemp = vec1[0] / vec1[1];
-					}
-					return leftTemp;
-				}
-				/* makes no sense where left is not null and right is null - will occur under no circumstances
-				else if(root->left != NULL && root->right == NULL){
-					if(op == "+"){
-						sum += vec1[0];
-					}
-					else if(op == "-"){
-						sum += vec1[0];
-					}
-					else if(op == "*"){
-						sum += vec1[0];
-					}
-					else if(op == "/"){
-						sum += vec1[0];
-					}
-				}*/
-			}	
-		}
 
-		vec1.clear();
-	}
-}
 
 
 void codeGen(const int &registerName,mipsRegisters mips){
@@ -193,6 +147,61 @@ void codeGen(const int &registerName,mipsRegisters mips){
 	ss.str("");
 }
 
+
+void ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::stack<int> &mystack,const bool &debugMode,mipsRegisters &mips32){
+	/* Shunting-yard algorithm */
+	if(debugMode){
+	  std::cout << "int a = 3 + 2...init" << std::endl; 
+	}
+
+	for(int i=0;i<completeTree.size();i++){
+	  if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
+	    if(debugMode){
+	      completeTree[i]->printer();
+	    }
+	    if(completeTree[i]->getType() == "Constant"){
+	      mystack.push(completeTree[i]->getConstant());
+	    }
+	    else if(completeTree[i]->getType() == "Identifier"){
+	      // logic to handle identifier conversion
+	      int y = mips32.registerLookup(completeTree[i]->getName());
+	      Register r = mips32.getValue(y);
+	      mystack.push(r.value);
+	    }
+	    else if(completeTree[i]->getType() == "Binary"){
+	      std::string strOp = completeTree[i]->getOperator();
+	      int temp_x = mystack.top();
+	      mystack.pop(); 
+	      int temp_y = mystack.top();
+	      mystack.pop();
+	      int sum = 0;
+	      if(strOp == "+"){
+	        sum = temp_y + temp_x;
+	      }
+	      else if(strOp == "-"){
+	        sum = temp_y - temp_x;
+	      }
+	      else if(strOp == "*"){
+	        sum = temp_y * temp_x;
+	      }
+	      else if(strOp == "/"){
+	        sum = temp_y / temp_x;
+	      }
+	      mystack.push(sum);
+	    }
+	  }
+	}
+	int ans = mystack.top();
+	int v = mips32.registerLookup($1);
+	mips32.Bind(ans,v,$1);
+	completeTree.clear();
+	codeGen(v,mips32);
+	mystack.pop();
+	if(debugMode){
+	  mips32.printAllRegisters();
+	}
+
+}
 
 
 

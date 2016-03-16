@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <string>
 #include <sstream>
+#include <stack>
 #include "ast.h"
 #include "ast.cpp"
 
@@ -12,9 +13,11 @@ char* identifier_value;
 int scope_counter = 0;
 int is_function = 0;
 std::vector<Expression*> completeTree;
+std::stack<int> mystack;
 mipsRegisters mips32;
 bool isMinus = false;
 bool debugMode = true;
+std::string functionName;
 
 %}
 
@@ -52,7 +55,7 @@ bool debugMode = true;
 
 %token XOR_ASSIGNMENT OR_ASSIGNMENT 
 
-%type <str> declarator 
+%type <str> declarator '(' ')'
 
 %type <str> '='
 MUL_ASSIGNMENT
@@ -67,8 +70,7 @@ XOR_ASSIGNMENT
 OR_ASSIGNMENT 
 assignment_operator
 
-%type <exp> additive_expression multiplicative_expression cast_expression unary_expression postfix_expression primary_expression
-expression
+%type <exp> additive_expression multiplicative_expression cast_expression unary_expression postfix_expression primary_expression expression
 assignment_expression
 conditional_expression
 logical_or_expression
@@ -104,7 +106,7 @@ external_declaration : declaration
 primary_expression : IDENTIFIER     {$$ = new IdentifierExpression($1);completeTree.push_back($$);}      
                    | INT_NUM        {$$ = new ConstantExpression($1);completeTree.push_back($$);}             
                    | STRINGLITERAL        
-                   | '(' expression ')'
+                   | '(' expression ')' {std::cout << "TODO? Seems to work without new Bracket .... : Open bracket for expressions, eg: (2 - 1)" << std::endl;}
                    ;
 
 /*
@@ -144,10 +146,9 @@ expression : assignment_expression                        { $$ = new UnaryExpres
 assignment_expression : conditional_expression            { $$ = new UnaryExpression($1,"conditional_expression"); completeTree.push_back($$);}
                       | unary_expression assignment_operator assignment_expression       { 
                                                                                             if(debugMode){
-                                                                                              std::cout << "testing" << std::endl;
+                                                                                              std::cout << "a = 3 + 2..." << std::endl;
                                                                                             }
                                                                                             int counter = 0;
-                                                                                            int holder;
                                                                                             std::string binder;
 
                                                                                             /* check if identifier $1 exists or not */
@@ -157,6 +158,7 @@ assignment_expression : conditional_expression            { $$ = new UnaryExpres
                                                                                               if(temp1->getType() == "Identifier"){
                                                                                                 /* identifier has to exist prior to this */
                                                                                                 int v = mips32.registerLookup(temp1->getName());
+                                                                                                binder = temp1->getName();
                                                                                                 if(v == -1){
                                                                                                   std::cout << "variable has to be declared before usage" << std::endl;
                                                                                                   return -1;
@@ -169,102 +171,55 @@ assignment_expression : conditional_expression            { $$ = new UnaryExpres
                                                                                                 temp1 = temp1->getNext();
                                                                                               }
                                                                                             }
-                                                                                          std::string strOp = "";
-                                                                                          std::vector<int> values;
-                                                                                          int sum = 0;
+
+                                                                                          /* Shunting-yard algorithm */
                                                                                           for(int i=0;i<completeTree.size();i++){
-                                                                                            if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
-                                                                                              if(debugMode){
-                                                                                                completeTree[i]->printer();
-                                                                                              }
-                                                                                              if(completeTree[i]->getType() == "Constant"){
-                                                                                                values.push_back(completeTree[i]->getConstant());
-                                                                                              }
-                                                                                              if(completeTree[i]->getType() == "Identifier"){
-                                                                                                if(counter == 0){
-                                                                                                  counter++;
-                                                                                                  binder = completeTree[i]->getName();
-                                                                                                }
-                                                                                                else{
-                                                                                                int y = mips32.registerLookup(completeTree[i]->getName());
-
-                                                                                                Register r = mips32.getValue(y);
-
-                                                                                                values.push_back(r.value);
-                                                                                                }
-                                                                                              }
-                                                                                              if(completeTree[i]->getType() == "Binary"){
-                                                                                                strOp = completeTree[i]->getOperator();
-                                                                                              }
-
-                                                                                              if(strOp != ""){
-                                                                                                if(values.size() == 0){
-                                                                                                    if(strOp == "-"){
-                                                                                                      int temp2 = -holder;
-                                                                                                      sum -= holder;
-                                                                                                      sum += temp2;
-                                                                                                    }
-                                                                                                  }
+                                                                                              if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
                                                                                                 if(debugMode){
-                                                                                                  for(int i=0;i<values.size();i++){
-                                                                                                    std::cout << "STASH : " << values[i] << std::endl;
-                                                                                                  }
+                                                                                                  completeTree[i]->printer();
                                                                                                 }
-                                                                                                if(strOp == "+"){
-                                                                                                  for(int i=0;i<values.size();i++){
-                                                                                                    sum += values[i];
-                                                                                                  }
+                                                                                                if(completeTree[i]->getType() == "Constant"){
+                                                                                                  mystack.push(completeTree[i]->getConstant());
                                                                                                 }
-                                                                                                else if(strOp == "-"){
-                                                                                                  if(values.size() == 2){
-                                                                                                    sum = values[0] - values[1];
-                                                                                                  }
-                                                                                                  else{
-                                                                                                    for(int i=0;i<values.size();i++){
-                                                                                                      sum -= values[i];
-                                                                                                    }
-                                                                                                  }
+                                                                                                else if(completeTree[i]->getType() == "Identifier"){
+                                                                                                  // logic to handle identifier conversion
+                                                                                                  int y = mips32.registerLookup(completeTree[i]->getName());
+                                                                                                  Register r = mips32.getValue(y);
+                                                                                                  mystack.push(r.value);
                                                                                                 }
-                                                                                                else if(strOp == "*"){
-                                                                                                  int temp = 1;
-                                                                                                  for(int i=0;i<values.size();i++){
-                                                                                                    temp *= values[i];
+                                                                                                else if(completeTree[i]->getType() == "Binary"){
+                                                                                                  std::string strOp = completeTree[i]->getOperator();
+                                                                                                  int temp_x = mystack.top();
+                                                                                                  mystack.pop(); 
+                                                                                                  int temp_y = mystack.top();
+                                                                                                  mystack.pop();
+                                                                                                  int sum = 0;
+                                                                                                  if(strOp == "+"){
+                                                                                                    sum = temp_y + temp_x;
                                                                                                   }
-                                                                                                  holder = temp;
-                                                                                                  sum += temp;
+                                                                                                  else if(strOp == "-"){
+                                                                                                    sum = temp_y - temp_x;
+                                                                                                  }
+                                                                                                  else if(strOp == "*"){
+                                                                                                    sum = temp_y * temp_x;
+                                                                                                  }
+                                                                                                  else if(strOp == "/"){
+                                                                                                    sum = temp_y / temp_x;
+                                                                                                  }
+                                                                                                  mystack.push(sum);
                                                                                                 }
-                                                                                                else if(strOp == "/"){
-                                                                                                  int temp;
-                                                                                                  if(values.size() == 2){
-                                                                                                    temp = values[0] / values[1];
-                                                                                                    holder = temp;
-                                                                                                    sum += temp;
-                                                                                                  }
-                                                                                                  else{
-                                                                                                    sum /= values[0];
-                                                                                                  }
-                                                                                                }
-                                                                                                values.clear();
-                                                                                                strOp = "";
-                                                                                              }
-                                                                                              if(debugMode){
-                                                                                                std::cout << "TOTAL SUM : " << sum << std::endl;
                                                                                               }
                                                                                             }
-                                                                                            
+                                                                                            int ans = mystack.top();
+                                                                                            int v = mips32.registerLookup(binder);
+                                                                                            mips32.Bind(ans,v,binder);
+                                                                                            completeTree.clear();
+                                                                                            codeGen(v,mips32);
+                                                                                            mystack.pop();
+                                                                                            if(debugMode){
+                                                                                              mips32.printAllRegisters();
+                                                                                            }
                                                                                           }
-                                                                                            if(values.size() == 1){
-                                                                                              sum = values[0];
-                                                                                            }
-                                                                                              int v = mips32.registerLookup(binder);
-                                                                                              mips32.Bind(sum,v,binder);
-                                                                                              if(debugMode){
-                                                                                                mips32.printAllRegisters();
-                                                                                                std::cout << "over and out" << std::endl;
-                                                                                              }
-                                                                                          completeTree.clear();
-                                                                                          codeGen(v,mips32);
-                                                                                        }
 
                       ;
 
@@ -294,7 +249,7 @@ logical_or_expression : logical_and_expression                                  
 postfix_expression : primary_expression                                           { $$ = new UnaryExpression($1,"primary_expression");completeTree.push_back($$);}
                    | postfix_expression '[' expression ']'
                    | postfix_expression '(' ')'
-                   | postfix_expression '(' argument_expression_list ')'
+                   | postfix_expression '(' argument_expression_list ')'           { std::cout << "dasdaoihweowqidajd" << std::endl;}
                    | postfix_expression '.' IDENTIFIER
                    | postfix_expression PTR_OPERATOR IDENTIFIER
                    | postfix_expression INC_OPERATOR
@@ -310,7 +265,7 @@ unary_operator : '&'
                ;
 
 cast_expression : unary_expression                                      { $$ = new UnaryExpression($1,"unary_expression");completeTree.push_back($$);}
-                | '(' type_name ')' cast_expression
+                | '(' type_name ')' cast_expression                     
                 ;
 
 
@@ -375,10 +330,8 @@ additive_expression : multiplicative_expression                            { $$ 
                     | additive_expression '+' multiplicative_expression    { $$ = new BinaryExpression($1,"+",$3);completeTree.push_back($$);
                                                                               if(debugMode){
                                                                                 std::cout << "ADDITION COMPLETE,recursive testing" << std::endl;
-                                                                                for(int i=0;i<completeTree.size();i++){
-                                                                                  completeTree[i]->printer();
-                                                                                }
-                                                                                
+
+                                                                                    
                                                                               }
                                                                            }
                     | additive_expression '-' multiplicative_expression    { $$ = new BinaryExpression($1,"-",$3);completeTree.push_back($$);std::cout << "SUB" << std::endl; }
@@ -469,8 +422,15 @@ iteration_statement : WHILE '(' expression ')' statement
 jump_statement : GOTO IDENTIFIER ';'
                | CONTINUE ';'
                | BREAK ';'
-               | RETURN ';'
-               | RETURN expression ';'
+               | RETURN ';'                 
+               | RETURN expression ';'      {
+                                              std::cout << "RETURNING..." << std::endl;
+                                              for(int i=0;i<completeTree.size();i++){
+                                                completeTree[i]->printer();
+                                              }
+
+
+                                            std::cout << "testing 2" << std::endl;}
                ;
 
 /* ============================ Statement recursion tree units ============================= */
@@ -567,11 +527,8 @@ init_declarator : declarator                                                    
                                                                                             }
                                                                                           }
                                                                                         }
+
                 | declarator '=' initializer                                            { 
-                                                                                            int holder = 0;
-                                                                                            bool init = false;
-                                                                                            int holdOutlier = 0;
-                                                                                            std::vector<int> vec3;
                                                                                             int x = mips32.findEmptyRegister();
                                                                                             if(x == -1){
                                                                                               if(debugMode){
@@ -589,9 +546,6 @@ init_declarator : declarator                                                    
                                                                                                       counter++;
                                                                                                     }
                                                                                                   }
-                                                                                                  if(counter == 0){
-                                                                                                    init = true;
-                                                                                                  }
                                                                                                 }
                                                                                               }
                                                                                               if(debugMode){
@@ -599,111 +553,58 @@ init_declarator : declarator                                                    
                                                                                               }
                                                                                             }
                                                                                         
-                                                                                            /* basic idea is that keep getting all values until the next operator */
+                                                                                            /* Shunting-yard algorithm */
                                                                                             if(debugMode){
-                                                                                              std::cout << "hohohoohoh" << std::endl; 
+                                                                                              std::cout << "int a = 3 + 2...init" << std::endl; 
                                                                                             }
-                                                                                            std::string strOp = "";
-                                                                                            std::vector<int> values;
-                                                                                            int sum = 0;
+
                                                                                             for(int i=0;i<completeTree.size();i++){
                                                                                               if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
                                                                                                 if(debugMode){
                                                                                                   completeTree[i]->printer();
                                                                                                 }
                                                                                                 if(completeTree[i]->getType() == "Constant"){
-                                                                                                  values.push_back(completeTree[i]->getConstant());
+                                                                                                  mystack.push(completeTree[i]->getConstant());
                                                                                                 }
                                                                                                 else if(completeTree[i]->getType() == "Identifier"){
                                                                                                   // logic to handle identifier conversion
                                                                                                   int y = mips32.registerLookup(completeTree[i]->getName());
                                                                                                   Register r = mips32.getValue(y);
-                                                                                                  values.push_back(r.value);
+                                                                                                  mystack.push(r.value);
                                                                                                 }
                                                                                                 else if(completeTree[i]->getType() == "Binary"){
-                                                                                                  strOp = completeTree[i]->getOperator();
-                                                                                                }
-
-                                                                                                if(values.size() == 3 && strOp != ""){
-                                                                                                  handleOutlier = true; /* look for first + or - that occurs after */
-                                                                                                  holdOutlier = values[0];
-                                                                                                  if(strOp == "*"){
-                                                                                                    sum += values[1] * values[2];
-                                                                                                  }
-                                                                                                  else if(strOp == "/"){
-                                                                                                    sum += values[1] / values[2];
-                                                                                                  }
-                                                                                                }
-
-                                                                                                if(strOp != "" && handleOutlier == false){
-                                                                                                  if(values.size() == 0){
-                                                                                                    if(strOp == "-"){
-                                                                                                      int temp2 = -holder;
-                                                                                                      sum -= holder;
-                                                                                                      sum += temp2;
-                                                                                                    }
-                                                                                                  }
-                                                                                                  if(debugMode){
-                                                                                                    for(int i=0;i<values.size();i++){
-                                                                                                      std::cout << "STASH : " << values[i] << std::endl;
-                                                                                                    }
-                                                                                                  }
-                                                                                                  
+                                                                                                  std::string strOp = completeTree[i]->getOperator();
+                                                                                                  int temp_x = mystack.top();
+                                                                                                  mystack.pop(); 
+                                                                                                  int temp_y = mystack.top();
+                                                                                                  mystack.pop();
+                                                                                                  int sum = 0;
                                                                                                   if(strOp == "+"){
-                                                                                                    for(int i=0;i<values.size();i++){
-                                                                                                      sum += values[i];
-                                                                                                    }
+                                                                                                    sum = temp_y + temp_x;
                                                                                                   }
                                                                                                   else if(strOp == "-"){
-                                                                                                    if(values.size() == 2){
-                                                                                                      sum = values[0] - values[1];
-                                                                                                    }
-                                                                                                    else{
-                                                                                                      for(int i=0;i<values.size();i++){
-                                                                                                        sum -= values[i];
-                                                                                                      }
-                                                                                                    }
+                                                                                                    sum = temp_y - temp_x;
                                                                                                   }
                                                                                                   else if(strOp == "*"){
-                                                                                                    int temp = 1;
-                                                                                                    for(int i=0;i<values.size();i++){
-                                                                                                      temp *= values[i];
-                                                                                                    }
-                                                                                                    holder = temp;
-                                                                                                    sum += temp;
+                                                                                                    sum = temp_y * temp_x;
                                                                                                   }
-                                                                                                else if(strOp == "/"){
-                                                                                                  int temp;
-                                                                                                  if(values.size() == 2){
-                                                                                                    temp = values[0] / values[1];
-                                                                                                    holder = temp;
-                                                                                                    sum += temp;
+                                                                                                  else if(strOp == "/"){
+                                                                                                    sum = temp_y / temp_x;
                                                                                                   }
-                                                                                                  else{
-                                                                                                    sum /= values[0];
-                                                                                                  }
-                                                                                                }
-                                                                                                  values.clear();
-                                                                                                  strOp = "";
-                                                                                                }
-                                                                                                if(debugMode){
-                                                                                                  std::cout << "TOTAL SUM : " << sum << std::endl;
+                                                                                                  mystack.push(sum);
                                                                                                 }
                                                                                               }
                                                                                             }
-                                                                                              int v = mips32.registerLookup($1);
-                                                                                              if(!init){
-                                                                                                mips32.Bind(sum,v,$1);
-                                                                                                if(debugMode){
-                                                                                                  mips32.printAllRegisters();
-                                                                                                  std::cout << "over and out" << std::endl;
-                                                                                                }
-                                                                                              }
-                                                                                                
+                                                                                            int ans = mystack.top();
+                                                                                            int v = mips32.registerLookup($1);
+                                                                                            mips32.Bind(ans,v,$1);
                                                                                             completeTree.clear();
                                                                                             codeGen(v,mips32);
-
-                                                                                        }
+                                                                                            mystack.pop();
+                                                                                            if(debugMode){
+                                                                                              mips32.printAllRegisters();
+                                                                                            }
+                                                                                          }
                 ;
 
 
@@ -726,7 +627,7 @@ type_qualifier_list : type_qualifier
 direct_declarator : IDENTIFIER                                                      { identifier_value = $1;
 
                                                                                     }
-                  | '(' declarator ')'                                               
+                  | '(' declarator ')'                                              
                   | direct_declarator '[' constant_expression ']'                         
                   | direct_declarator '[' ']'                               
                   | direct_declarator function_name parameter_type_list ')'                 
@@ -774,7 +675,7 @@ identifier_list : IDENTIFIER
 
 /* ========= initializer ======== */
 
-initializer : assignment_expression                                     
+initializer : assignment_expression                              {std::cout << "retty much has to go here" << std::endl;}       
             | start_scope initializer_list end_scope
             | start_scope initializer_list ',' end_scope
             ;
@@ -804,11 +705,12 @@ start_scope : '{'        {  /*
                          }
             ;
 
-end_scope : '}'          {scope_counter--;
+end_scope : '}'          {
+                            scope_counter--;
                             std::cout << "      j     $31" << std::endl;
                             std::cout << "      nop" << std::endl;
                             std::cout << std::endl;
-                            std::cout << "      .end  main" << std::endl;
+                            std::cout << "      .end  " << functionName << std::endl;
                           }
           ;
 
@@ -824,6 +726,7 @@ function_name : '('   {
                           if(debugMode){
                             std::cout << "FUNCTION : " << identifier_value << std::endl;  
                           }
+                          functionName = identifier_value;
                       }        
               ;
 

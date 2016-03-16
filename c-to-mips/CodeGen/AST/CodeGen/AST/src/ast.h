@@ -108,6 +108,15 @@ public:
 	void printer() const;
 };
 
+class BracketExpression : public Expression{
+	std::string leftBracket;
+	std::string rightBracket;
+	Expression* exp1;
+public:
+	BracketExpression(std::string leftBrac,std::string rightBrac,Expression* exp): leftBracket(leftBrac),rightBracket(rightBrac),exp1(exp) {}
+	std::string getType() const;
+	void printer() const;
+};
 
 // Statements
 
