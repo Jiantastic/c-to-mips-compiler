@@ -190,11 +190,9 @@ FILE_LINE_FINDER ^#.*$
 {OPERATOR}              {
                             string opString(yytext);
                             if(opString == "("){
-                                std::cout << "OPEN BRACKET LOL" << std::endl;
                                 return '(';
                             }
                             else if(opString == ")"){
-                                std::cout << "close BRACKET LOL " << std::endl;
                                return ')';
                             }
                             else if(opString == "["){

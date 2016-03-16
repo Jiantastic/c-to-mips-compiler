@@ -106,7 +106,7 @@ external_declaration : declaration
 primary_expression : IDENTIFIER     {$$ = new IdentifierExpression($1);completeTree.push_back($$);}      
                    | INT_NUM        {$$ = new ConstantExpression($1);completeTree.push_back($$);}             
                    | STRINGLITERAL        
-                   | '(' expression ')' {std::cout << "TODO? Seems to work without new Bracket .... : Open bracket for expressions, eg: (2 - 1)" << std::endl;}
+                   | '(' expression ')' /* BRACKET EXPRESSION TODO */
                    ;
 
 /*
@@ -149,6 +149,7 @@ assignment_expression : conditional_expression            { $$ = new UnaryExpres
                                                                                               std::cout << "a = 3 + 2..." << std::endl;
                                                                                             }
                                                                                             int counter = 0;
+                                                                                            /* binder is used here to store name of variable on the LHS eg: X in X = 3; */
                                                                                             std::string binder;
 
                                                                                             /* check if identifier $1 exists or not */
@@ -173,52 +174,7 @@ assignment_expression : conditional_expression            { $$ = new UnaryExpres
                                                                                             }
 
                                                                                           /* Shunting-yard algorithm */
-                                                                                          for(int i=0;i<completeTree.size();i++){
-                                                                                              if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
-                                                                                                if(debugMode){
-                                                                                                  completeTree[i]->printer();
-                                                                                                }
-                                                                                                if(completeTree[i]->getType() == "Constant"){
-                                                                                                  mystack.push(completeTree[i]->getConstant());
-                                                                                                }
-                                                                                                else if(completeTree[i]->getType() == "Identifier"){
-                                                                                                  // logic to handle identifier conversion
-                                                                                                  int y = mips32.registerLookup(completeTree[i]->getName());
-                                                                                                  Register r = mips32.getValue(y);
-                                                                                                  mystack.push(r.value);
-                                                                                                }
-                                                                                                else if(completeTree[i]->getType() == "Binary"){
-                                                                                                  std::string strOp = completeTree[i]->getOperator();
-                                                                                                  int temp_x = mystack.top();
-                                                                                                  mystack.pop(); 
-                                                                                                  int temp_y = mystack.top();
-                                                                                                  mystack.pop();
-                                                                                                  int sum = 0;
-                                                                                                  if(strOp == "+"){
-                                                                                                    sum = temp_y + temp_x;
-                                                                                                  }
-                                                                                                  else if(strOp == "-"){
-                                                                                                    sum = temp_y - temp_x;
-                                                                                                  }
-                                                                                                  else if(strOp == "*"){
-                                                                                                    sum = temp_y * temp_x;
-                                                                                                  }
-                                                                                                  else if(strOp == "/"){
-                                                                                                    sum = temp_y / temp_x;
-                                                                                                  }
-                                                                                                  mystack.push(sum);
-                                                                                                }
-                                                                                              }
-                                                                                            }
-                                                                                            int ans = mystack.top();
-                                                                                            int v = mips32.registerLookup(binder);
-                                                                                            mips32.Bind(ans,v,binder);
-                                                                                            completeTree.clear();
-                                                                                            codeGen(v,mips32);
-                                                                                            mystack.pop();
-                                                                                            if(debugMode){
-                                                                                              mips32.printAllRegisters();
-                                                                                            }
+                                                                                          ShuntingYardAlgo(completeTree,mystack,debugMode,mips32,binder);
                                                                                           }
 
                       ;
@@ -249,7 +205,7 @@ logical_or_expression : logical_and_expression                                  
 postfix_expression : primary_expression                                           { $$ = new UnaryExpression($1,"primary_expression");completeTree.push_back($$);}
                    | postfix_expression '[' expression ']'
                    | postfix_expression '(' ')'
-                   | postfix_expression '(' argument_expression_list ')'           { std::cout << "dasdaoihweowqidajd" << std::endl;}
+                   | postfix_expression '(' argument_expression_list ')'           
                    | postfix_expression '.' IDENTIFIER
                    | postfix_expression PTR_OPERATOR IDENTIFIER
                    | postfix_expression INC_OPERATOR
@@ -334,13 +290,13 @@ additive_expression : multiplicative_expression                            { $$ 
                                                                                     
                                                                               }
                                                                            }
-                    | additive_expression '-' multiplicative_expression    { $$ = new BinaryExpression($1,"-",$3);completeTree.push_back($$);std::cout << "SUB" << std::endl; }
+                    | additive_expression '-' multiplicative_expression    { $$ = new BinaryExpression($1,"-",$3);completeTree.push_back($$);}
                     ;
 
 /* ===================================== */
 
 multiplicative_expression : cast_expression                                { $$ = new UnaryExpression($1,"cast_expression");completeTree.push_back($$);}   
-                          | multiplicative_expression '*' cast_expression  { $$ = new BinaryExpression($1,"*",$3);completeTree.push_back($$);std::cout << "MULT" << std::endl;}
+                          | multiplicative_expression '*' cast_expression  { $$ = new BinaryExpression($1,"*",$3);completeTree.push_back($$);}
                           | multiplicative_expression '/' cast_expression  { $$ = new BinaryExpression($1,"/",$3);completeTree.push_back($$);}
                           | multiplicative_expression '%' cast_expression  { $$ = new BinaryExpression($1,"%",$3);completeTree.push_back($$);}
                           ;
@@ -423,14 +379,7 @@ jump_statement : GOTO IDENTIFIER ';'
                | CONTINUE ';'
                | BREAK ';'
                | RETURN ';'                 
-               | RETURN expression ';'      {
-                                              std::cout << "RETURNING..." << std::endl;
-                                              for(int i=0;i<completeTree.size();i++){
-                                                completeTree[i]->printer();
-                                              }
-
-
-                                            std::cout << "testing 2" << std::endl;}
+               | RETURN expression ';'      { ShuntingYardAlgo(completeTree,mystack,debugMode,mips32);}
                ;
 
 /* ============================ Statement recursion tree units ============================= */
@@ -529,6 +478,7 @@ init_declarator : declarator                                                    
                                                                                         }
 
                 | declarator '=' initializer                                            { 
+                                                                                            int counter = 0;
                                                                                             int x = mips32.findEmptyRegister();
                                                                                             if(x == -1){
                                                                                               if(debugMode){
@@ -538,9 +488,23 @@ init_declarator : declarator                                                    
                                                                                             }
                                                                                             else{
                                                                                               for(int i=0;i<completeTree.size();i++){
+                                                                                              /* handles NON-BINARY EXPRESSIONS eg: int a= 3;int b = a; */
+                                                                                              
                                                                                                 if(completeTree[i]->getType() == "Constant"){
+                                                                                                  std::cout << "number 1 test" << std::endl;
                                                                                                   mips32.Bind(completeTree[i]->getConstant(),x,$1);
-                                                                                                  int counter = 0;
+                                                                                                  
+                                                                                                  for(int i=0;i<completeTree.size();i++){
+                                                                                                    if(completeTree[i]->getType() == "Binary" ){
+                                                                                                      counter++;
+                                                                                                    }
+                                                                                                  }
+                                                                                                }
+                                                                                                else if(completeTree[i]->getType() == "Identifier"){
+                                                                                                  std::cout << "number 2 test" << std::endl;
+                                                                                                  int v = mips32.registerLookup(completeTree[i]->getName());
+                                                                                                  Register r1 = mips32.getValue(v);
+                                                                                                  mips32.Bind(r1.value,x,$1);
                                                                                                   for(int i=0;i<completeTree.size();i++){
                                                                                                     if(completeTree[i]->getType() == "Binary" ){
                                                                                                       counter++;
@@ -552,58 +516,15 @@ init_declarator : declarator                                                    
                                                                                                 mips32.printAllRegisters();
                                                                                               }
                                                                                             }
-                                                                                        
-                                                                                            /* Shunting-yard algorithm */
-                                                                                            if(debugMode){
-                                                                                              std::cout << "int a = 3 + 2...init" << std::endl; 
+
+
+                                                                                              /* Shunting-yard Algorithm */
+                                                                                            if(counter != 0){
+                                                                                              ShuntingYardAlgo(completeTree,mystack,debugMode,mips32,$1);
                                                                                             }
 
-                                                                                            for(int i=0;i<completeTree.size();i++){
-                                                                                              if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
-                                                                                                if(debugMode){
-                                                                                                  completeTree[i]->printer();
-                                                                                                }
-                                                                                                if(completeTree[i]->getType() == "Constant"){
-                                                                                                  mystack.push(completeTree[i]->getConstant());
-                                                                                                }
-                                                                                                else if(completeTree[i]->getType() == "Identifier"){
-                                                                                                  // logic to handle identifier conversion
-                                                                                                  int y = mips32.registerLookup(completeTree[i]->getName());
-                                                                                                  Register r = mips32.getValue(y);
-                                                                                                  mystack.push(r.value);
-                                                                                                }
-                                                                                                else if(completeTree[i]->getType() == "Binary"){
-                                                                                                  std::string strOp = completeTree[i]->getOperator();
-                                                                                                  int temp_x = mystack.top();
-                                                                                                  mystack.pop(); 
-                                                                                                  int temp_y = mystack.top();
-                                                                                                  mystack.pop();
-                                                                                                  int sum = 0;
-                                                                                                  if(strOp == "+"){
-                                                                                                    sum = temp_y + temp_x;
-                                                                                                  }
-                                                                                                  else if(strOp == "-"){
-                                                                                                    sum = temp_y - temp_x;
-                                                                                                  }
-                                                                                                  else if(strOp == "*"){
-                                                                                                    sum = temp_y * temp_x;
-                                                                                                  }
-                                                                                                  else if(strOp == "/"){
-                                                                                                    sum = temp_y / temp_x;
-                                                                                                  }
-                                                                                                  mystack.push(sum);
-                                                                                                }
-                                                                                              }
-                                                                                            }
-                                                                                            int ans = mystack.top();
-                                                                                            int v = mips32.registerLookup($1);
-                                                                                            mips32.Bind(ans,v,$1);
-                                                                                            completeTree.clear();
-                                                                                            codeGen(v,mips32);
-                                                                                            mystack.pop();
-                                                                                            if(debugMode){
-                                                                                              mips32.printAllRegisters();
-                                                                                            }
+
+                                                                                            
                                                                                           }
                 ;
 
@@ -675,7 +596,7 @@ identifier_list : IDENTIFIER
 
 /* ========= initializer ======== */
 
-initializer : assignment_expression                              {std::cout << "retty much has to go here" << std::endl;}       
+initializer : assignment_expression                                 
             | start_scope initializer_list end_scope
             | start_scope initializer_list ',' end_scope
             ;

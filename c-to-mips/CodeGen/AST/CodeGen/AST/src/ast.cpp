@@ -137,18 +137,33 @@ else{
 
 
 
-void codeGen(const int &registerName,mipsRegisters mips){
-	std::stringstream ss;
-	int x = registerName - 8;
-	ss << x;
-	std::string name = "$t" + ss.str();
-	Register r1 = mips.getValue(registerName);
-	std::cout << "move " << name << "," << r1.value << std::endl;
-	ss.str("");
+void codeGen(const int &registerName,mipsRegisters mips,const std::string &order = ""){
+
+	if(order == "return"){
+		std::cout << "move $v0,$t9" << std::endl;
+	}
+	else{
+		std::cout << "codegenning" << std::endl;
+		int x = 0;
+		std::stringstream ss;
+		std::string name;
+		if(registerName >= 8 && registerName <= 15){
+			x = registerName - 8;
+		}
+		else if(registerName >= 16 && registerName <= 27){
+			x = registerName - 16;
+		}
+		ss << x;
+		name = "$t" + ss.str();
+		Register r1 = mips.getValue(registerName);
+		std::cout << "li " << name << "," << r1.value << std::endl;
+		ss.str("");		
+	}
+
 }
 
 
-void ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::stack<int> &mystack,const bool &debugMode,mipsRegisters &mips32){
+void ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::stack<int> &mystack,const bool &debugMode,mipsRegisters &mips32,std::string declarator=""){
 	/* Shunting-yard algorithm */
 	if(debugMode){
 	  std::cout << "int a = 3 + 2...init" << std::endl; 
@@ -192,24 +207,28 @@ void ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::stack<int> &my
 	  }
 	}
 	int ans = mystack.top();
-	int v = mips32.registerLookup($1);
-	mips32.Bind(ans,v,$1);
+	if(declarator == ""){
+		// codeGen for return expression;
+		mips32.Bind(ans,25,"$t9_RETURN_");
+		codeGen(25,mips32,"return");
+	}
+	else{
+		int v = mips32.registerLookup(declarator);
+		mips32.Bind(ans,v,declarator);
+		codeGen(v,mips32);
+	}
 	completeTree.clear();
-	codeGen(v,mips32);
 	mystack.pop();
+
+
 	if(debugMode){
 	  mips32.printAllRegisters();
 	}
-
 }
 
 
 
 // Statement Handlers
-
-
-
-
 
 
 
@@ -227,6 +246,10 @@ Register mipsRegisters::getValue(const int &registerName){
 }
 
 void mipsRegisters::Bind(const int &val,const int &registerName,const std::string &var){
+	if(registerName == 0){
+		// in MIPS, $0 is always 0 
+		return;
+	}
 	registers[registerName].value = val;
 	registers[registerName].varName = var;
 	registers[registerName].inUse = true;
@@ -253,7 +276,7 @@ void mipsRegisters::printAllRegisters(){
 }
 
 int mipsRegisters::findEmptyRegister(){
-	for(int i=8;i<16;i++){
+	for(int i=8;i<24;i++){
 		if(!registers[i].inUse){
 			return i;
 		}
