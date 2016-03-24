@@ -7,6 +7,9 @@
 #include <vector>
 #include <map>
 
+// to solve hoisting issue
+class maps;
+class mipsRegisters;
 /*
 IMPORTANT : consider using int counts to traverse the AST later on;
 create a pretty print function that traverses through the entire tree!
@@ -55,6 +58,7 @@ public:
 	virtual std::string getName() const {}
 	virtual int getConstant() const {}
 	virtual std::string getOperator() const {}
+	virtual void codeGen(const Expression* exp1) const {}
 	//virtual void evaluate() const {}
 	//virtual int getSum() const {}
 
@@ -77,6 +81,7 @@ public:
 //	void evaluate() const;
 	//int getSum() const;
 };
+
 
 class UnaryExpression : public Expression{
 	Expression* exp1 = NULL;
@@ -181,6 +186,19 @@ public:
 	std::string getType();
 };
 
+
+class PostfixExpression : public Expression{
+	Expression* exp1;
+	std::string type;
+public:
+	PostfixExpression(Expression* exp,std::string val): exp1(exp),type(val) {}
+	std::string getType();	
+	std::string getFunctionName(const Expression* exp) const;
+	//void loadParams(std::vector<const Expression*> core_vector,mipsRegisters &mips,maps &map1);
+	void codeGen(const Expression* exp1) const;
+};
+
+
 // "struct with properties associated with a register"
 class Register{
 public:
@@ -202,51 +220,31 @@ class mipsRegisters{
 public:
 	mipsRegisters():registers(32) {}
 	Register getValue(const int &registerName);
-	void Bind(const int &val,const int &registerName,const std::string &var);
+	void Bind(const int &val,const int &registerName,const std::string &var,maps &map1);
 	int registerLookup(const std::string &varName);
 	void clearRegisters();
+	void clearTempRegisters();		// clear all temporary registers before function call
 	void printAllRegisters();
 	int findEmptyRegister();
 };
 
 
 // before every function call jump, replace current map_stack with fresh map_stack, preserve map_stack in a stack, to be called after every return jump ( j $31)
-class maps{
-	std::map<std::string,Register> map_stack;		// map is used over other data structures due to access time, O(log N)
-// TO-DO : Implement a stack which swaps out registers when out of register space, alternating between stack and registers
-	std::stack<std::map<std::string,Register> > stacking; 
 
+
+class maps{
+	std::map<std::string,int> map_stack;		// map is used over other data structures due to access time, O(log N)
+// TO-DO : Implement a stack which swaps out registers when out of register space, alternating between stack and registers
+	std::stack<std::map<std::string,int> > stacking; 
 public:
 	maps() {}
-	void getNew(std::map<std::string,Register> &map1);	// stores old map_stack in stack, clear map_stack of all values
-	void getOld(std::map<std::string);
-	void clearTempRegisters(mipsRegisters &mips);		// clear all temporary registers before function call
+	void Insert(const std::string &str1,const int &r1);
+	void getNew(mipsRegisters &mips);	// stores old map_stack in stack, clear map_stack of all values
+	void getOld();
+	int getValue(std::string iden);	// gets the value of an identifier
+	void printer();
 };
 
-// executed before every new function call
-void maps::getNew(std::map<std::string,Register> &map1,mipsRegisters &mips){
-	stacking.push(map1);
-	clearTempRegisters(mips);
-	// generate MIPS assembly Code that iterates the entire map and li $... if necessary
-	map1.clear();
-}
-
-// executed after every function calls ends
-void maps::getOld(std::map<std::string,Register> &map1){
-	map1.clear();
-	map1 = stacking.top();
-	// no need to restore registers from stack to registers, my function will automatically look at stack if it can't find it in registers
-	// generate MIPS assembly Code that iterates the entire map and li $... if necessary
-	stacking.pop();
-}
-
-void maps::clearTempRegisters(mipsRegisters &mips){
-	for(int i=8;i<24;i++){
-		registers[i].varName = "";
-		registers[i].value = 0;
-		registers[i].inUse = false;
-	}
-}
 
 #endif
 

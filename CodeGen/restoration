@@ -14,12 +14,10 @@ int scope_counter = 0;
 int is_function = 0;
 std::vector<Expression*> completeTree;
 std::stack<int> mystack;
-std::vector<const Expression*> argument_list;
 mipsRegisters mips32;
-maps map_stack;
+maps my_map;
 bool isMinus = false;
 bool debugMode = false;
-bool called = false;
 std::string functionName;
 
 %}
@@ -192,7 +190,6 @@ assignment_expression : conditional_expression            { $$ = new UnaryExpres
                                                                                                     std::cout << "variable has to be declared before usage" << std::endl;
                                                                                                     return -1;
                                                                                                   }
-                                                                                                  checker = true;
                                                                                                 }
                                                                                                 else{
                                                                                                   checker = true;
@@ -204,10 +201,7 @@ assignment_expression : conditional_expression            { $$ = new UnaryExpres
                                                                                             }
                                                                                             std::string assign = $2->getType();
                                                                                           /* Shunting-yard algorithm */
-                                                                                          ShuntingYardAlgo(completeTree,mystack,debugMode,mips32,map_stack,binder,assign);
-                                                                                          if(debugMode){
-                                                                                            map_stack.printer();
-                                                                                          }
+                                                                                          ShuntingYardAlgo(completeTree,mystack,debugMode,mips32,binder,assign);
                                                                                         }
 
                       ;
@@ -237,29 +231,8 @@ logical_or_expression : logical_and_expression                                  
 
 postfix_expression : primary_expression                                           { $$ = new UnaryExpression($1,"primary_expression");completeTree.push_back($$);}
                    | postfix_expression '[' expression ']'
-                   | postfix_expression '(' ')'                                   { 
-                                                                                    $$ = new PostfixExpression($1,"NoParams");
-                                                                                    map_stack.getNew(mips32);
-                                                                                    called = true;
-                                                                                    $$->codeGen($1);
-                                                                                    if(debugMode){
-                                                                                      std::cout << "func call 1" << std::endl;
-                                                                                      mips32.printAllRegisters();
-                                                                                    }
-                                                                                    completeTree.push_back($$);
-                                                                                  }
-                   | postfix_expression '(' argument_expression_list ')'          { 
-                                                                                    $$ = new PostfixExpression($1,"Params");
-                                                                                    /* $$->loadParams(argument_list,mips32,map_stack); */
-                                                                                    map_stack.getNew(mips32);
-                                                                                    called = true;
-                                                                                    $$->codeGen($1);
-                                                                                    if(debugMode){
-                                                                                      std::cout << "func call 2" << std::endl;
-                                                                                      mips32.printAllRegisters();
-                                                                                    }
-                                                                                    completeTree.push_back($$);
-                                                                                  }
+                   | postfix_expression '(' ')'                                   {mymap_getNew(mips32);std::cout << "func call 1" << std::endl;}
+                   | postfix_expression '(' argument_expression_list ')'          {mymap_getNew(mips32);std::cout << "func call 2" << std::endl;}
                    | postfix_expression '.' IDENTIFIER                            
                    | postfix_expression PTR_OPERATOR IDENTIFIER                  
                    | postfix_expression INC_OPERATOR
@@ -286,8 +259,8 @@ logical_and_expression : inclusive_or_expression                         { $$ = 
                        | logical_and_expression AND_OPERATOR inclusive_or_expression
                        ;
 
-argument_expression_list : assignment_expression                                {argument_list.push_back($1);}
-                         | argument_expression_list ',' assignment_expression   {argument_list.push_back($3);}
+argument_expression_list : assignment_expression
+                         | argument_expression_list ',' assignment_expression
                          ;
 
 
@@ -375,7 +348,7 @@ specifier_qualifier_list
 /* ============== Statement Implementation ========================== */
 
 statement : labeled_statement               
-          | compound_statement        {std::cout << "DO I GO THROASDJASKLDJALSJDSLKA" << std::endl;}
+          | compound_statement
           | expression_statement      {std::cout << "is this over?" << std::endl;}
           | selection_statement
           | iteration_statement
@@ -427,7 +400,7 @@ jump_statement : GOTO IDENTIFIER ';'
                | CONTINUE ';'
                | BREAK ';'
                | RETURN ';'                 
-               | RETURN expression ';'      { ShuntingYardAlgo(completeTree,mystack,debugMode,mips32,map_stack);}
+               | RETURN expression ';'      { ShuntingYardAlgo(completeTree,mystack,debugMode,mips32);}
                ;
 
 /* ============================ Statement recursion tree units ============================= */
@@ -511,77 +484,67 @@ init_declarator : declarator                                                    
                                                                                             std::cout << "variable " << $1 << " has already been declared" << std::endl;
                                                                                             return -1;
                                                                                           }
-                                                                                          auto yy = map_stack.getValue($1);
-                                                                                          if(yy != -1){
-                                                                                            std::cout << "variable " << $1 << " has already been declared" << std::endl;
-                                                                                            return -1;
-                                                                                          }
                                                                                           int x = mips32.findEmptyRegister();
                                                                                           if(x == -1){
-                                                                                            mips32.clearTempRegisters();
+                                                                                            
+                                                                                            std::cout << "redeclaration of variable / registers are filled with existing data" << std::endl;
+                                                                                            return -1;
                                                                                           }
-                                                                                          int f = mips32.findEmptyRegister();
-                                                                                          mips32.Bind(0,f,$1,map_stack);
-                                                                                          if(debugMode){
-                                                                                            mips32.printAllRegisters();
-                                                                                            map_stack.printer();
+                                                                                          else{
+                                                                                            int f = mips32.findEmptyRegister();
+                                                                                            mips32.Bind(0,f,$1);
+                                                                                            if(debugMode){
+                                                                                              mips32.printAllRegisters();
+                                                                                            }
                                                                                           }
                                                                                         }
 
-                | declarator '=' initializer                                            {  std::cout << "hohohohoho" << std::endl;
-                                                                                            std::cout << "$3 yo " << $3->getType() << std::endl;
+                | declarator '=' initializer                                            {   std::cout << "am i here?" << std::endl;
                                                                                             int counter = 0;
                                                                                             int x = mips32.findEmptyRegister();
                                                                                             if(x == -1){
-                                                                                              mips32.clearTempRegisters();
-                                                                                              x = mips32.findEmptyRegister();
-                                                                                              /* potential TODO: Check for redeclaration of variable */
-                                                                                            }
-
-                                                                                            for(int i=0;i<completeTree.size();i++){
-                                                                                            /* handles NON-BINARY EXPRESSIONS eg: int a= 3;int b = a; */
-
-                                                                                              if(completeTree[i]->getType() == "Constant"){
-                                                                                                mips32.Bind(completeTree[i]->getConstant(),x,$1,map_stack);
-                                                                                                
-                                                                                                for(int i=0;i<completeTree.size();i++){
-                                                                                                  if(completeTree[i]->getType() == "Binary" ){
-                                                                                                    counter++;
-                                                                                                  }
-                                                                                                }
+                                                                                              if(debugMode){
+                                                                                                std::cout << "redeclaration of variable / registers are filled with existing data" << std::endl;
                                                                                               }
-                                                                                              else if(completeTree[i]->getType() == "Identifier"){
-                                                                                                int v = mips32.registerLookup(completeTree[i]->getName());
-                                                                                                auto final_value = 0;
-                                                                                                if(v == -1){
-                                                                                                  auto yy = map_stack.getValue(completeTree[i]->getName());
-                                                                                                  if(yy == -1){
-                                                                                                    std::cout << "error getting variable" << std::endl;
-                                                                                                    return -1;
+                                                                                              return -1;
+                                                                                            }
+                                                                                            else{
+                                                                                              for(int i=0;i<completeTree.size();i++){
+                                                                                              /* handles NON-BINARY EXPRESSIONS eg: int a= 3;int b = a; */
+
+                                                                                                if(completeTree[i]->getType() == "Constant"){
+                                                                                                  mips32.Bind(completeTree[i]->getConstant(),x,$1);
+                                                                                                  
+                                                                                                  for(int i=0;i<completeTree.size();i++){
+                                                                                                    if(completeTree[i]->getType() == "Binary" ){
+                                                                                                      counter++;
+                                                                                                    }
                                                                                                   }
-                                                                                                  final_value = yy;
                                                                                                 }
-                                                                                                else{
+                                                                                                else if(completeTree[i]->getType() == "Identifier"){
+                                                                                                  int v = mips32.registerLookup(completeTree[i]->getName());
                                                                                                   Register r1 = mips32.getValue(v);
-                                                                                                  final_value = r1.value;
-                                                                                                }
-                                                                                                mips32.Bind(final_value,x,$1,map_stack);
-                                                                                                for(int i=0;i<completeTree.size();i++){
-                                                                                                  if(completeTree[i]->getType() == "Binary" ){
-                                                                                                    counter++;
+                                                                                                  mips32.Bind(r1.value,x,$1);
+                                                                                                  for(int i=0;i<completeTree.size();i++){
+                                                                                                    if(completeTree[i]->getType() == "Binary" ){
+                                                                                                      counter++;
+                                                                                                    }
                                                                                                   }
                                                                                                 }
                                                                                               }
+                                                                                              if(debugMode){
+                                                                                                mips32.printAllRegisters();
+                                                                                              }
                                                                                             }
-                                                                                            if(debugMode){
-                                                                                              mips32.printAllRegisters();
-                                                                                              map_stack.printer();
-                                                                                            }
-                                                                                            
+
+
                                                                                               /* Shunting-yard Algorithm */
                                                                                             if(counter != 0){
-                                                                                              ShuntingYardAlgo(completeTree,mystack,debugMode,mips32,map_stack,$1);
+                                                                                              ShuntingYardAlgo(completeTree,mystack,debugMode,mips32,$1);
                                                                                             }
+
+
+                                                                                            
                                                                                           }
                 ;
 
@@ -632,12 +595,10 @@ parameter_list : parameter_declaration
 */
 
 parameter_declaration : declaration_specifiers declarator                 {
-                                                                              /* TODO: replace these bindings with specific function param registers! */
                                                                               int reg = mips32.findEmptyRegister();
-                                                                              mips32.Bind(0,reg,$2,map_stack);
+                                                                              mips32.Bind(0,reg,$2);
                                                                               if(debugMode){
                                                                                 mips32.printAllRegisters();
-                                                                                map_stack.printer();
                                                                                 for(int i=0;i<scope_counter;i++){
                                                                                   std::cout << "    " ;
                                                                                 }
@@ -668,7 +629,7 @@ initializer_list : initializer
 /* ================== function definitions ====================== */
 
 function_definition : declaration_specifiers declarator declaration_list compound_statement   {std::cout << "111111" << std::endl;}
-                    | declaration_specifiers declarator compound_statement                         {map_stack.getOld();mips32.clearTempRegisters();}
+                    | declaration_specifiers declarator compound_statement                         {my_map.getOld();mips32.clearRegisters();}
                     | declarator declaration_list compound_statement                              {std::cout << "22222" << std::endl;}
                     | declarator compound_statement                                         {std::cout << "333333" << std::endl;}
                     ;
@@ -687,12 +648,6 @@ start_scope : '{'        {  /*
 
 end_scope : '}'          {
                             scope_counter--;
-                            if(called){
-                              /* if a function call occurred */
-                              std::cout << "    lw    $31,0($sp)" << std::endl;
-                              std::cout << "    addiu $sp,$sp,4" << std::endl;
-                              called = false;
-                            }
                             std::cout << "      j     $31" << std::endl;
                             std::cout << "      nop" << std::endl;
                             std::cout << std::endl;
