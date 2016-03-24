@@ -106,7 +106,6 @@ external_declaration : declaration
 /* NOTE : all implementations below are partial, REMEMBER to check against spec */
 
 
-
 primary_expression : IDENTIFIER     {
                                       $$ = new IdentifierExpression($1);completeTree.push_back($$);
                                     }      
@@ -477,7 +476,6 @@ init_declarator : declarator                                                    
                                                                                           /* handle single declaration, int x = 3, int x = a - ShuntingYard only works on Binary */
                                                                                           if(!functionCall){
                                                                                             if(single_case == 1){
-                                                                                              std::cout << "hello world" << std::endl;
                                                                                               mips32.singleHandler(completeTree,$1);
                                                                                             }
                                                                                             else{
