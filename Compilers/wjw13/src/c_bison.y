@@ -168,7 +168,6 @@ assignment_expression : conditional_expression            { $$ = new UnaryExpres
                                                                                                 single_case++;
                                                                                               }
                                                                                             }
-                                                                                            std::cout << "Shunting Yard, Hidden Dragon" << std::endl;
                                                                                             std::stack<Expression*> mystack;
 
                                                                                             /* handle single declaration, int x = 3, int x = a - ShuntingYard only works on Binary */
@@ -379,7 +378,7 @@ jump_statement : GOTO IDENTIFIER ';'
                | CONTINUE ';'
                | BREAK ';'
                | RETURN ';'                 
-               | RETURN expression ';'      { mips32.returnHandler(completeTree); std::cout << "return expression TODO" << std::endl;}
+               | RETURN expression ';'      { mips32.returnHandler(completeTree); }
                ;
 
 /* ============================ Statement recursion tree units ============================= */
@@ -457,7 +456,7 @@ init_declarator_list : init_declarator
                      ;
 
 init_declarator : declarator                                                            {
-                                                                                          
+                                                                                          mips32.Insert($1);
                                                                                           completeTree.clear();
                                                                                         }
 
@@ -471,7 +470,6 @@ init_declarator : declarator                                                    
                                                                                               single_case++;
                                                                                             }
                                                                                           }
-                                                                                          std::cout << "Shunting Yard, Hidden Dragon" << std::endl;
                                                                                           std::stack<Expression*> mystack;
 
                                                                                           /* handle single declaration, int x = 3, int x = a - ShuntingYard only works on Binary */
@@ -534,7 +532,6 @@ parameter_list : parameter_declaration
 
 parameter_declaration : declaration_specifiers declarator                 { 
                                                                               int num = 0;
-                                                                              std::cout << "PARAMS??? " << std::endl;
                                                                               mips32.InsertParams($2);
                                                                               if(debugMode){
                                                                                 for(int i=0;i<scope_counter;i++){

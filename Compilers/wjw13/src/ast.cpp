@@ -305,13 +305,45 @@ void mips_stack::ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::st
 	   				std::cout << "addu 		$10,$9,$8" << std::endl;
 
 	   				// crazy ass, less than 24 hr hack
-	   				std::cout << "here?" << std::endl;
 	   				Expression* temp_exp = new Expression();	
-	   				std::cout << "here 111?" << std::endl;
 	   				mystack.push(temp_exp);
-	   				std::cout << "here 222?" << std::endl;
 	   				std::stringstream ss;
 	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "-"){
+	   				std::cout << "subu 		$10,$8,$9" << std::endl;
+
+	   				// crazy ass, less than 24 hr hack
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);;
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "*"){
+	   				std::cout << "mul 		$10,$9,$8" << std::endl;
+
+	   				// crazy ass, less than 24 hr hack
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);;
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "/"){
+	   				std::cout << "div 		$10,$9,$8" << std::endl;
+
+	   				// crazy ass, less than 24 hr hack
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);;
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "mfhi 		$10" << std::endl;
+	   				std::cout << "mflo 		$10" << std::endl;
 	   				std::cout << "sw 		$10," << ss.str() << std::endl;
 	   				max_position += 4;
 	   			}
@@ -321,7 +353,6 @@ void mips_stack::ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::st
 
 	// after this, $10 holds the completed value for Binary expression 3+2+5*2 etc...
 	// set declarator ( int x) = $10
-std::cout << "FIN....." << std::endl;
 	Insert(declarator);
 
 	std::cout << "sw 		$10," << getStackOffset(declarator) << std::endl;
@@ -363,16 +394,11 @@ void mips_stack::returnHandler(std::vector<Expression*> &completeTree){
 	int identifiers = 0;
 	int constants = 0;
 
-		for(int i=0;i<completeTree.size();i++){
-		std::cout << "TYPES : " << completeTree[i]->getType() << std::endl;
-	}
 	for(int i=0;i<completeTree.size();i++){
 		if(completeTree[i]->getType() == "Constant"){
-			std::cout << "wowowow" << std::endl;
 			constants++;
 		}
 		else if(completeTree[i]->getType() == "Identifier"){
-			std::cout << "retun handelr " << std::endl;
 			identifiers++;
 		}
 	}
