@@ -106,7 +106,9 @@ external_declaration : declaration
 
 
 primary_expression : IDENTIFIER     {
-                                      $$ = new IdentifierExpression($1);completeTree.push_back($$);
+                                      $$ = new IdentifierExpression($1,isMinus);
+                                      isMinus = false;
+                                      completeTree.push_back($$);
                                     }      
                    | INT_NUM        { 
                                       if(isMinus){
@@ -151,8 +153,6 @@ assignment_operator : '='                         {$$ = new AssignmentOperator("
                     | OR_ASSIGNMENT               {$$ = new AssignmentOperator("|=");}
                     ;
 
-
-
 constant_expression : conditional_expression
                     ;
 
@@ -168,6 +168,7 @@ expression : assignment_expression                        { $$ = new UnaryExpres
 
 assignment_expression : conditional_expression            { $$ = new UnaryExpression($1,"conditional_expression"); completeTree.push_back($$);}
                       | unary_expression assignment_operator assignment_expression       { 
+                                                                                            bool negative_identifier = false;
                                                                                             std::string iden="";
                                                                                             int single_case = 0;
                                                                                             for(int i=0;i<completeTree.size();i++){
@@ -184,10 +185,10 @@ assignment_expression : conditional_expression            { $$ = new UnaryExpres
                                                                                             /* handle single declaration, int x = 3, int x = a - ShuntingYard only works on Binary */
 
                                                                                             if(single_case == 2){
-                                                                                              mips32.noDeclare_singleHandler(completeTree,iden);
+                                                                                              mips32.noDeclare_singleHandler(completeTree,iden,$2->getType());
                                                                                             }
                                                                                             else{
-                                                                                              mips32.ShuntingYardAlgo(completeTree,mystack,debugMode,iden);
+                                                                                              mips32.ShuntingYardAlgo(completeTree,mystack,debugMode,iden,$2->getType());
                                                                                             }
                                                                                             completeTree.clear();
                                                                                          }

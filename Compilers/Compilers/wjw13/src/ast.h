@@ -60,6 +60,7 @@ public:
 	virtual int getConstant() const {}
 	virtual std::string getOperator() const {}
 	virtual void codeGen(const Expression* exp1,mips_stack &mips32) const {}
+	virtual bool getPrefix() const {}
 	//virtual void evaluate() const {}
 	//virtual int getSum() const {}
 
@@ -96,12 +97,18 @@ public:
 
 class IdentifierExpression : public Expression{
 	std::string id;
+	bool isMinus = false;
 public:
 	std::string getName() const;
-	IdentifierExpression(std::string str1): id(str1) {}
+	IdentifierExpression(std::string str1,bool state): id(str1),isMinus(state) {}
 	std::string getType() const;
+	bool getPrefix() const;
 	void printer() const;
 };
+
+bool IdentifierExpression::getPrefix() const{
+	return isMinus;
+}
 
 class ConstantExpression : public Expression{
 	int num;
@@ -243,7 +250,7 @@ public:
 	std::string get_stack_counter();
 	std::string getStackOffset(std::string identifier);
 	void InsertParams(std::string str1);
-	void noDeclare_singleHandler(std::vector<Expression*> &completeTree,std::string declarator);
+	void noDeclare_singleHandler(std::vector<Expression*> &completeTree,std::string declarator,std::string assignOp);
 	void singleHandler(std::vector<Expression*> &completeTree,std::string declarator);
 	void returnHandler(std::vector<Expression*> &completeTree);
 	void ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::stack<Expression*> &mystack,const bool &debugMode,std::string declarator,std::string assignOp);
@@ -299,19 +306,27 @@ void mips_stack::singleHandler(std::vector<Expression*> &completeTree,std::strin
 	else if(constants == 0 && identifiers == 1){
 		// handle single identifier
 		std::string ans;
+		bool minus = false;
 		for(int i=0;i<completeTree.size();i++){
 			if(completeTree[i]->getType() == "Identifier"){
 				ans = getStackOffset(completeTree[i]->getName());
+				if(completeTree[i]->getPrefix()){
+					minus = true;
+				}
 			}
 		}
 		Insert(declarator);
 		std::string offset = getStackOffset(declarator);
 		std::cout << "lw 		$2," << ans << std::endl;
+		if(minus){
+			// for negative identifiers, -a
+			std::cout << "sub 		$2,$0,$2" << std::endl;	
+		}
 		std::cout << "sw 		$2," << offset << std::endl;
 	}
 }
 
-void mips_stack::noDeclare_singleHandler(std::vector<Expression*> &completeTree,std::string declarator){
+void mips_stack::noDeclare_singleHandler(std::vector<Expression*> &completeTree,std::string declarator,std::string assignOp){
 	int identifiers = 0;
 	int constants = 0;
 
@@ -334,22 +349,152 @@ void mips_stack::noDeclare_singleHandler(std::vector<Expression*> &completeTree,
 		std::stringstream ss;
 		ss << ans;
 		std::string offset = getStackOffset(declarator);
-		std::cout << "lw 		$2," << offset << std::endl;
-		std::cout << "li 		$2," << ss.str() << std::endl;
-		std::cout << "sw 		$2," << offset << std::endl;
+		if(assignOp == "="){
+			std::cout << "lw 		$2," << offset << std::endl;
+			std::cout << "li 		$2," << ss.str() << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;			
+		}
+		else if(assignOp == "+="){
+			std::cout << "lw 		$2," << offset << std::endl;
+			std::cout << "addiu 		$2,$2," << ss.str() << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "-="){
+			std::cout << "lw 		$2," << offset << std::endl;
+			std::cout << "addiu 		$2,$2,-" << ss.str() << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "*="){
+			std::cout << "lw 		$2," << offset << std::endl;
+			std::cout << "sll 		$2,$2," << ss.str() << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "/="){
+			std::cout << "lw 		$2," << offset << std::endl;
+			std::cout << "div 		$2,$2," << ss.str() << std::endl;
+			std::cout << "mfhi 		$2" << std::endl;
+			std::cout << "mflo 		$2" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "%="){
+			std::cout << "lw 		$2," << offset << std::endl;
+			std::cout << "div 		$0,$2," << ss.str() << std::endl;
+			std::cout << "mfhi 		$2" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "<<="){
+			std::cout << "lw 		$2," << offset << std::endl;
+			std::cout << "sll 		$2,$2," << ss.str() << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == ">>="){
+			std::cout << "lw 		$2," << offset << std::endl;
+			std::cout << "sra 		$2,$2," << ss.str() << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "&="){
+			std::cout << "lw 		$2," << offset << std::endl;
+			std::cout << "andi 		$2,$2," << ss.str() << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "^="){
+			std::cout << "lw 		$2," << offset << std::endl;
+			std::cout << "xori 		$2,$2," << ss.str() << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "|="){
+			std::cout << "lw 		$2," << offset << std::endl;
+			std::cout << "ori 		$2,$2," << ss.str() << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+
 	}
 	else if(constants == 0 && identifiers == 2){
 		// handle b = a
 		std::vector<std::string> ans;
+		bool minus = false;
+		int counter = 0;
 		for(int i=0;i<completeTree.size();i++){
 			if(completeTree[i]->getType() == "Identifier"){
 				ans.push_back(getStackOffset(completeTree[i]->getName()));
+				if(counter == 1){
+					if(completeTree[i]->getPrefix()){
+						minus = true;
+					}
+				}
+				counter++;
 			}
 		}
+
 		std::string offset = ans[0];
 		std::string RHS_offset = ans[1];
+
+		// load RHS into register $2
 		std::cout << "lw 		$2," << RHS_offset << std::endl;
-		std::cout << "sw 		$2," << offset << std::endl;
+
+		// for negative identifiers, -a
+		if(minus){
+			std::cout << "sub 		$2,$0,$2" << std::endl;
+		}
+
+		if(assignOp == "="){
+			std::cout << "sw 		$2," << offset << std::endl;		
+		}
+		if(assignOp == "+="){
+			// if any assignOp other than =, means that c += 3 and that variable is already declared
+			// get current value of c
+			std::cout << "lw 		$3," << offset << std::endl;
+			std::cout << "addu 		$2,$3,$2" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "-="){
+			std::cout << "lw 		$3," << offset << std::endl;
+			std::cout << "subu 		$2,$3,$2" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "*="){
+			std::cout << "lw 		$3," << offset << std::endl;
+			std::cout << "mul 		$2,$3,$2" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "/="){
+			std::cout << "lw 		$3," << offset << std::endl;
+			std::cout << "div 		$2,$3,$2" << std::endl;
+			std::cout << "mfhi 		$2" << std::endl;
+			std::cout << "mflo 		$2" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "%="){
+			std::cout << "lw 		$3," << offset << std::endl;
+			std::cout << "div 		$0,$3,$2" << std::endl;
+			std::cout << "mfhi 		$10" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "<<="){
+			std::cout << "lw 		$3," << offset << std::endl;
+			std::cout << "sll 		$2,$3,$2" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == ">>="){
+			std::cout << "lw 		$3," << offset << std::endl;
+			std::cout << "sra 		$2,$3,$2" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "&="){
+			std::cout << "lw 		$3," << offset << std::endl;
+			std::cout << "and 		$2,$3,$2" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "^="){
+			std::cout << "lw 		$3," << offset << std::endl;
+			std::cout << "xor 		$2,$3,$2" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
+		else if(assignOp == "|="){
+			std::cout << "lw 		$3," << offset << std::endl;
+			std::cout << "or 		$2,$3,$2" << std::endl;
+			std::cout << "sw 		$2," << offset << std::endl;
+		}
 	}
 }
 

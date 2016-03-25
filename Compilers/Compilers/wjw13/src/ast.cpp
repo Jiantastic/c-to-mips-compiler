@@ -244,8 +244,6 @@ void mips_stack::ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::st
 	  std::cout << "int a = 3 + 2...init" << std::endl; 
 	}
 
-
-
 	// store result $10 in stack, start from 500($sp)
 	// we need a map, key = 
 	int current_position = 500;
@@ -272,6 +270,9 @@ void mips_stack::ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::st
 	   				std::cout << "li 		$8," << temp_x->getConstant() << std::endl;
 	   			}
 	   			else if(temp_x->getType() == "Identifier"){
+	   				if(temp_x->getPrefix()){
+	   					std::cout << "sub 		$8,$0,$8" << std::endl;
+	   				}
 	   				std::cout << "lw 		$8," << getStackOffset(temp_x->getName()) << std::endl; 
 	   			}
 	   			else if(temp_x->getType() == "Stack"){
@@ -290,7 +291,9 @@ void mips_stack::ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::st
 	   				std::cout << "li 		$9," << temp_y->getConstant() << std::endl;
 	   			}
 	   			else if(temp_y->getType() == "Identifier"){
-
+	   				if(temp_y->getPrefix()){
+	   					std::cout << "sub 		$9,$0,$9" << std::endl;
+	   				}
 	   				std::cout << "lw 		$9," << getStackOffset(temp_y->getName()) << std::endl; 
 	   			}
 	   			else if(temp_y->getType() == "Stack"){
@@ -529,6 +532,52 @@ void mips_stack::ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::st
 	   			}
 	   		}
 		}
+	}
+	if(assignOp == "+="){
+		// if any assignOp other than =, means that c += 3 and that variable is already declared
+		// get current value of c
+		std::cout << "lw 		$12," << getStackOffset(declarator) << std::endl;
+		std::cout << "addu 		$10,$12,$10" << std::endl;
+		// TODO: reuse stackoffset instead of insert(declarator)
+	}
+	else if(assignOp == "-="){
+		std::cout << "lw 		$12," << getStackOffset(declarator) << std::endl;
+		std::cout << "subu 		$10,$12,$10" << std::endl;
+	}
+	else if(assignOp == "*="){
+		std::cout << "lw 		$12," << getStackOffset(declarator) << std::endl;
+		std::cout << "mul 		$10,$12,$10" << std::endl;
+	}
+	else if(assignOp == "/="){
+		std::cout << "lw 		$12," << getStackOffset(declarator) << std::endl;
+		std::cout << "div 		$10,$12,$10" << std::endl;
+		std::cout << "mfhi 		$10" << std::endl;
+		std::cout << "mflo 		$10" << std::endl;
+	}
+	else if(assignOp == "%="){
+		std::cout << "lw 		$12," << getStackOffset(declarator) << std::endl;
+		std::cout << "div 		$0,$12,$10" << std::endl;
+		std::cout << "mfhi 		$10" << std::endl;
+	}
+	else if(assignOp == "<<="){
+		std::cout << "lw 		$12," << getStackOffset(declarator) << std::endl;
+		std::cout << "sll 		$10,$12,$10" << std::endl;
+	}
+	else if(assignOp == ">>="){
+		std::cout << "lw 		$12," << getStackOffset(declarator) << std::endl;
+		std::cout << "sra 		$10,$12,$10" << std::endl;
+	}
+	else if(assignOp == "&="){
+		std::cout << "lw 		$12," << getStackOffset(declarator) << std::endl;
+		std::cout << "and 		$10,$12,$10" << std::endl;
+	}
+	else if(assignOp == "^="){
+		std::cout << "lw 		$12," << getStackOffset(declarator) << std::endl;
+		std::cout << "xor 		$10,$12,$10" << std::endl;
+	}
+	else if(assignOp == "|="){
+		std::cout << "lw 		$12," << getStackOffset(declarator) << std::endl;
+		std::cout << "or 		$10,$12,$10" << std::endl;
 	}
 
 	// after this, $10 holds the completed value for Binary expression 3+2+5*2 etc...
