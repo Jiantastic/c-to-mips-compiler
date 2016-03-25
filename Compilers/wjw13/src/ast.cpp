@@ -328,7 +328,7 @@ void mips_stack::ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::st
 
 	   				// crazy ass, less than 24 hr hack
 	   				Expression* temp_exp = new Expression();	
-	   				mystack.push(temp_exp);;
+	   				mystack.push(temp_exp);
 	   				std::stringstream ss;
 	   				ss << max_position << "($sp)";
 	   				std::cout << "sw 		$10," << ss.str() << std::endl;
@@ -339,11 +339,191 @@ void mips_stack::ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::st
 
 	   				// crazy ass, less than 24 hr hack
 	   				Expression* temp_exp = new Expression();	
-	   				mystack.push(temp_exp);;
+	   				mystack.push(temp_exp);
 	   				std::stringstream ss;
 	   				ss << max_position << "($sp)";
 	   				std::cout << "mfhi 		$10" << std::endl;
 	   				std::cout << "mflo 		$10" << std::endl;
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "%"){
+	   				std::cout << "div 		$0,$9,$8" << std::endl;
+
+	   				// crazy ass, less than 24 hr hack
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "mfhi 		$10" << std::endl;
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "&"){
+	   				std::cout << "and 		$10,$9,$8" << std::endl;
+
+	   				// crazy ass, less than 24 hr hack
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+				else if(strOp == "|"){
+	   				std::cout << "and 		$10,$9,$8" << std::endl;
+
+	   				// crazy ass, less than 24 hr hack
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "^"){
+	   				std::cout << "xor 		$10,$9,$8" << std::endl;
+
+	   				// crazy ass, less than 24 hr hack
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "&&"){
+	   				std::cout << "beq 		$8,$0,$L2" << std::endl;
+	   				std::cout << "nop" << std::endl;
+	   				std::cout << std::endl;
+	   				std::cout << "beq 		$9,$0,$L3" << std::endl;
+	   				std::cout << "nop" << std::endl;
+	   				std::cout << std::endl;
+	   				std::cout << "$L2:" << std::endl;
+	   				std::cout << "li 		$10,1" << std::endl;
+	   				std::cout << "b 		$L4" << std::endl;
+	   				std::cout << "nop" << std::endl;
+	   				std::cout << std::endl;
+	   				std::cout << "$L3:" << std::endl;
+	   				std::cout << "move 		$10,$0" << std::endl;
+	   				std::cout << "$L4:" << std::endl;
+
+	   				// crazy ass, less than 24 hr hack
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "||"){
+	   				std::cout << "bne 		$8,$0,$L2" << std::endl;
+	   				std::cout << "nop" << std::endl;
+	   				std::cout << "beq 		$9,$0,$L3" << std::endl;
+	   				std::cout << "nop" << std::endl;
+	   				std::cout << "$L2:" << std::endl;
+	   				std::cout << "li 		$10,1" << std::endl;
+	   				std::cout << "b 		$L4" << std::endl;
+	   				std::cout << "nop" << std::endl;
+	   				std::cout << "$L3:" << std::endl;
+	   				std::cout << "move 		$10,$0" << std::endl;
+	   				std::cout << "$L4:" << std::endl;
+	   				std::cout << "nop" << std::endl;
+
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "=="){
+	   				std::cout << "xor 		$10,$8,$9" << std::endl;
+	   				std::cout << "sltu 		$10,$10,1" << std::endl;
+	   				std::cout << "andi 		$10,$10,0x00ff" << std::endl;
+
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "!="){
+	   				std::cout << "xor 		$10,$8,$9" << std::endl;
+	   				std::cout << "sltu 		$10,0,$10" << std::endl;
+	   				std::cout << "andi 		$10,$10,0x00ff" << std::endl;
+	   				
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "<"){
+	   				std::cout << "slt 		$10,$8,$9" << std::endl;
+	   				std::cout << "andi 		$10,$10,0x00ff" << std::endl;
+
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == ">"){
+	   				std::cout << "slt 		$10,$9,$8" << std::endl;
+	   				std::cout << "andi 		$10,$10,0x00ff" << std::endl;
+
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "<="){
+	   				std::cout << "slt 		$10,$8,$9" << std::endl;
+	   				std::cout << "xori 		$10,$10,0x1" << std::endl;
+	   				std::cout << "andi 		$10,$10,0x00ff" << std::endl;
+
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == ">="){
+	   				std::cout << "slt 		$10,$9,$8" << std::endl;
+	   				std::cout << "xori 		$10,$10,0x1" << std::endl;
+	   				std::cout << "andi 		$10,$10,0x00ff" << std::endl;
+
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == "<<"){
+	   				std::cout << "sll 		$10,$9,$8" << std::endl;
+
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
+	   				std::cout << "sw 		$10," << ss.str() << std::endl;
+	   				max_position += 4;
+	   			}
+	   			else if(strOp == ">>"){
+	   				std::cout << "sra 		$10,$9,$8" << std::endl;
+
+	   				Expression* temp_exp = new Expression();	
+	   				mystack.push(temp_exp);
+	   				std::stringstream ss;
+	   				ss << max_position << "($sp)";
 	   				std::cout << "sw 		$10," << ss.str() << std::endl;
 	   				max_position += 4;
 	   			}
@@ -429,4 +609,18 @@ void mips_stack::returnHandler(std::vector<Expression*> &completeTree){
 		ShuntingYardAlgo(completeTree,mystack,false);
 		std::cout << "move 		$2,$10" << std::endl;
 	}
+}
+
+std::string PostfixExpression::getFunctionName(const Expression* exp1) const{
+	// pretty straightforward for identifiers, exp1->getNext()->getName();
+	return exp1->getNext()->getName();
+}
+
+void PostfixExpression::codeGen(const Expression* exp1,mips_stack &mips32) const{
+	std::cout << "		sw 		$31,992($sp)" << std::endl;
+	std::cout << "		jal " << getFunctionName(exp1) << std::endl;
+	std::cout << "		nop" << std::endl;
+	std::cout << "		lw 		$31,992($sp)" << std::endl;
+	mips32.Insert(getFunctionName(exp1));
+	std::cout << "		sw 		$2," << mips32.getStackOffset(getFunctionName(exp1)) << std::endl;
 }

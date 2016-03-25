@@ -17,6 +17,7 @@ int is_function = 0;
 mips_stack mips32;
 std::vector<Expression*> completeTree;
 bool debugMode = false;
+bool functionCall = false;
 std::string functionName;
 int paramCount = 0;
 
@@ -203,17 +204,17 @@ unary_expression : postfix_expression                      { $$ = new UnaryExpre
 /* ================ assignment expression recurse tree units =================== */
 
 logical_or_expression : logical_and_expression                                    { $$ = new UnaryExpression($1,"logical_and_expression");completeTree.push_back($$);}
-                      | logical_or_expression OR_OPERATOR logical_and_expression
+                      | logical_or_expression OR_OPERATOR logical_and_expression   { $$ = new BinaryExpression($1,"||",$3);completeTree.push_back($$);}
                       ;
 
 
 postfix_expression : primary_expression                                           { $$ = new UnaryExpression($1,"primary_expression");completeTree.push_back($$);}
                    | postfix_expression '[' expression ']'
-                   | postfix_expression '(' ')'
+                   | postfix_expression '(' ')'                                   { $$ = new PostfixExpression($1); $$->codeGen($1,mips32);functionCall = true;std::cout << "func call" << std::endl;}
                    | postfix_expression '(' argument_expression_list ')'           
                    | postfix_expression '.' IDENTIFIER
                    | postfix_expression PTR_OPERATOR IDENTIFIER
-                   | postfix_expression INC_OPERATOR
+                   | postfix_expression INC_OPERATOR                              {  }
                    | postfix_expression DEC_OPERATOR
                    ;
 
@@ -234,7 +235,7 @@ cast_expression : unary_expression                                      { $$ = n
 
 
 logical_and_expression : inclusive_or_expression                         { $$ = new UnaryExpression($1,"inclusive_or_expression");completeTree.push_back($$);}
-                       | logical_and_expression AND_OPERATOR inclusive_or_expression
+                       | logical_and_expression AND_OPERATOR inclusive_or_expression  { $$ = new BinaryExpression($1,"&&",$3);completeTree.push_back($$);}
                        ;
 
 argument_expression_list : assignment_expression
@@ -357,7 +358,7 @@ expression_statement : ';'
 
 /* OK ====== Selection Statement ======= */
 
-selection_statement : IF '(' expression ')' statement                                               
+selection_statement : IF '(' expression ')' statement                                           
                     | IF '(' expression ')' statement ELSE statement
                     | SWITCH '(' expression ')' statement
                     ;
@@ -461,6 +462,7 @@ init_declarator : declarator                                                    
                                                                                         }
 
                 | declarator '=' initializer                                            {
+                                                                                          
                                                                                           int single_case = 0;
                                                                                           for(int i=0;i<completeTree.size();i++){
                                                                                             if(completeTree[i]->getType() == "Constant"){
@@ -473,13 +475,17 @@ init_declarator : declarator                                                    
                                                                                           std::stack<Expression*> mystack;
 
                                                                                           /* handle single declaration, int x = 3, int x = a - ShuntingYard only works on Binary */
-
-                                                                                          if(single_case == 1){
-                                                                                            mips32.singleHandler(completeTree,$1);
+                                                                                          if(!functionCall){
+                                                                                            if(single_case == 1){
+                                                                                              std::cout << "hello world" << std::endl;
+                                                                                              mips32.singleHandler(completeTree,$1);
+                                                                                            }
+                                                                                            else{
+                                                                                              mips32.ShuntingYardAlgo(completeTree,mystack,debugMode,$1);
+                                                                                            }
+                                                                                            functionCall = false;
                                                                                           }
-                                                                                          else{
-                                                                                            mips32.ShuntingYardAlgo(completeTree,mystack,debugMode,$1);
-                                                                                          }
+                                                                                          
                                                                                           completeTree.clear();
                                                                                         }
                 ;
