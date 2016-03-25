@@ -77,9 +77,6 @@ public:
 	const Expression *getRight() const;
 	std::string getType() const;
 	void printer() const;
-	//void codeGen();			takes left expression and right expression, does an operation on them ( according to opCode )
-//	void evaluate() const;
-	//int getSum() const;
 };
 
 
@@ -121,23 +118,23 @@ public:
 	void printer() const;
 };
 
+class PostfixExpression : public Expression{
+	Expression* exp1;
+	std::string type;
+public:
+	PostfixExpression(Expression* exp,std::string val): exp1(exp),type(val) {}
+	std::string getType();	
+	std::string getFunctionName(const Expression* exp) const;
+	//void loadParams(std::vector<const Expression*> core_vector,mipsRegisters &mips,maps &map1);
+	void codeGen(const Expression* exp1) const;
+};
+
 // Statements
 
 class Statement : public Node{
 	// Render using current identifier-register bindings in ctxt
 	// Context renderAssembly(const Context & ctxt) const;
 	virtual void print() {}
-};
-
-class LabeledStatement : public Statement{
-	
-};
-
-class CompoundStatement : public Statement{
-	/*int getDeclarationCount() const;
-	const Declaration *getDeclaration(int i) const;
-	int getStatementCount() const;
-	const Statement *getStatement(int i) const;*/
 };
 
 class ExpressionStatement : public Statement{
@@ -147,16 +144,7 @@ class ExpressionStatement : public Statement{
 class SelectionStatement : public Statement{
 
 };
-
-
-/*
-
-selection_statement : IF '(' expression ')' statement
-                    | IF '(' expression ')' statement ELSE statement
-                    | SWITCH '(' expression ')' statement
-                    ;
-
-*/                
+      
 
 class IfStatement : public Statement{
 	Expression* exp;
@@ -168,34 +156,307 @@ public:
 	// IfStatement(Expression* exp1,Statement* state1,Statement* state2):
 };
 
+class Parameters{
+	int counter = 0;
+	std::vector<std::string> params;
+public:
+	void loadParams(std::string str1);
+	int checkifParam(std::string iden);
+	void codeGen();
+	void calculate();
+	void iterator(std::vector<Expression*> exp1);
 
-class IterationStatement : public Statement{
-	
 };
 
-class JumpStatement : public Statement{
+// load parameters into a special container
+void Parameters::loadParams(std::string str1){
+	params.push_back(str1);
+}
+
+// executed before anything else, in anything that requires ShuntingYardAlgo
+bool Parameters::iterator(std::std::vector<<Expression*> exp1){
+	for(int i=0;i<exp1.size();i++){
+		if(exp1[i]->getType == "Identifier"){
+			bool test = checkifParam(exp1[i]->getName());
+			if(test){
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+// check if parameter before Shunting Yard algorithm, if it is, use another algorithm ( not Shunting Yard)
+int Parameters::checkifParam(std::string iden){
+	for(int i=0;i<params.size();i++){
+		if(params[i] == iden){
+			std::cout << "identifier is a parameter" << std::endl;
+			// returns register position
+			return i+4;
+		}
+	}
+	return -1;
+}
+
+// take this entire thing and generate codeGen
+void Parameters::calculate(std::vector<Expression*> &completeTree){
+	std::stack<std::string> func_params;
+
+	for(int i=0;i<completeTree.size();i++){
+	  if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
+	    if(debugMode){
+	      completeTree[i]->printer();
+	    }
+	    if(completeTree[i]->getType() == "Constant"){
+	      mystack.push(completeTree[i]->getConstant());
+	    }
+	    else if(completeTree[i]->getType() == "Identifier"){
+	    	// for identifiers, check if it is a parameter first
+	    	if(checkifParam(completeTree[i]->getName()) != -1){
+
+	    	}
+	    	else{
+		      // logic to handle identifier conversion to a constant
+		      	int y = mips32.registerLookup(completeTree[i]->getName());
+		      	if(y == -1){
+		      	// get value from map_stack if not in register file
+		      		y = maps1.getValue(completeTree[i]->getName());
+			      	if(y == -1){
+			      		// not in map_stack nor in registers
+			      		std::cout << "variable is not in registers nor in stack" << std::endl;
+			      		exit(EXIT_FAILURE);
+			      	}
+			      	mystack.push(maps1.getValue(completeTree[i]->getName()));
+		      	}
+		      	else{
+		      		// get value from register if register name is found
+			      	Register r = mips32.getValue(y);
+			      	mystack.push(r.value);
+		      	}	    		
+	    	}
+	    }
+	    else if(completeTree[i]->getType() == "Binary"){
+	      std::string strOp = completeTree[i]->getOperator();
+	      int yy;
+	      int zz;
+	      // need to handle string, in the case of param 1 + param 2
+	      auto temp_x = mystack.top();
+	      mystack.pop(); 
+		  auto temp_y = mystack.top();
+	      mystack.pop();
+
+
+	      if(typeid(temp_x) == "PKc" && typeid(temp_y) != "PKc"){
+	      	// x is params, y is not
+	      	yy = checkifParam(temp_x);
+	      	if(strOp == "+"){
+	      		std::cout << "addiu 	$" << yy << ",$" << 
+	      	}
+	      	else if(strOp == "-"){
+	      		std::cout << "addiu 	$"
+	      	}
+	      	else if(strOp == "*"){
+
+	      	}
+	      	else if(strOp == "/"){
+
+	      	}
+	      }
+	      else if(typeid(temp_x) != "PKc" && typeid(temp_y) == "PKc"){
+	      	// y is params, x is not
+	      	zz = checkifParam(temp_y);
+	      	if(strOp == "+"){
+	      		std::cout << "addiu 	$"
+	      	}
+	      	else if(strOp == "-"){
+	      		std::cout << "addiu"
+	      	}
+	      	else if(strOp == "*"){
+
+	      	}
+	      	else if(strOp == "/"){
+
+	      	}
+	      }
+	      else if(typeid(temp_x) == "PKc" && typeid(temp_y) == "PKc"){
+	      	// x and y are params
+	      	yy = checkifParam(temp_x);
+	      	zz = checkifParam(temp_y);
+	      	if(strOp == "+"){
+	      		std::cout << "addiu 	$"
+	      	}
+	      	else if(strOp == "-"){
+	      		std::cout << "subu"
+	      	}
+	      	else if(strOp == "*"){
+
+	      	}
+	      	else if(strOp == "/"){
+
+	      	}
+	      }
+
+
+
+
+	      
+	      if(typeid(temp_x) == "PKc" || typeid(temp_y) == "PKc"){
+	      	// this means that either one is a parameter
+
+	      	if(strOp == "+"){
+	      		
+	      	}
+	      	else if(strOp == "-"){
+	      		std::cout << "subu "
+	      	}
+	      	else if(strOp == "*"){
+
+	      	}
+	      	else if(strOp == "/"){
+
+	      	}
+
+	      	yy = checkifParam(temp_x);
+	      }
+
+	      int sum = 0;
+	      if(strOp == "+"){
+	      	std::cout << "addiu $"
+	        sum = temp_y + temp_x;
+	      }
+	      else if(strOp == "-"){
+	        sum = temp_y - temp_x;
+	      }
+	      else if(strOp == "*"){
+	        sum = temp_y * temp_x;
+	      }
+	      else if(strOp == "/"){
+	        sum = temp_y / temp_x;
+	      }
+	      else if(strOp == "|"){
+	        sum = temp_y | temp_x;
+	      }
+	      else if(strOp == "^"){
+	        sum = temp_y ^ temp_x;
+	      }
+	      else if(strOp == "&"){
+	        sum = temp_y & temp_x;
+	      }
+	      else if(strOp == "=="){
+	        sum = temp_y == temp_x;
+	      }
+	      else if(strOp == "!="){
+	        sum = temp_y != temp_x;
+	      }
+	      else if(strOp == "<"){
+	        sum = temp_y < temp_x;
+	      }
+	      else if(strOp == ">"){
+	        sum = temp_y > temp_x;
+	      }
+	      else if(strOp == "<="){
+	        sum = temp_y <= temp_x;
+	      }
+	      else if(strOp == ">="){
+	        sum = temp_y >= temp_x;
+	      }
+	      else if(strOp == "<<"){
+	        sum = temp_y << temp_x;
+	      }
+	      else if(strOp == ">>"){
+	        sum = temp_y >> temp_x;
+	      }
+	      else if(strOp == "%"){
+	      	sum = temp_y % temp_x;
+	      }
+	      mystack.push(sum);
+	    }
+	  }
+	}
+	int ans = mystack.top();
+	if(declarator == ""){
+		// codeGen for return expression;
+		mips32.Bind(ans,25,"$t9_RETURN_",maps1);
+		codeGen(25,mips32,"return");
+	}
+	else{
+		// if "=", just execute the 3 statements
+		int v = mips32.registerLookup(declarator);
+		int final_answer = 0;
+		Register r1 = mips32.getValue(v);
 	
-};
+		if(assignOp == "+="){
+			r1.value += ans;
+			final_answer = r1.value;
+		}
+		else if(assignOp == "-="){
+			r1.value -= ans;
+			final_answer = r1.value;
+		}
+		else if(assignOp == "*="){
+			r1.value *= ans;
+			final_answer = r1.value;
+		}
+		else if(assignOp == "/="){
+			r1.value /= ans;
+			final_answer = r1.value;
+		}
+		else if(assignOp == "%="){
+			r1.value /= ans;
+			final_answer = r1.value;
+		}
+		else if(assignOp == "<<="){
+			r1.value /= ans;
+			final_answer = r1.value;
+		}
+		else if(assignOp == ">>="){
+			r1.value /= ans;
+			final_answer = r1.value;
+		}
+		else if(assignOp == "&="){
+			r1.value /= ans;
+			final_answer = r1.value;
+		}
+		else if(assignOp == "^="){
+			r1.value /= ans;
+			final_answer = r1.value;
+		}
+		else if(assignOp == "|="){
+			r1.value /= ans;
+			final_answer = r1.value;
+		}
+		else{
+			// if "="
+			final_answer = ans;
+		}
+		mips32.Bind(final_answer,v,declarator,maps1);
+		codeGen(v,mips32);
+	}
+	completeTree.clear();
+	mystack.pop();
 
 
+	if(debugMode){
+	  mips32.printAllRegisters();
+	}
+}
+
+void Parameters::codeGen(){
+	std::cout << "		addiu 	$sp,$sp,-" << counter << std::endl;
+	std::cout << "		sw 		$fp," << i+4 << "($sp)" << std::endl;
+	std::cout << "		move 	$fp,$sp" << std::endl;
+	
+	for(int i=0;i<counter;i++){
+
+
+	}
+}
 
 class AssignmentOperator : public Expression{
 	std::string assignment;
 public:
 	AssignmentOperator(std::string value): assignment(value) {}
 	std::string getType();
-};
-
-
-class PostfixExpression : public Expression{
-	Expression* exp1;
-	std::string type;
-public:
-	PostfixExpression(Expression* exp,std::string val): exp1(exp),type(val) {}
-	std::string getType();	
-	std::string getFunctionName(const Expression* exp) const;
-	//void loadParams(std::vector<const Expression*> core_vector,mipsRegisters &mips,maps &map1);
-	void codeGen(const Expression* exp1) const;
 };
 
 
