@@ -9,7 +9,7 @@
 #include <stack>
 
 
-
+class mips_stack;
 
 /*
 IMPORTANT : consider using int counts to traverse the AST later on;
@@ -59,6 +59,7 @@ public:
 	virtual std::string getName() const {}
 	virtual int getConstant() const {}
 	virtual std::string getOperator() const {}
+	virtual void codeGen(const Expression* exp1,mips_stack &mips32) const {}
 	//virtual void evaluate() const {}
 	//virtual int getSum() const {}
 
@@ -126,6 +127,14 @@ public:
 	std::string getType() const;
 };
 
+class PostfixExpression : public Expression{
+	Expression* exp1;
+public:
+	PostfixExpression(Expression* exp): exp1(exp) {}	
+	std::string getFunctionName(const Expression* exp) const;
+	//void loadParams(std::vector<const Expression*> core_vector,mipsRegisters &mips,maps &map1);
+	void codeGen(const Expression* exp1,mips_stack &mips32) const;
+};
 
 
 // Statements
@@ -239,6 +248,7 @@ public:
 	void returnHandler(std::vector<Expression*> &completeTree);
 	void ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::stack<Expression*> &mystack,const bool &debugMode,std::string declarator,std::string assignOp);
 };
+
 
 void mips_stack::InsertParams(std::string str1){
 	// allows a maximum of 4 params - TODO, "sneakily use other registers to store params"
