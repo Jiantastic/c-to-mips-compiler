@@ -17,7 +17,6 @@ int is_function = 0;
 mips_stack mips32;
 std::vector<Expression*> completeTree;
 bool debugMode = false;
-bool functionCall = false;
 bool isMinus = false;
 std::string functionName;
 int paramCount = 0;
@@ -38,7 +37,6 @@ int paramCount = 0;
 %token <float_num> FLOAT_NUM
 
 %token <str> IDENTIFIER
-
 
 %token CHAR_CONST STRINGLITERAL SIZEOF
 
@@ -107,16 +105,27 @@ external_declaration : declaration
 /* NOTE : all implementations below are partial, REMEMBER to check against spec */
 
 
-
 primary_expression : IDENTIFIER     {
                                       $$ = new IdentifierExpression($1);completeTree.push_back($$);
                                     }      
-                   | INT_NUM        { $$ = new ConstantExpression($1);
-                                      
+                   | INT_NUM        { 
+                                      if(isMinus){
+                                        $$ = new ConstantExpression(-$1);
+                                        isMinus = false;
+                                      }
+                                      else{
+                                        $$ = new ConstantExpression($1);
+                                      }
                                       completeTree.push_back($$);
                                     }     
                    | HEX_NUM        {
-                                      $$ = new ConstantExpression($1);
+                                      if(isMinus){
+                                        $$ = new ConstantExpression(-$1);
+                                        isMinus = false;
+                                      }
+                                      else{
+                                        $$ = new ConstantExpression($1);
+                                      }
                                       completeTree.push_back($$);
                                     }  
                    | STRINGLITERAL        
@@ -175,7 +184,6 @@ assignment_expression : conditional_expression            { $$ = new UnaryExpres
                                                                                             /* handle single declaration, int x = 3, int x = a - ShuntingYard only works on Binary */
 
                                                                                             if(single_case == 2){
-                                                                                              std::cout << "IDEN IDENTIFY " << iden << std::endl;
                                                                                               mips32.noDeclare_singleHandler(completeTree,iden);
                                                                                             }
                                                                                             else{
@@ -211,7 +219,10 @@ logical_or_expression : logical_and_expression                                  
 
 postfix_expression : primary_expression                                           { $$ = new UnaryExpression($1,"primary_expression");completeTree.push_back($$);}
                    | postfix_expression '[' expression ']'
-                   | postfix_expression '(' ')'                                   { $$ = new PostfixExpression($1); $$->codeGen($1,mips32);functionCall = true;std::cout << "func call" << std::endl;}
+                   | postfix_expression '(' ')'                                   { 
+                                                                                    $$ = new PostfixExpression($1); $$->codeGen($1,mips32);
+                                                                                    completeTree.push_back($$);
+                                                                                  }
                    | postfix_expression '(' argument_expression_list ')'           
                    | postfix_expression '.' IDENTIFIER
                    | postfix_expression PTR_OPERATOR IDENTIFIER
@@ -222,7 +233,7 @@ postfix_expression : primary_expression                                         
 unary_operator : '&'    
                | '*'
                | '+'
-               | '-'                                                    { /*isMinus = true;*/}
+               | '-'                                                    { isMinus = true;}
                | '~'
                | '!'
                ;
@@ -476,16 +487,13 @@ init_declarator : declarator                                                    
                                                                                           std::stack<Expression*> mystack;
 
                                                                                           /* handle single declaration, int x = 3, int x = a - ShuntingYard only works on Binary */
-                                                                                          if(!functionCall){
+                                                                                          
                                                                                             if(single_case == 1){
                                                                                               mips32.singleHandler(completeTree,$1);
                                                                                             }
                                                                                             else{
                                                                                               mips32.ShuntingYardAlgo(completeTree,mystack,debugMode,$1);
                                                                                             }
-                                                                                            functionCall = false;
-                                                                                          }
-                                                                                          
                                                                                           completeTree.clear();
                                                                                         }
                 ;
@@ -570,7 +578,7 @@ initializer_list : initializer
 /* ================== function definitions ====================== */
 
 function_definition : declaration_specifiers declarator declaration_list compound_statement   
-                    | declaration_specifiers declarator compound_statement                         {}
+                    | declaration_specifiers declarator compound_statement                         {mips32.getNew();}
                     | declarator declaration_list compound_statement                          
                     | declarator compound_statement                                         
                     ;
