@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <typeinfo>
 #include "ast.h"
 
 // Expression Handlers
@@ -164,6 +165,9 @@ void codeGen(const int &registerName,mipsRegisters mips,const std::string &order
 }
 
 
+void parseFunc
+
+
 void ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::stack<int> &mystack,const bool &debugMode,mipsRegisters &mips32,maps &maps1,std::string declarator="",std::string assignOp=""){
 	/* Shunting-yard algorithm */
 	if(debugMode){
@@ -172,10 +176,6 @@ void ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::stack<int> &my
 
 
 	for(int i=0;i<completeTree.size();i++){
-			if(completeTree[i]->getType() == "NoParams"){
-		std::cout << "GET REKT MATE" << std::endl;
-		return;
-	}
 	  if(completeTree[i]->getType() == "Binary" || completeTree[i]->getType() == "Identifier" || completeTree[i]->getType() == "Constant"){
 	    if(debugMode){
 	      completeTree[i]->printer();
@@ -476,7 +476,6 @@ void mipsRegisters::clearTempRegisters(){
 }
 
 
-
 // map_stack implementation
 
 void maps::Insert(const std::string &str1,const int &r1){
@@ -525,4 +524,7 @@ void maps::printer(){
 		std::cout << "IDENTIFIER : " << str1 << " , VALUE: " << x << std::endl;
 	}
 }
+
+
+
 
