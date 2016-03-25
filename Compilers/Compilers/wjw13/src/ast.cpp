@@ -577,11 +577,9 @@ void mips_stack::returnHandler(std::vector<Expression*> &completeTree){
 	for(int i=0;i<completeTree.size();i++){
 		if(completeTree[i]->getType() == "Constant"){
 			constants++;
-			std::cout << "CONST : " << completeTree[i]->getConstant() << std::endl;
 		}
 		else if(completeTree[i]->getType() == "Identifier"){
 			identifiers++;
-			std::cout << "IDEN : " << completeTree[i]->getName() << std::endl;
 		}
 	}
 
@@ -598,7 +596,6 @@ void mips_stack::returnHandler(std::vector<Expression*> &completeTree){
 	else if(constants == 0 && identifiers == 1){
 		// second case
 		std::string ans;
-		std::cout << "wtf?" << std::endl;
 		for(int i=0;i<completeTree.size();i++){
 			if(completeTree[i]->getType() == "Identifier"){
 				ans = getStackOffset(completeTree[i]->getName());
