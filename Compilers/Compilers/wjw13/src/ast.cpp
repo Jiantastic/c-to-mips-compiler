@@ -270,9 +270,7 @@ void mips_stack::ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::st
 	   				std::cout << "li 		$8," << temp_x->getConstant() << std::endl;
 	   			}
 	   			else if(temp_x->getType() == "Identifier"){
-	   				if(temp_x->getPrefix()){
-	   					std::cout << "sub 		$8,$0,$8" << std::endl;
-	   				}
+
 	   				std::cout << "lw 		$8," << getStackOffset(temp_x->getName()) << std::endl; 
 	   			}
 	   			else if(temp_x->getType() == "Stack"){
@@ -582,6 +580,8 @@ void mips_stack::ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::st
 
 	// after this, $10 holds the completed value for Binary expression 3+2+5*2 etc...
 	// set declarator ( int x) = $10
+	//Insert(declarator);
+
 	Insert(declarator);
 
 	std::cout << "sw 		$10," << getStackOffset(declarator) << std::endl;
@@ -667,8 +667,10 @@ std::string PostfixExpression::getFunctionName(const Expression* exp1) const{
 
 void PostfixExpression::codeGen(const Expression* exp1,mips_stack &mips32) const{
 	std::cout << "		sw 		$31,992($sp)" << std::endl;
+	std::cout << "		.option pic0" << std::endl;
 	std::cout << "		jal " << getFunctionName(exp1) << std::endl;
 	std::cout << "		nop" << std::endl;
+	std::cout << "		.option pic2" << std::endl;
 	std::cout << "		lw 		$31,992($sp)" << std::endl;
 	mips32.Insert(getFunctionName(exp1));
 	std::cout << "		sw 		$2," << mips32.getStackOffset(getFunctionName(exp1)) << std::endl;

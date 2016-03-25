@@ -366,7 +366,7 @@ void mips_stack::noDeclare_singleHandler(std::vector<Expression*> &completeTree,
 		}
 		else if(assignOp == "*="){
 			std::cout << "lw 		$2," << offset << std::endl;
-			std::cout << "sll 		$2,$2," << ss.str() << std::endl;
+			std::cout << "mul 		$2,$2," << ss.str() << std::endl;
 			std::cout << "sw 		$2," << offset << std::endl;
 		}
 		else if(assignOp == "/="){
