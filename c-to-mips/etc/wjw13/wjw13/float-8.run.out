@@ -1,5 +1,0 @@
-float Keyword TFloat 1  
-x Identifier TIdentifier 1  
-= Operator TEqual 1  
-.44e-10 Constant TFloatingConstant 1  
-; Operator TokenType 1  

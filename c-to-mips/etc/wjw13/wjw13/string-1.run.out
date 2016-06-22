@@ -1,7 +1,0 @@
-const Keyword TConst 1  
-char Keyword TChar 1  
-* Operator TStar 1  
-x Identifier TIdentifier 1  
-= Operator TEqual 1  
-X StringLiteral TString 1  
-; Operator TokenType 1  

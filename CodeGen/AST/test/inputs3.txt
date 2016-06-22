@@ -1,9 +1,0 @@
-int main(int a,int b){
-	int c = 2 + 5*2 - 4/2;
-	a = 55;
-	b += a * c;
-	c *= 5;
-	c /= 5;
-	c = a + b - 5*2 +3/5 - 99;
-	return -a + 3;
-}
