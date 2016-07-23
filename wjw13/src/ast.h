@@ -11,31 +11,6 @@
 
 class mips_stack;
 
-/*
-IMPORTANT : consider using int counts to traverse the AST later on;
-create a pretty print function that traverses through the entire tree!
-]
-
-http://stackoverflow.com/questions/10739923/what-is-in-bison
-REVELATION : $$ is returned as $x !
-
-Example:
-shift_expression : additive_expression                                   { $1->test_print();}
-this means that $1 is whatever I returned to $$ for additive expressions!,
-in this case $$ = new Plus !
-
-
-Consider using smart pointers
-http://stackoverflow.com/questions/106508/what-is-a-smart-pointer-and-when-should-i-use-one
-
-TODO:
-Statements
-Register tracking - look at notes
-CodeGen - look at phone pic, notes
-
-1. track all declared variables, int X ..., only 2 places where declarations like int X can occur - declaration and parameter declaration
-*/
-
 // Base node class for AST
 class Node{
 public:
