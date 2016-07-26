@@ -1,8 +1,8 @@
 # c-to-mips-compiler
 
-Compiles C code into MIPS assembly. Source code is in the wjw13 folder
+Compiles C code into MIPS Assembly. Source code is in the wjw13 folder
 
-Takes in C code on `stdin`, spits out MIPS assembly on `stdout`
+Takes in C code on `stdin`, spits out MIPS Assembly on `stdout`
 
 ## Usage
 
