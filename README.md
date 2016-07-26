@@ -2,6 +2,7 @@
 
 Compiles C code into MIPS assembly. Source code is in the wjw13 folder
 
+Takes in C code on `stdin`, spits out MIPS assembly on `stdout`
 
 ## Usage
 
