@@ -73,72 +73,6 @@ void BracketExpression::printer() const{
 	std::cout << "Brackets around ( expression ) with expression type = " << exp1->getType() << std::endl;
 }
 
-/*
-const Expression* exp1 = $$;
-bool test_case = false;
-
-while(!test_case){
-std::string type = exp1->getType();
-if(type == "Constant"){
-  int x = exp1->getConstant();
-  std::cout << "valuable X ----- " << x << std::endl;
-  test_case = true;
-}
-else if(type == "Identifier"){
-  std::string str1 = exp1->getName();
-  std::cout << "valuable str1 " << str1 << std::endl;
-  test_case = true;
-}
-else if(type != "+"){
-  exp1 = exp1->getNext();
-}
-else{
-  exp1 = exp1->getLeft();
-}*/
-
-
-// get left value and get right value - tree traversal
-/*int BinaryExpression::getSum(Expression* root,mipsRegisters &mips) const{
-	if(root != NULL && root->getType == "+"){
-		getSum(root->getLeft());
-		// doSomething
-		if(root->getType() == "Constant"){
-			mips[5] += root->getConstant();
-		}
-		else if(root->getType() == "Identifier"){
-			int reg = mips->registerLookup(root->getName());
-			if(reg == -1){
-				std::cout << "identifier not previously declared" << std::endl;
-				return -1;
-			}
-			else{
-				mips[5] += mips[reg].value;
-			}
-		}
-		getSum(root->getRight());
-	}
-	else{
-		getSum()
-	}
-	bool fin = false;
-	int summation = 0;
-	while(!fin){
-		if(type == "Constant"){
-			summation 
-		}
-	}
-}*/
-
-
-
-// CodeGen for operations +-*/
-
-
-// Post Order Tree Traversal for summing up all values of the RHS, eg: int x = 3 +2, this function returns 5!
-// Run once for left nodes, another time for right nodes
-
-
-
 void codeGen(const int &registerName,mipsRegisters mips,const std::string &order = ""){
 
 	if(order == "return"){
@@ -164,17 +98,6 @@ void codeGen(const int &registerName,mipsRegisters mips,const std::string &order
 	}
 
 }
-
-
-
-
-
-// Statement Handlers
-
-
-
-
-
 
 // Assignment Operators
 
@@ -228,16 +151,7 @@ int mipsRegisters::findEmptyRegister(){
 	return -1;
 }
 
-
-
-
-
-
-
 // MIPS STACK HANDLER
-
-
-
 
 void mips_stack::ShuntingYardAlgo(std::vector<Expression*> &completeTree,std::stack<Expression*> &mystack,const bool &debugMode,std::string declarator="",std::string assignOp=""){
 	if(debugMode){
