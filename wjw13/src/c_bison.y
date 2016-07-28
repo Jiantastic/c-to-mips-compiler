@@ -89,7 +89,6 @@ initializer
 
 %%
 
-
 /* ===================== Parsing START ============================ */
 
 translation_unit : external_declaration
@@ -155,7 +154,6 @@ assignment_operator : '='                         {$$ = new AssignmentOperator("
 
 constant_expression : conditional_expression
                     ;
-
 
 /* ============== Expression Implementation ====================== */
 
@@ -243,9 +241,7 @@ cast_expression : unary_expression                                      { $$ = n
                 | '(' type_name ')' cast_expression                     
                 ;
 
-
 /* ===================================== */
-
 
 logical_and_expression : inclusive_or_expression                         { $$ = new UnaryExpression($1,"inclusive_or_expression");completeTree.push_back($$);}
                        | logical_and_expression AND_OPERATOR inclusive_or_expression  { $$ = new BinaryExpression($1,"&&",$3);completeTree.push_back($$);}
@@ -255,10 +251,7 @@ argument_expression_list : assignment_expression
                          | argument_expression_list ',' assignment_expression
                          ;
 
-
-
 /* ===================================== */
-
 
 inclusive_or_expression : exclusive_or_expression                         { $$ = new UnaryExpression($1,"exclusive_or_expression");completeTree.push_back($$);}
                         | inclusive_or_expression '|' exclusive_or_expression  { $$ = new BinaryExpression($1,"|",$3);completeTree.push_back($$);}
@@ -278,7 +271,7 @@ and_expression : equality_expression                                      { $$ =
 
 /* ===================================== */
 
-equality_expression : relational_expression                               { $$ = new UnaryExpression($1,"relational_expression");completeTree.push_back($$);}
+equality_expression : relational_expression                                   { $$ = new UnaryExpression($1,"relational_expression");completeTree.push_back($$);}
                     | equality_expression EQ_OPERATOR relational_expression   { $$ = new BinaryExpression($1,"==",$3);completeTree.push_back($$);}
                     | equality_expression NE_OPERATOR relational_expression   { $$ = new BinaryExpression($1,"!=",$3);completeTree.push_back($$);}
                     ;
@@ -330,13 +323,6 @@ specifier_qualifier_list
   | type_qualifier
   ;
 
-
-
-
-
-
-
-
 /* ============== Statement Implementation ========================== */
 
 statement : labeled_statement               
@@ -346,7 +332,6 @@ statement : labeled_statement
           | iteration_statement
           | jump_statement
           ;
-
 
 /* TODO ====== Labeled Statement ======= */
 
@@ -375,8 +360,6 @@ selection_statement : IF '(' expression ')' statement
                     | IF '(' expression ')' statement ELSE statement
                     | SWITCH '(' expression ')' statement
                     ;
-
-
 
 /* OK ====== Iteration Statement ======= */
 
@@ -563,7 +546,6 @@ identifier_list : IDENTIFIER
                 | identifier_list ',' IDENTIFIER                                                    
                 ;
 
-
 /* ========= initializer ======== */
 
 initializer : assignment_expression                                 
@@ -629,7 +611,6 @@ function_name : '('   {
 
 %%
 
-
 int yyerror(const char* s){ 
     std::cout << s << std::endl;
     return -1;
@@ -639,5 +620,3 @@ int main(void) {
   std::stringstream ss;
   ss << yyparse();
 }
-
-
