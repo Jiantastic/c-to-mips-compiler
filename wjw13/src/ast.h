@@ -21,9 +21,6 @@ public:
 // Expressions
 class Expression : public Node{
 public:
-	// const Type * getType();
-	// virtual evaluate() = 0;
-	// Render using current identifier-register bindings in ctxt
 	virtual std::string getType() const;
 	virtual void printer() const {}
 	virtual const Expression *getLeft() const {}
@@ -34,9 +31,6 @@ public:
 	virtual std::string getOperator() const {}
 	virtual void codeGen(const Expression* exp1,mips_stack &mips32) const {}
 	virtual bool getPrefix() const {}
-	//virtual void evaluate() const {}
-	//virtual int getSum() const {}
-
 };
 
 class BinaryExpression : public Expression{
@@ -102,23 +96,13 @@ class PostfixExpression : public Expression{
 public:
 	PostfixExpression(Expression* exp): exp1(exp) {}	
 	std::string getFunctionName(const Expression* exp) const;
-	//void loadParams(std::vector<const Expression*> core_vector,mipsRegisters &mips,maps &map1);
 	void codeGen(const Expression* exp1,mips_stack &mips32) const;
 };
 
 
 // Statements
 class Statement : public Node{
-	// Render using current identifier-register bindings in ctxt
-	// Context renderAssembly(const Context & ctxt) const;
 	virtual void print() {}
-};
-
-class CompoundStatement : public Statement{
-	/*int getDeclarationCount() const;
-	const Declaration *getDeclaration(int i) const;
-	int getStatementCount() const;
-	const Statement *getStatement(int i) const;*/
 };
 
 class ExpressionStatement : public Statement{
@@ -148,7 +132,7 @@ public:
 	Register(int v,std::string var,bool t): value(v),varName(var),inUse(t) {}
 	int value = 0;
 	std::string varName = "";
-	bool inUse = false;			// can't use 0 to check if register is in use as register can be 
+	bool inUse = false;			// can't use 0 to check if register is in use - look at MIPS documentation
 };
 
 // Register handling
