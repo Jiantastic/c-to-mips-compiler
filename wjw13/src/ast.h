@@ -18,9 +18,7 @@ public:
 	virtual ~Node() {}
 };
 
-
 // Expressions
-
 class Expression : public Node{
 public:
 	// const Type * getType();
@@ -41,8 +39,6 @@ public:
 
 };
 
-
-// generic class for plus,minus for 2 operands and 1 operator
 class BinaryExpression : public Expression{
 private:
 	Expression *left = NULL;
@@ -55,9 +51,6 @@ public:
 	const Expression *getRight() const;
 	std::string getType() const;
 	void printer() const;
-	//void codeGen();			takes left expression and right expression, does an operation on them ( according to opCode )
-//	void evaluate() const;
-	//int getSum() const;
 };
 
 class UnaryExpression : public Expression{
@@ -104,11 +97,6 @@ public:
 	void printer() const;
 };
 
-class StackExpression : public Expression{
-public:
-	std::string getType() const;
-};
-
 class PostfixExpression : public Expression{
 	Expression* exp1;
 public:
@@ -120,15 +108,10 @@ public:
 
 
 // Statements
-
 class Statement : public Node{
 	// Render using current identifier-register bindings in ctxt
 	// Context renderAssembly(const Context & ctxt) const;
 	virtual void print() {}
-};
-
-class LabeledStatement : public Statement{
-	
 };
 
 class CompoundStatement : public Statement{
@@ -142,20 +125,6 @@ class ExpressionStatement : public Statement{
 	const Expression *getExpression() const;
 };
 
-class SelectionStatement : public Statement{
-
-};
-
-
-/*
-
-selection_statement : IF '(' expression ')' statement
-                    | IF '(' expression ')' statement ELSE statement
-                    | SWITCH '(' expression ')' statement
-                    ;
-
-*/                
-
 class IfStatement : public Statement{
 	Expression* exp;
 	Statement* state;
@@ -163,24 +132,7 @@ public:
 	const Expression *getCondition() const;
 	const Statement *getStatement() const;
 	IfStatement(Expression* exp1,Statement* state1): exp(exp1), state(state1) {}
-	// IfStatement(Expression* exp1,Statement* state1,Statement* state2):
 };
-
-
-class IterationStatement : public Statement{
-	
-};
-
-class JumpStatement : public Statement{
-	
-};
-
-
-
-
-
-
-
 
 class AssignmentOperator : public Expression{
 	std::string assignment;
@@ -203,7 +155,7 @@ public:
 // declaration - int a = 3; should use a new register
 // usage - a = 5; should use an existing register regardless of scope as tested in C90 ( except in the case of function calls)
 class mipsRegisters{
-	std::vector<Register> registers;	// sets 31 registers to 0,make this public?
+	std::vector<Register> registers;	// sets 31 registers to 0
 public:
 	mipsRegisters():registers(32) {}
 	Register getValue(const int &registerName);
@@ -213,8 +165,6 @@ public:
 	void printAllRegisters();
 	int findEmptyRegister();
 };
-
-
 
 class mips_stack{
 	std::map<std::string,std::string> varToRegister;
@@ -241,14 +191,12 @@ void mips_stack::getNew(){
 }
 
 void mips_stack::InsertParams(std::string str1){
-	// allows a maximum of 4 params - TODO, "sneakily use other registers to store params"
 	Insert(str1);
 	std::stringstream ss;
 	ss << "$" << param_counter;
 	std::cout << "sw 			" << ss.str() << "," << getStackOffset(str1) << std::endl;
 	param_counter++;
 }
-
 
 void mips_stack::singleHandler(std::vector<Expression*> &completeTree,std::string declarator){
 	int identifiers = 0;
@@ -472,34 +420,6 @@ void mips_stack::noDeclare_singleHandler(std::vector<Expression*> &completeTree,
 		}
 	}
 }
-
-/*
-a   = $4
-
-
-map[$4] = "8($sp)";
-
-int x = a;
-
-li $2, 5
-sw $2,24($sp);
-
-
-
-int x = 1 + 2;
-
-ALSO,
-for long int arithmetic
-
-int x = 5 + 2 + 3 - a + b - 2 * cc + d;
-
-use shunting yard algo,
-step by step,
-5 + 2 = addiu $2,$2,
-
-
-*/
-
 
 #endif
 
