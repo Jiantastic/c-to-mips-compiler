@@ -4,6 +4,8 @@ Compiles C code into MIPS Assembly. Source code is in the wjw13 folder
 
 Takes in C code on `stdin`, spits out MIPS Assembly on `stdout`
 
+Developed with good old [Flex](http://flex.sourceforge.net/) and [Bison](https://www.gnu.org/software/bison/)
+
 ## Usage
 
 `cd c-to-mips-compiler/wjw13/ && make` builds the project
@@ -20,6 +22,6 @@ You should now see some generated MIPS assembly code
       
       
 
-Developed with good old [Flex](http://flex.sourceforge.net/) and [Bison](https://www.gnu.org/software/bison/)
+
 
 
