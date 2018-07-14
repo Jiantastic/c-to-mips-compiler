@@ -21,6 +21,10 @@ You should now see some generated MIPS assembly code
       .type main,@function
       
       
+## References
+
+['Dragon Book'](https://amzn.to/2Lib5J6)
+
 
 
 
