@@ -23,7 +23,7 @@ You should now see some generated MIPS assembly code
       
 ## References
 
-['Dragon Book'](https://amzn.to/2Lib5J6)
+['Dragon Book'](https://amzn.to/2Lib5J6) [Amazon Affliate Link]
 
 
 
