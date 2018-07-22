@@ -6,6 +6,8 @@ Takes in C code on `stdin`, spits out MIPS Assembly on `stdout`
 
 Developed with good old [Flex](http://flex.sourceforge.net/) and [Bison](https://www.gnu.org/software/bison/)
 
+Have a look at [VisualMips](https://visualmips.github.io/) if you would like to try out a web-based MIPS assembler!
+
 ## Usage
 
 `cd c-to-mips-compiler/wjw13/ && make` builds the project
