@@ -4,7 +4,7 @@ Compiles C code into MIPS Assembly. Source code is in the wjw13 folder
 
 Takes in C code on `stdin`, spits out MIPS Assembly on `stdout`
 
-Developed with good old [Flex](http://flex.sourceforge.net/) and [Bison](https://www.gnu.org/software/bison/)
+Developed with good old [Flex](https://github.com/westes/flex) and [Bison](https://www.gnu.org/software/bison/)
 
 Have a look at [VisualMips](https://visualmips.github.io/) if you would like to try out a web-based MIPS assembler!
 
